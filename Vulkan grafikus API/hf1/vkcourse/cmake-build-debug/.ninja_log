@@ -1,0 +1,107 @@
+# ninja log v6
+49	64	1762189277241545685	_deps/glfw-build/src/viewporter-client-protocol.h	5e7ec8414e37681f
+49	64	1762189277241545685	/mnt/ssd/egyetem/Vulkan grafikus API/hf1/vkcourse/cmake-build-debug/_deps/glfw-build/src/viewporter-client-protocol.h	5e7ec8414e37681f
+51	68	1762189277245545671	_deps/glfw-build/src/viewporter-client-protocol-code.h	a5910211938a861e
+51	68	1762189277245545671	/mnt/ssd/egyetem/Vulkan grafikus API/hf1/vkcourse/cmake-build-debug/_deps/glfw-build/src/viewporter-client-protocol-code.h	a5910211938a861e
+46	73	1762189277249545658	_deps/glfw-build/src/wayland-client-protocol.h	46a793ef95a09deb
+46	73	1762189277249545658	/mnt/ssd/egyetem/Vulkan grafikus API/hf1/vkcourse/cmake-build-debug/_deps/glfw-build/src/wayland-client-protocol.h	46a793ef95a09deb
+48	76	1762189277245545671	_deps/glfw-build/src/wayland-client-protocol-code.h	a5c16ba7f75b11df
+48	76	1762189277245545671	/mnt/ssd/egyetem/Vulkan grafikus API/hf1/vkcourse/cmake-build-debug/_deps/glfw-build/src/wayland-client-protocol-code.h	a5c16ba7f75b11df
+52	82	1762189277245545671	_deps/glfw-build/src/xdg-shell-client-protocol.h	c896e590dddc356b
+52	82	1762189277245545671	/mnt/ssd/egyetem/Vulkan grafikus API/hf1/vkcourse/cmake-build-debug/_deps/glfw-build/src/xdg-shell-client-protocol.h	c896e590dddc356b
+54	86	1762189277249545658	_deps/glfw-build/src/xdg-shell-client-protocol-code.h	d81b331c67e4e69c
+54	86	1762189277249545658	/mnt/ssd/egyetem/Vulkan grafikus API/hf1/vkcourse/cmake-build-debug/_deps/glfw-build/src/xdg-shell-client-protocol-code.h	d81b331c67e4e69c
+66	88	1762189277257545630	_deps/glfw-build/src/idle-inhibit-unstable-v1-client-protocol.h	1b1e806e575b1326
+66	88	1762189277257545630	/mnt/ssd/egyetem/Vulkan grafikus API/hf1/vkcourse/cmake-build-debug/_deps/glfw-build/src/idle-inhibit-unstable-v1-client-protocol.h	1b1e806e575b1326
+69	91	1762189277261545616	_deps/glfw-build/src/idle-inhibit-unstable-v1-client-protocol-code.h	f4c3bfe6e10a838e
+69	91	1762189277261545616	/mnt/ssd/egyetem/Vulkan grafikus API/hf1/vkcourse/cmake-build-debug/_deps/glfw-build/src/idle-inhibit-unstable-v1-client-protocol-code.h	f4c3bfe6e10a838e
+75	96	1762189277273545575	_deps/glfw-build/src/pointer-constraints-unstable-v1-client-protocol.h	734999081631ea1b
+75	96	1762189277273545575	/mnt/ssd/egyetem/Vulkan grafikus API/hf1/vkcourse/cmake-build-debug/_deps/glfw-build/src/pointer-constraints-unstable-v1-client-protocol.h	734999081631ea1b
+76	102	1762189277281545547	_deps/glfw-build/src/pointer-constraints-unstable-v1-client-protocol-code.h	f269951f01a5057e
+76	102	1762189277281545547	/mnt/ssd/egyetem/Vulkan grafikus API/hf1/vkcourse/cmake-build-debug/_deps/glfw-build/src/pointer-constraints-unstable-v1-client-protocol-code.h	f269951f01a5057e
+82	106	1762189277281545547	_deps/glfw-build/src/relative-pointer-unstable-v1-client-protocol.h	763a89c61a88043b
+82	106	1762189277281545547	/mnt/ssd/egyetem/Vulkan grafikus API/hf1/vkcourse/cmake-build-debug/_deps/glfw-build/src/relative-pointer-unstable-v1-client-protocol.h	763a89c61a88043b
+87	110	1762189277285545534	_deps/glfw-build/src/relative-pointer-unstable-v1-client-protocol-code.h	c5a7ce69619a3f0b
+87	110	1762189277285545534	/mnt/ssd/egyetem/Vulkan grafikus API/hf1/vkcourse/cmake-build-debug/_deps/glfw-build/src/relative-pointer-unstable-v1-client-protocol-code.h	c5a7ce69619a3f0b
+89	114	1762189277289545520	_deps/glfw-build/src/fractional-scale-v1-client-protocol.h	40480e735e9420bc
+89	114	1762189277289545520	/mnt/ssd/egyetem/Vulkan grafikus API/hf1/vkcourse/cmake-build-debug/_deps/glfw-build/src/fractional-scale-v1-client-protocol.h	40480e735e9420bc
+92	117	1762189277293545506	_deps/glfw-build/src/fractional-scale-v1-client-protocol-code.h	b286c6d4b75d0d32
+92	117	1762189277293545506	/mnt/ssd/egyetem/Vulkan grafikus API/hf1/vkcourse/cmake-build-debug/_deps/glfw-build/src/fractional-scale-v1-client-protocol-code.h	b286c6d4b75d0d32
+96	120	1762189277297545492	_deps/glfw-build/src/xdg-activation-v1-client-protocol.h	561b1d405df8fb81
+96	120	1762189277297545492	/mnt/ssd/egyetem/Vulkan grafikus API/hf1/vkcourse/cmake-build-debug/_deps/glfw-build/src/xdg-activation-v1-client-protocol.h	561b1d405df8fb81
+106	125	1762189277301545478	_deps/glfw-build/src/xdg-decoration-unstable-v1-client-protocol.h	9655fffce3ffac8d
+106	125	1762189277301545478	/mnt/ssd/egyetem/Vulkan grafikus API/hf1/vkcourse/cmake-build-debug/_deps/glfw-build/src/xdg-decoration-unstable-v1-client-protocol.h	9655fffce3ffac8d
+102	135	1762189277309545451	_deps/glfw-build/src/xdg-activation-v1-client-protocol-code.h	bd1deb6a3e84204e
+102	135	1762189277309545451	/mnt/ssd/egyetem/Vulkan grafikus API/hf1/vkcourse/cmake-build-debug/_deps/glfw-build/src/xdg-activation-v1-client-protocol-code.h	bd1deb6a3e84204e
+110	137	1762189277313545437	_deps/glfw-build/src/xdg-decoration-unstable-v1-client-protocol-code.h	22332648afe9324f
+110	137	1762189277313545437	/mnt/ssd/egyetem/Vulkan grafikus API/hf1/vkcourse/cmake-build-debug/_deps/glfw-build/src/xdg-decoration-unstable-v1-client-protocol-code.h	22332648afe9324f
+125	495	1762189277653544266	05_moving/grid.vert_include.h	1cc2fd860c03f9b6
+125	495	1762189277653544266	/mnt/ssd/egyetem/Vulkan grafikus API/hf1/vkcourse/cmake-build-debug/05_moving/grid.vert_include.h	1cc2fd860c03f9b6
+118	593	1762189277729544004	05_moving/triangle_in.vert_include.h	36c5c56e6dd951a6
+118	593	1762189277729544004	/mnt/ssd/egyetem/Vulkan grafikus API/hf1/vkcourse/cmake-build-debug/05_moving/triangle_in.vert_include.h	36c5c56e6dd951a6
+135	701	1762189277833543646	05_moving/grid.frag_include.h	1e26f310b3b82b3a
+135	701	1762189277833543646	/mnt/ssd/egyetem/Vulkan grafikus API/hf1/vkcourse/cmake-build-debug/05_moving/grid.frag_include.h	1e26f310b3b82b3a
+120	749	1762189277873543508	05_moving/triangle_in.frag_include.h	a5299c81b3903b54
+120	749	1762189277873543508	/mnt/ssd/egyetem/Vulkan grafikus API/hf1/vkcourse/cmake-build-debug/05_moving/triangle_in.frag_include.h	a5299c81b3903b54
+137	837	1762189277225545740	_deps/glfw-build/src/CMakeFiles/glfw.dir/context.c.o	b6e74407226e6796
+495	946	1762189277225545740	_deps/glfw-build/src/CMakeFiles/glfw.dir/init.c.o	9464cd18b074949f
+749	1085	1762189277225545740	_deps/glfw-build/src/CMakeFiles/glfw.dir/platform.c.o	a130a18284d278ea
+701	1205	1762189277225545740	_deps/glfw-build/src/CMakeFiles/glfw.dir/monitor.c.o	6cab43ca323f49da
+839	1268	1762189277225545740	_deps/glfw-build/src/CMakeFiles/glfw.dir/vulkan.c.o	1401be47e53a4c0e
+593	1289	1762189277225545740	_deps/glfw-build/src/CMakeFiles/glfw.dir/input.c.o	f7ba54d419f00da6
+947	1453	1762189277225545740	_deps/glfw-build/src/CMakeFiles/glfw.dir/window.c.o	f7ece4760c869e51
+1206	1567	1762189277225545740	_deps/glfw-build/src/CMakeFiles/glfw.dir/osmesa_context.c.o	410cc6e26bf6693a
+1289	1686	1762189277225545740	_deps/glfw-build/src/CMakeFiles/glfw.dir/null_monitor.c.o	86da07453cd967ab
+1268	1724	1762189277225545740	_deps/glfw-build/src/CMakeFiles/glfw.dir/null_init.c.o	e57f73675cb6d3de
+1086	1737	1762189277225545740	_deps/glfw-build/src/CMakeFiles/glfw.dir/egl_context.c.o	a2ff364e4b3d48b0
+1568	1859	1762189277225545740	_deps/glfw-build/src/CMakeFiles/glfw.dir/null_joystick.c.o	d1dc9af9e836dfe0
+1454	1898	1762189277225545740	_deps/glfw-build/src/CMakeFiles/glfw.dir/null_window.c.o	5f0c3b0d1d3aece8
+1686	1946	1762189277225545740	_deps/glfw-build/src/CMakeFiles/glfw.dir/posix_module.c.o	4bdc41690fee83e1
+1738	1985	1762189277225545740	_deps/glfw-build/src/CMakeFiles/glfw.dir/posix_thread.c.o	b8a94a80c73ab9bf
+1725	1999	1762189277225545740	_deps/glfw-build/src/CMakeFiles/glfw.dir/posix_time.c.o	7d2e1a7aaa83a043
+1899	2239	1762189277225545740	_deps/glfw-build/src/CMakeFiles/glfw.dir/x11_monitor.c.o	d2f73d4a5c0c89b4
+1985	2243	1762189277225545740	_deps/glfw-build/src/CMakeFiles/glfw.dir/xkb_unicode.c.o	c5589809cb782aa0
+2000	2419	1762189277225545740	_deps/glfw-build/src/CMakeFiles/glfw.dir/glx_context.c.o	9b9f851170cf325a
+1859	2632	1762189277225545740	_deps/glfw-build/src/CMakeFiles/glfw.dir/x11_init.c.o	96bebaf26ba9e77b
+2244	2687	1762189277225545740	_deps/glfw-build/src/CMakeFiles/glfw.dir/wl_monitor.c.o	5a09d56c658b8fa6
+1947	2777	1762189277225545740	_deps/glfw-build/src/CMakeFiles/glfw.dir/x11_window.c.o	c175e01def1b9a88
+2240	2938	1762189277225545740	_deps/glfw-build/src/CMakeFiles/glfw.dir/wl_init.c.o	f0da942991a0022a
+114	2984	1762189277225545740	external/CMakeFiles/stb.dir/stb/stb_wrapper.cpp.o	750fe636292cf0d5
+2632	3018	1762189277225545740	_deps/glfw-build/src/CMakeFiles/glfw.dir/linux_joystick.c.o	9229171555675b62
+2688	3061	1762189277225545740	_deps/glfw-build/src/CMakeFiles/glfw.dir/posix_poll.c.o	fcbc7b5d01854ff9
+2420	3531	1762189277225545740	_deps/glfw-build/src/CMakeFiles/glfw.dir/wl_window.c.o	5ef841b375e67cfd
+3531	4193	1762189277225545740	external/CMakeFiles/imgui.dir/imgui/backends/imgui_impl_glfw.cpp.o	bdc1098dba05130e
+4193	5204	1762189277225545740	external/CMakeFiles/imgui.dir/imgui/backends/imgui_impl_vulkan.cpp.o	df8e46e89e6a28e
+5205	5747	1762189277225545740	lib/libglfw3.a	53a756d9095c070e
+5747	5879	1762189277225545740	lib/libstb.a	3f26820134cc214c
+2938	6199	1762189277225545740	external/CMakeFiles/imgui.dir/imgui/imgui_demo.cpp.o	7373e72a447e16fd
+5879	6352	1762189277225545740	lib/CMakeFiles/vkcourse.dir/buffer.cpp.o	3de465b5129b5ed8
+3019	6806	1762189277225545740	external/CMakeFiles/imgui.dir/imgui/imgui_tables.cpp.o	b0cabf79a35a89e
+6353	7639	1762189277225545740	lib/CMakeFiles/vkcourse.dir/texture.cpp.o	809e735346936f04
+2985	7825	1762189277225545740	external/CMakeFiles/imgui.dir/imgui/imgui_draw.cpp.o	56443d6a2a8da6af
+6806	8685	1762189277225545740	lib/CMakeFiles/vkcourse.dir/context.cpp.o	d35d592feed031c4
+3062	9143	1762189277225545740	external/CMakeFiles/imgui.dir/imgui/imgui_widgets.cpp.o	7228465edbbdb4e8
+7826	9391	1762189277225545740	lib/CMakeFiles/vkcourse.dir/imgui_integration.cpp.o	c17f33a5207b009e
+7640	9905	1762189277225545740	lib/CMakeFiles/vkcourse.dir/swapchain.cpp.o	8cd3aec9ed262e15
+8688	10040	1762189277225545740	lib/CMakeFiles/vkcourse.dir/wrappers.cpp.o	87846c98a6ac2244
+2777	10043	1762189277225545740	external/CMakeFiles/imgui.dir/imgui/imgui.cpp.o	c686f1f359e4d49b
+6199	10047	1762189277225545740	lib/CMakeFiles/vkcourse.dir/descriptors.cpp.o	d0117b3e5e7a14b
+10043	10560	1762189277225545740	lib/libimgui.a	3094e915c51b4ea1
+10560	11294	1762189277225545740	lib/libvkcourse.a	188097447a3c8cb1
+9392	11908	1762189277225545740	05_moving/CMakeFiles/05_moving.dir/simple_cube.cpp.o	a06c8f2a8d837d9
+9144	12252	1762189277225545740	05_moving/CMakeFiles/05_moving.dir/05_moving.cpp.o	e558f15642b8baaf
+9906	12442	1762189277225545740	05_moving/CMakeFiles/05_moving.dir/grid.cpp.o	abef0acd3650bc48
+12443	12830	1762189277225545740	bin/05_moving	c6da077c4349c9f1
+48	163	1762189302557458481	lib/libstb.a	3f26820134cc214c
+40	322	1762189302557458481	_deps/glfw-build/src/CMakeFiles/glfw.dir/wl_monitor.c.o	5a09d56c658b8fa6
+39	449	1762189302557458481	_deps/glfw-build/src/CMakeFiles/glfw.dir/wl_init.c.o	f0da942991a0022a
+45	738	1762189302557458481	_deps/glfw-build/src/CMakeFiles/glfw.dir/wl_window.c.o	5ef841b375e67cfd
+738	1259	1762189302557458481	lib/libglfw3.a	53a756d9095c070e
+49	1825	1762189302557458481	05_moving/CMakeFiles/05_moving.dir/simple_cube.cpp.o	a06c8f2a8d837d9
+52	2072	1762189302557458481	05_moving/CMakeFiles/05_moving.dir/grid.cpp.o	abef0acd3650bc48
+1259	2077	1762189302557458481	lib/libimgui.a	3094e915c51b4ea1
+2077	2800	1762189302557458481	lib/libvkcourse.a	188097447a3c8cb1
+2800	3286	1762189302557458481	bin/05_moving	c6da077c4349c9f1
+64	310	1762189555844586041	lib/libglfw3.a	53a756d9095c070e
+310	735	1762189555844586041	bin/05_moving	c6da077c4349c9f1
+87	483	1762189628064337294	bin/05_moving	c6da077c4349c9f1

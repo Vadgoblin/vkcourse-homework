@@ -1,0 +1,21 @@
+# ninja log v6
+3	21	1762189247885646807	glfw-populate-prefix/src/glfw-populate-stamp/glfw-populate-mkdir	6711d6b2edca5e12
+3	21	1762189247885646807	/mnt/ssd/egyetem/Vulkan grafikus API/hf1/vkcourse/cmake-build-debug/_deps/glfw-subbuild/glfw-populate-prefix/src/glfw-populate-stamp/glfw-populate-mkdir	6711d6b2edca5e12
+22	2333	1762189250197638843	glfw-populate-prefix/src/glfw-populate-stamp/glfw-populate-download	4fe0c1c0df383df3
+22	2333	1762189250197638843	/mnt/ssd/egyetem/Vulkan grafikus API/hf1/vkcourse/cmake-build-debug/_deps/glfw-subbuild/glfw-populate-prefix/src/glfw-populate-stamp/glfw-populate-download	4fe0c1c0df383df3
+2334	2351	1762189250217638774	glfw-populate-prefix/src/glfw-populate-stamp/glfw-populate-update	a7524493d588b2ab
+2334	2351	1762189250217638774	/mnt/ssd/egyetem/Vulkan grafikus API/hf1/vkcourse/cmake-build-debug/_deps/glfw-subbuild/glfw-populate-prefix/src/glfw-populate-stamp/glfw-populate-update	a7524493d588b2ab
+2351	2363	1762189250229638733	glfw-populate-prefix/src/glfw-populate-stamp/glfw-populate-patch	a38df9bc8d76344e
+2351	2363	1762189250229638733	/mnt/ssd/egyetem/Vulkan grafikus API/hf1/vkcourse/cmake-build-debug/_deps/glfw-subbuild/glfw-populate-prefix/src/glfw-populate-stamp/glfw-populate-patch	a38df9bc8d76344e
+2363	2376	1762189250241638691	glfw-populate-prefix/src/glfw-populate-stamp/glfw-populate-configure	e40606aa2dbd12db
+2363	2376	1762189250241638691	/mnt/ssd/egyetem/Vulkan grafikus API/hf1/vkcourse/cmake-build-debug/_deps/glfw-subbuild/glfw-populate-prefix/src/glfw-populate-stamp/glfw-populate-configure	e40606aa2dbd12db
+2376	2402	1762189250265638609	glfw-populate-prefix/src/glfw-populate-stamp/glfw-populate-build	891e4b9f7fab338d
+2376	2402	1762189250265638609	/mnt/ssd/egyetem/Vulkan grafikus API/hf1/vkcourse/cmake-build-debug/_deps/glfw-subbuild/glfw-populate-prefix/src/glfw-populate-stamp/glfw-populate-build	891e4b9f7fab338d
+2402	2423	1762189250281638554	glfw-populate-prefix/src/glfw-populate-stamp/glfw-populate-install	f18b38bd0a928492
+2402	2423	1762189250281638554	/mnt/ssd/egyetem/Vulkan grafikus API/hf1/vkcourse/cmake-build-debug/_deps/glfw-subbuild/glfw-populate-prefix/src/glfw-populate-stamp/glfw-populate-install	f18b38bd0a928492
+2423	2445	1762189250309638457	glfw-populate-prefix/src/glfw-populate-stamp/glfw-populate-test	bd4ce47076f65c9f
+2423	2445	1762189250309638457	/mnt/ssd/egyetem/Vulkan grafikus API/hf1/vkcourse/cmake-build-debug/_deps/glfw-subbuild/glfw-populate-prefix/src/glfw-populate-stamp/glfw-populate-test	bd4ce47076f65c9f
+2445	2460	1762189250325638402	CMakeFiles/glfw-populate-complete	af1d48dbddf8c302
+2445	2460	1762189250325638402	glfw-populate-prefix/src/glfw-populate-stamp/glfw-populate-done	af1d48dbddf8c302
+2445	2460	1762189250325638402	/mnt/ssd/egyetem/Vulkan grafikus API/hf1/vkcourse/cmake-build-debug/_deps/glfw-subbuild/CMakeFiles/glfw-populate-complete	af1d48dbddf8c302
+2445	2460	1762189250325638402	/mnt/ssd/egyetem/Vulkan grafikus API/hf1/vkcourse/cmake-build-debug/_deps/glfw-subbuild/glfw-populate-prefix/src/glfw-populate-stamp/glfw-populate-done	af1d48dbddf8c302

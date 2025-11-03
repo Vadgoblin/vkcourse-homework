@@ -1,0 +1,3 @@
+/mnt/ssd/egyetem/Vulkan grafikus API/hf1/vkcourse/cmake-build-debug/_deps/glm-subbuild/CMakeFiles/glm-populate.dir
+/mnt/ssd/egyetem/Vulkan grafikus API/hf1/vkcourse/cmake-build-debug/_deps/glm-subbuild/CMakeFiles/edit_cache.dir
+/mnt/ssd/egyetem/Vulkan grafikus API/hf1/vkcourse/cmake-build-debug/_deps/glm-subbuild/CMakeFiles/rebuild_cache.dir

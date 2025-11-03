@@ -1,0 +1,21 @@
+# ninja log v6
+5	16	1762189252949629363	glm-populate-prefix/src/glm-populate-stamp/glm-populate-mkdir	bd4a8fd409956bd
+5	16	1762189252949629363	/mnt/ssd/egyetem/Vulkan grafikus API/hf1/vkcourse/cmake-build-debug/_deps/glm-subbuild/glm-populate-prefix/src/glm-populate-stamp/glm-populate-mkdir	bd4a8fd409956bd
+18	2296	1762189255225621523	glm-populate-prefix/src/glm-populate-stamp/glm-populate-download	396201988bf92247
+18	2296	1762189255225621523	/mnt/ssd/egyetem/Vulkan grafikus API/hf1/vkcourse/cmake-build-debug/_deps/glm-subbuild/glm-populate-prefix/src/glm-populate-stamp/glm-populate-download	396201988bf92247
+2296	2311	1762189255241621468	glm-populate-prefix/src/glm-populate-stamp/glm-populate-update	e34a1ece9fc14dca
+2296	2311	1762189255241621468	/mnt/ssd/egyetem/Vulkan grafikus API/hf1/vkcourse/cmake-build-debug/_deps/glm-subbuild/glm-populate-prefix/src/glm-populate-stamp/glm-populate-update	e34a1ece9fc14dca
+2311	2325	1762189255261621399	glm-populate-prefix/src/glm-populate-stamp/glm-populate-patch	617d22b61c72b8d9
+2311	2325	1762189255261621399	/mnt/ssd/egyetem/Vulkan grafikus API/hf1/vkcourse/cmake-build-debug/_deps/glm-subbuild/glm-populate-prefix/src/glm-populate-stamp/glm-populate-patch	617d22b61c72b8d9
+2325	2335	1762189255269621371	glm-populate-prefix/src/glm-populate-stamp/glm-populate-configure	59421a4cbdbbea4f
+2325	2335	1762189255269621371	/mnt/ssd/egyetem/Vulkan grafikus API/hf1/vkcourse/cmake-build-debug/_deps/glm-subbuild/glm-populate-prefix/src/glm-populate-stamp/glm-populate-configure	59421a4cbdbbea4f
+2335	2348	1762189255277621344	glm-populate-prefix/src/glm-populate-stamp/glm-populate-build	53ec26b23b277cb
+2335	2348	1762189255277621344	/mnt/ssd/egyetem/Vulkan grafikus API/hf1/vkcourse/cmake-build-debug/_deps/glm-subbuild/glm-populate-prefix/src/glm-populate-stamp/glm-populate-build	53ec26b23b277cb
+2348	2361	1762189255293621289	glm-populate-prefix/src/glm-populate-stamp/glm-populate-install	680fd49991d7c568
+2348	2361	1762189255293621289	/mnt/ssd/egyetem/Vulkan grafikus API/hf1/vkcourse/cmake-build-debug/_deps/glm-subbuild/glm-populate-prefix/src/glm-populate-stamp/glm-populate-install	680fd49991d7c568
+2361	2377	1762189255305621247	glm-populate-prefix/src/glm-populate-stamp/glm-populate-test	d5ef4febb73b705c
+2361	2377	1762189255305621247	/mnt/ssd/egyetem/Vulkan grafikus API/hf1/vkcourse/cmake-build-debug/_deps/glm-subbuild/glm-populate-prefix/src/glm-populate-stamp/glm-populate-test	d5ef4febb73b705c
+2377	2392	1762189255325621179	CMakeFiles/glm-populate-complete	bea1a66d64b759f5
+2377	2392	1762189255325621179	glm-populate-prefix/src/glm-populate-stamp/glm-populate-done	bea1a66d64b759f5
+2377	2392	1762189255325621179	/mnt/ssd/egyetem/Vulkan grafikus API/hf1/vkcourse/cmake-build-debug/_deps/glm-subbuild/CMakeFiles/glm-populate-complete	bea1a66d64b759f5
+2377	2392	1762189255325621179	/mnt/ssd/egyetem/Vulkan grafikus API/hf1/vkcourse/cmake-build-debug/_deps/glm-subbuild/glm-populate-prefix/src/glm-populate-stamp/glm-populate-done	bea1a66d64b759f5
