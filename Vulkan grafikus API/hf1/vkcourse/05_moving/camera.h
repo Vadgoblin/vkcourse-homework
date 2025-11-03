@@ -56,9 +56,10 @@ public:
         const glm::vec3 right = glm::normalize(glm::cross(m_front, m_up));
         // normalize the vectors, because their length gets closer to 0 the more you
         // look up or down which results in slower movement.
-        m_up = glm::normalize(glm::cross(right, m_front));
+        const glm::vec3 up = glm::normalize(glm::cross(right, m_front));
+        //m_up = glm::normalize(glm::cross(right, m_front));
 
-        m_view = glm::lookAt(m_position, m_target, m_up);
+        m_view = glm::lookAt(m_position, m_target, up);
     }
 
     const glm::vec3& position() const { return m_position; }
