@@ -40,25 +40,42 @@ public:
         Update();
     }
 
-    static float ApplyDeadzone(float value, float deadzone = 0.15f) {
+    static float ApplyDeadzone(float value, float deadzone = 0.18f) {
         if (value > -deadzone && value < deadzone)
             return 0.0f;
         return value;
     }
+
+    static float CurveInput(float value, float power = 2.0f) {
+        float sign = (value >= 0.0f) ? 1.0f : -1.0f;
+        return sign * std::pow(std::abs(value), power);
+    };
+
+
     void ProcessControllerInput(const GLFWgamepadstate& state, float deltaTime) {
-        // Left stick controls movement
+        // Left stick controls movementm, Left trigger for speed boost
         float leftX = ApplyDeadzone(state.axes[GLFW_GAMEPAD_AXIS_LEFT_X]);
         float leftY = ApplyDeadzone(state.axes[GLFW_GAMEPAD_AXIS_LEFT_Y]);
 
+        float leftTrigger  = state.axes[GLFW_GAMEPAD_AXIS_LEFT_TRIGGER];
+        float speedMultiplier = std::pow(2 , (leftTrigger + 1) * 1.3);
+
         glm::vec3 right = glm::normalize(glm::cross(m_front, m_up));
 
-        float joystick_camera_speed = CAMERA_SPEED * 10;
+        float joystick_camera_speed = CAMERA_SPEED * speedMultiplier * 50;
+
 
         // Move forward/backward
-        m_position += -leftY * joystick_camera_speed * deltaTime * m_front;
+        m_position += -CurveInput(leftY, 1.5f) * joystick_camera_speed * deltaTime * m_front;
 
         // Strafe left/right
-        m_position += leftX * joystick_camera_speed * deltaTime * right;
+        m_position +=  CurveInput(leftX, 1.5f) * joystick_camera_speed * deltaTime * right;
+
+        // // Move forward/backward
+        // m_position += -leftY * joystick_camera_speed * deltaTime * m_front;
+        //
+        // // Strafe left/right
+        // m_position += leftX * joystick_camera_speed * deltaTime * right;
 
         // Right stick controls view (yaw/pitch)
         float rightX = ApplyDeadzone(state.axes[GLFW_GAMEPAD_AXIS_RIGHT_X]);
