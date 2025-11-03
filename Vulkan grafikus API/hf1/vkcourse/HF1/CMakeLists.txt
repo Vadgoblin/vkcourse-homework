@@ -1,5 +1,5 @@
 add_executable(05_moving
-    05_moving.cpp
+        hf1.cpp
 
     simple_cube.cpp
     simple_cube.h

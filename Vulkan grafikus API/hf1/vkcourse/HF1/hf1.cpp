@@ -1,6 +1,10 @@
+#include "glm/ext/matrix_transform.hpp"
+#include "glm/ext/vector_float3.hpp"
+#include "texture.h"
 #include <cstdio>
 #include <stdexcept>
 #include <vector>
+#include <vulkan/vulkan_core.h>
 
 #define GLFW_INCLUDE_VULKAN
 #define GLFW_INCLUDE_NONE
@@ -10,24 +14,83 @@
 #include <GLFW/glfw3.h>
 #include <imgui.h>
 
+#include "camera.h"
 #include "context.h"
-#include "swapchain.h"
+#include "grid.h"
 #include "imgui_integration.h"
+#include "simple_cube.h"
+#include "swapchain.h"
 #include "wrappers.h"
 
+void KeyCallback(GLFWwindow* window, int key, int /*scancode*/, int /*action*/, int /*mods*/)
+{
+    Camera* camera = reinterpret_cast<Camera*>(glfwGetWindowUserPointer(window));
 
-#include "simple_triangle.h"
-
-void KeyCallback(GLFWwindow* window, int key, int /*scancode*/, int /*action*/, int /*mods*/) {
     switch (key) {
-        case GLFW_KEY_ESCAPE: {
-            glfwSetWindowShouldClose(window, GLFW_TRUE);
-            break;
+    case GLFW_KEY_ESCAPE: {
+        glfwSetWindowShouldClose(window, GLFW_TRUE);
+        break;
+    }
+    case GLFW_KEY_W:
+        camera->Forward();
+        break;
+    case GLFW_KEY_S:
+        camera->Back();
+        break;
+    case GLFW_KEY_A:
+        camera->Left();
+        break;
+    case GLFW_KEY_D:
+        camera->Right();
+        break;
+    }
+}
+
+void HandleJoystick(Camera* camera)
+{
+    if (glfwJoystickIsGamepad(GLFW_JOYSTICK_1)) {
+        GLFWgamepadstate state;
+        if (glfwGetGamepadState(GLFW_JOYSTICK_1, &state)) {
+            const float deltaTime = 0.016f; // or calculate frame delta
+            camera->ProcessControllerInput(state, deltaTime);
         }
     }
 }
 
-int main(int /*argc*/, char **/*argv*/) {
+void MouseCallback(GLFWwindow* window, double xposIn, double yposIn)
+{
+    static bool  firstMouse = true;
+    static float lastX      = 0.0f;
+    static float lastY      = 0.0f;
+
+    ImGui_ImplGlfw_CursorPosCallback(window, xposIn, yposIn);
+
+    Camera* camera = reinterpret_cast<Camera*>(glfwGetWindowUserPointer(window));
+
+    if (!ImGui::GetIO().WantCaptureMouse && glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS) {
+        float xpos = static_cast<float>(xposIn);
+        float ypos = static_cast<float>(yposIn);
+
+        if (firstMouse) {
+            lastX      = xpos;
+            lastY      = ypos;
+            firstMouse = false;
+        }
+
+        float xoffset = xpos - lastX;
+        float yoffset = ypos - lastY;
+
+        lastX = xpos;
+        lastY = ypos;
+
+        camera->ProcessMouseMovement(xoffset, yoffset);
+    } else {
+        firstMouse = true;
+    }
+}
+
+int main(int /*argc*/, char** /*argv*/)
+{
     if (glfwVulkanSupported()) {
         printf("Failed to look up minimal Vulkan loader/ICD\n!");
         return -1;
@@ -51,7 +114,7 @@ int main(int /*argc*/, char **/*argv*/) {
 
     std::vector<const char*> extensions(glfwExtensions, glfwExtensions + count);
 
-    Context    context("02_triangle", true);
+    Context    context("03_triangle_vertex", true);
     VkInstance instance = context.CreateInstance({}, extensions);
 
     // Create the window to render onto
@@ -59,11 +122,15 @@ int main(int /*argc*/, char **/*argv*/) {
     uint32_t    windowHeight = 800;
     GLFWwindow* window       = glfwCreateWindow(windowWidth, windowHeight, "02_triangle GLFW", NULL, NULL);
 
-    glfwSetWindowUserPointer(window, nullptr);
-    glfwSetKeyCallback(window, KeyCallback);
+    Camera camera({windowWidth, windowHeight}, 45.0f, 0.1f, 100.0f);
 
     IMGUIIntegration imIntegration;
     imIntegration.Init(window);
+
+    glfwSetWindowUserPointer(window, &camera);
+    glfwSetKeyCallback(window, KeyCallback);
+    glfwSetCursorPosCallback(window, MouseCallback);
+
 
     // We have the window, the instance, create a surface from the window to draw onto.
     // Create a Vulkan Surface using GLFW.
@@ -93,28 +160,41 @@ int main(int /*argc*/, char **/*argv*/) {
 
     imIntegration.CreateContext(context, swapchain);
 
-    SimpleTriangle triangle;
-    triangle.Create(context.device(), swapchain.format());
+    camera.CreateVK(context.device());
+
+    Texture depthTexture = Texture::Create2D(context.physicalDevice(), context.device(), VK_FORMAT_D32_SFLOAT,
+                                             swapchain.surfaceExtent(), VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT);
+
+    SimpleCube cube;
+    cube.Create(context, swapchain.format(), sizeof(Camera::CameraPushConstant));
+
+    Grid grid;
+    grid.Create(context, swapchain.format(), sizeof(Camera::CameraPushConstant), 4.0f, 4.0f, 2);
+    grid.position(glm::translate(glm::mat4(1.0f), glm::vec3(0.0f)));
+    grid.rotation(glm::rotate(glm::mat4(1.0f), glm::radians(90.0f), glm::vec3(1.0f, 0.0f, 0.0f)));
 
     glfwShowWindow(window);
 
     const VkViewport viewport = {
-        .x = 0,
-        .y = 0,
-        .width = (float)swapchain.surfaceExtent().width,
-        .height = (float)swapchain.surfaceExtent().height,
+        .x        = 0,
+        .y        = 0,
+        .width    = (float)swapchain.surfaceExtent().width,
+        .height   = (float)swapchain.surfaceExtent().height,
         .minDepth = 0.0f,
         .maxDepth = 1.0f,
     };
 
     const VkRect2D scissor = {
-        .offset = { 0, 0 },
+        .offset = {0, 0},
         .extent = swapchain.surfaceExtent(),
     };
 
     int32_t color = 0;
     while (!glfwWindowShouldClose(window)) {
         glfwPollEvents();
+        camera.Update();
+        HandleJoystick(&camera);
+
         {
             ImGuiIO& io = ImGui::GetIO();
             imIntegration.NewFrame();
@@ -123,17 +203,34 @@ int main(int /*argc*/, char **/*argv*/) {
             ImGui::ShowDemoWindow();
             ImGui::Begin("Info");
 
-            static bool colorAutoInc = true;
-            ImGui::Checkbox("Use auto increment", &colorAutoInc);
+            static int  rotationDegree[3] = {0, 0, 0};
+            static bool autoInc           = false;
 
-            if (colorAutoInc) {
-                color = (color + 1) % 255;
+            ImGui::Checkbox("Use auto increment", &autoInc);
+
+            if (autoInc) {
+                rotationDegree[0] = (rotationDegree[0] + 1) % 360;
+                rotationDegree[1] = (rotationDegree[1] + 1) % 360;
+                rotationDegree[2] = (rotationDegree[2] + 1) % 360;
             }
-
-            ImGui::SliderInt("Red value", &color, 0, 255);
+            ImGui::SliderInt3("Rotation", rotationDegree, 0, 360);
+            const glm::vec3& cameraPosition = camera.position();
+            ImGui::Text("Camera position x: %.3f y: %.3f z: %.3f", cameraPosition.x, cameraPosition.y,
+                        cameraPosition.z);
+            const glm::vec3& targetPosition = camera.lookAtPosition();
+            ImGui::Text("Target position x: %.3f y: %.3f z: %.3f", targetPosition.x, targetPosition.y,
+                        targetPosition.z);
             ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / io.Framerate, io.Framerate);
             ImGui::End();
             ImGui::Render();
+
+            // Hacked in rotation
+            glm::mat4 cubeRotation =
+                glm::rotate(glm::mat4(1.0f), glm::radians((float)rotationDegree[0]), glm::vec3(1.0f, 0.0f, 0.0f)) *
+                glm::rotate(glm::mat4(1.0f), glm::radians((float)rotationDegree[1]), glm::vec3(0.0f, 1.0f, 0.0f)) *
+                glm::rotate(glm::mat4(1.0f), glm::radians((float)rotationDegree[2]), glm::vec3(0.0f, 0.0f, 1.0f));
+
+            cube.rotation(cubeRotation);
         }
 
         // Get new image to render to
@@ -158,7 +255,7 @@ int main(int /*argc*/, char **/*argv*/) {
             swapchain.CmdTransitionToRender(cmdBuffer, swapchainImage, queueFamilyIdx);
 
             // Begin render commands
-            const VkClearValue clearColor = {{{color / 255.0f, 0.0f, 0.0f, 1.0f}}};
+            const VkClearValue                 clearColor      = {{{color / 255.0f, 0.0f, 0.0f, 1.0f}}};
             const VkRenderingAttachmentInfoKHR colorAttachment = {
                 .sType              = VK_STRUCTURE_TYPE_RENDERING_ATTACHMENT_INFO_KHR,
                 .pNext              = nullptr,
@@ -171,27 +268,39 @@ int main(int /*argc*/, char **/*argv*/) {
                 .storeOp            = VK_ATTACHMENT_STORE_OP_STORE,
                 .clearValue         = clearColor,
             };
+            const VkClearDepthStencilValue     depthClear      = {1.0f, 0u};
+            const VkRenderingAttachmentInfoKHR depthAttachment = {
+                .sType              = VK_STRUCTURE_TYPE_RENDERING_ATTACHMENT_INFO_KHR,
+                .pNext              = nullptr,
+                .imageView          = depthTexture.view(),
+                .imageLayout        = VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL,
+                .resolveMode        = VK_RESOLVE_MODE_NONE,
+                .resolveImageView   = VK_NULL_HANDLE,
+                .resolveImageLayout = VK_IMAGE_LAYOUT_UNDEFINED,
+                .loadOp             = VK_ATTACHMENT_LOAD_OP_CLEAR,
+                .storeOp            = VK_ATTACHMENT_STORE_OP_STORE,
+                .clearValue         = {.depthStencil = depthClear},
+            };
             const VkRenderingInfoKHR renderInfo = {
                 .sType                = VK_STRUCTURE_TYPE_RENDERING_INFO_KHR,
                 .pNext                = nullptr,
                 .flags                = 0,
-                .renderArea           = {
-                    .offset = {0, 0},
-                    .extent = {(uint32_t)windowWidth, (uint32_t)windowHeight}
-                },
+                .renderArea           = {.offset = {0, 0}, .extent = {(uint32_t)windowWidth, (uint32_t)windowHeight}},
                 .layerCount           = 1,
                 .viewMask             = 0,
                 .colorAttachmentCount = 1,
                 .pColorAttachments    = &colorAttachment,
-                .pDepthAttachment     = nullptr,
-                .pStencilAttachment   = nullptr
-            };
+                .pDepthAttachment     = &depthAttachment,
+                .pStencilAttachment   = nullptr};
             vkCmdBeginRendering(cmdBuffer, &renderInfo);
 
             vkCmdSetViewport(cmdBuffer, 0, 1, &viewport);
             vkCmdSetScissor(cmdBuffer, 0, 1, &scissor);
 
-            triangle.Draw(cmdBuffer);
+            camera.PushConstants(cmdBuffer);
+
+            grid.Draw(cmdBuffer);
+            cube.Draw(cmdBuffer);
 
             // Render things
             imIntegration.Draw(cmdBuffer);
@@ -224,6 +333,7 @@ int main(int /*argc*/, char **/*argv*/) {
         vkDeviceWaitIdle(device);
     }
 
+    depthTexture.Destroy(context.device());
     imIntegration.Destroy(context);
 
     vkDestroyFence(device, imageFence, nullptr);
@@ -231,7 +341,9 @@ int main(int /*argc*/, char **/*argv*/) {
 
     vkDestroyCommandPool(device, cmdPool, nullptr);
 
-    triangle.Destroy(device);
+    camera.Destroy(device);
+    grid.Destroy(device);
+    cube.Destroy(device);
     swapchain.Destroy();
     context.Destroy();
 
