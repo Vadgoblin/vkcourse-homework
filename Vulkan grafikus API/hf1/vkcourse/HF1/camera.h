@@ -27,6 +27,8 @@ public:
     void Back() { m_position -= CAMERA_SPEED * m_front; }
     void Left() { m_position -= glm::normalize(glm::cross(m_front, m_up)) * CAMERA_SPEED; }
     void Right() { m_position += glm::normalize(glm::cross(m_front, m_up)) * CAMERA_SPEED; }
+    void Up() { m_position -= CAMERA_SPEED * m_up; }
+    void Down() { m_position += CAMERA_SPEED * m_up; }
 
     void ProcessMouseMovement(float offsetX, float offsetY)
     {

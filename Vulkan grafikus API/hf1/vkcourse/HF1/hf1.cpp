@@ -173,6 +173,8 @@ int main(int /*argc*/, char** /*argv*/)
                                              swapchain.surfaceExtent(), VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT);
 
     SimpleCube cube;
+    cube.setPosition(0.0f, 0.45f,0.0f);
+    cube.setScale(1.0f,0.9f,1.0f);
     cube.Create(context, swapchain.format(), sizeof(Camera::CameraPushConstant));
 
     Grid grid;
@@ -210,17 +212,17 @@ int main(int /*argc*/, char** /*argv*/)
             ImGui::ShowDemoWindow();
             ImGui::Begin("Info");
 
-            static int  rotationDegree[3] = {0, 0, 0};
-            static bool autoInc           = false;
-
-            ImGui::Checkbox("Use auto increment", &autoInc);
-
-            if (autoInc) {
-                rotationDegree[0] = (rotationDegree[0] + 1) % 360;
-                rotationDegree[1] = (rotationDegree[1] + 1) % 360;
-                rotationDegree[2] = (rotationDegree[2] + 1) % 360;
-            }
-            ImGui::SliderInt3("Rotation", rotationDegree, 0, 360);
+            // static int  rotationDegree[3] = {0, 0, 0};
+            // static bool autoInc           = false;
+            //
+            // ImGui::Checkbox("Use auto increment", &autoInc);
+            //
+            // if (autoInc) {
+            //     rotationDegree[0] = (rotationDegree[0] + 1) % 360;
+            //     rotationDegree[1] = (rotationDegree[1] + 1) % 360;
+            //     rotationDegree[2] = (rotationDegree[2] + 1) % 360;
+            // }
+            // ImGui::SliderInt3("Rotation", rotationDegree, 0, 360);
             const glm::vec3& cameraPosition = camera.position();
             ImGui::Text("Camera position x: %.3f y: %.3f z: %.3f", cameraPosition.x, cameraPosition.y,
                         cameraPosition.z);
@@ -230,14 +232,6 @@ int main(int /*argc*/, char** /*argv*/)
             ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / io.Framerate, io.Framerate);
             ImGui::End();
             ImGui::Render();
-
-            // Hacked in rotation
-            glm::mat4 cubeRotation =
-                glm::rotate(glm::mat4(1.0f), glm::radians((float)rotationDegree[0]), glm::vec3(1.0f, 0.0f, 0.0f)) *
-                glm::rotate(glm::mat4(1.0f), glm::radians((float)rotationDegree[1]), glm::vec3(0.0f, 1.0f, 0.0f)) *
-                glm::rotate(glm::mat4(1.0f), glm::radians((float)rotationDegree[2]), glm::vec3(0.0f, 0.0f, 1.0f));
-
-            cube.rotation(cubeRotation);
         }
 
         // Get new image to render to

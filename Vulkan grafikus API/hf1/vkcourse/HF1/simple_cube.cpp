@@ -127,7 +127,7 @@ VkPipeline CreateSimplePipeline(const VkDevice         device,
         .flags                   = 0,
         .depthClampEnable        = VK_FALSE,
         .rasterizerDiscardEnable = VK_FALSE,
-        .polygonMode             = VK_POLYGON_MODE_FILL,
+        .polygonMode             = VK_POLYGON_MODE_LINE,
         .cullMode                = VK_CULL_MODE_NONE,
         .frontFace               = VK_FRONT_FACE_COUNTER_CLOCKWISE,
         .depthBiasEnable         = VK_FALSE,
@@ -312,8 +312,8 @@ void SimpleCube::Destroy(const VkDevice device)
 
 void SimpleCube::Draw(const VkCommandBuffer cmdBuffer)
 {
-    ModelPushConstant modelData = {
-        .model = glm::mat4(1.0f) * m_position * m_rotation,
+    const ModelPushConstant modelData = {
+        .model = m_position * m_rotation * m_scale,
     };
 
     vkCmdPushConstants(cmdBuffer, m_pipelineLayout, VK_SHADER_STAGE_VERTEX_BIT, m_constantOffset,
@@ -323,4 +323,13 @@ void SimpleCube::Draw(const VkCommandBuffer cmdBuffer)
     VkDeviceSize nullOffset = 0u;
     vkCmdBindVertexBuffers(cmdBuffer, 0u, 1u, &m_buffer.buffer, &nullOffset);
     vkCmdDraw(cmdBuffer, m_vertexCount, 1, 0, 0);
+}
+void SimpleCube::setScale(const float x, const float y, const float z)
+{
+    m_scale =  glm::scale(glm::mat4(1.0f), glm::vec3(x, y, z));
+}
+
+void SimpleCube::setPosition(const float x, const float y, const float z)
+{
+    m_position = glm::translate(glm::mat4(1.0f), glm::vec3(x, y, z));
 }

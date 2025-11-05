@@ -20,8 +20,8 @@ public:
     void     Destroy(const VkDevice device);
     void     Draw(const VkCommandBuffer cmdBuffer);
 
-    void position(const glm::mat4& position) { m_position = position; }
-    void rotation(const glm::mat4& rotation) { m_rotation = rotation; }
+    void setScale(float x, float y, float z);
+    void setPosition(float x, float y, float z);
 
 private:
     VkPipelineLayout m_pipelineLayout = VK_NULL_HANDLE;
@@ -29,6 +29,7 @@ private:
     uint32_t         m_constantOffset = 0;
     BufferInfo       m_buffer         = {};
     uint32_t         m_vertexCount    = 0;
+    glm::mat4        m_scale    = glm::mat4(1.0f);
     glm::mat4        m_position       = glm::mat4(1.0f);
     glm::mat4        m_rotation       = glm::mat4(1.0f);
 };

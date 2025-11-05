@@ -119,6 +119,9 @@ VkDevice Context::CreateDevice(const std::vector<const char*>& extensions)
         .pQueuePriorities   = queuePriority,
     };
 
+    VkPhysicalDeviceFeatures deviceFeatures{};
+    deviceFeatures.fillModeNonSolid = VK_TRUE;
+
     const VkDeviceCreateInfo createInfo = {
         .sType                      = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO,
         .pNext                      = &dynamicRendering,
@@ -129,7 +132,7 @@ VkDevice Context::CreateDevice(const std::vector<const char*>& extensions)
         .ppEnabledLayerNames        = nullptr,  // deprecated
         .enabledExtensionCount      = (uint32_t)finalExtensions.size(),
         .ppEnabledExtensionNames    = finalExtensions.data(),
-        .pEnabledFeatures           = nullptr,
+        .pEnabledFeatures = &deviceFeatures
     };
 
     VkResult result = vkCreateDevice(m_phyDevice, &createInfo, nullptr, &m_device);
