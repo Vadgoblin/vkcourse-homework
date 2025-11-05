@@ -51,47 +51,78 @@ public:
         return sign * std::pow(std::abs(value), power);
     };
 
-
     void ProcessControllerInput(const GLFWgamepadstate& state, float deltaTime) {
-        // Left stick controls movementm, Left trigger for speed boost
+        // Left stick controls movement, triggers control vertical movement
         float leftX = ApplyDeadzone(state.axes[GLFW_GAMEPAD_AXIS_LEFT_X]);
         float leftY = ApplyDeadzone(state.axes[GLFW_GAMEPAD_AXIS_LEFT_Y]);
 
+        // Triggers (0.0 to 1.0 range)
         float leftTrigger  = state.axes[GLFW_GAMEPAD_AXIS_LEFT_TRIGGER];
-        float speedMultiplier = std::pow(2 , (leftTrigger + 1) * 1.3);
+        float rightTrigger = state.axes[GLFW_GAMEPAD_AXIS_RIGHT_TRIGGER];
 
         glm::vec3 right = glm::normalize(glm::cross(m_front, m_up));
 
-        float joystick_camera_speed = CAMERA_SPEED * speedMultiplier * 50;
+        float joystick_camera_speed = CAMERA_SPEED * 50.0f;
+        float trigger_camera_speed = CAMERA_SPEED * 20.0f;
 
+        // Exponential movement curve for smoother response
+        m_position += -CurveInput(leftY, 1.5f) * joystick_camera_speed * deltaTime * m_front; // forward/back
+        m_position +=  CurveInput(leftX, 1.5f) * joystick_camera_speed * deltaTime * right;   // strafe
 
-        // Move forward/backward
-        m_position += -CurveInput(leftY, 1.5f) * joystick_camera_speed * deltaTime * m_front;
+        // --- Vertical movement via triggers ---
+        // Left trigger moves down, right trigger moves up
+        float vertical = leftTrigger - rightTrigger; // combine into one value (-1 to +1 range)
+        if (std::fabs(vertical) > 0.05f) { // small deadzone
+            m_position += CurveInput(vertical,1.8f) * trigger_camera_speed * deltaTime * m_up;
+        }
 
-        // Strafe left/right
-        m_position +=  CurveInput(leftX, 1.5f) * joystick_camera_speed * deltaTime * right;
+        // --- Right stick controls view (yaw/pitch) ---
+        float rightX = CurveInput(ApplyDeadzone(state.axes[GLFW_GAMEPAD_AXIS_RIGHT_X]), 1.8f);
+        float rightY = CurveInput(ApplyDeadzone(state.axes[GLFW_GAMEPAD_AXIS_RIGHT_Y]), 1.8f);
 
-        // // Move forward/backward
-        // m_position += -leftY * joystick_camera_speed * deltaTime * m_front;
-        //
-        // // Strafe left/right
-        // m_position += leftX * joystick_camera_speed * deltaTime * right;
+        const float controllerSensitivity = 100.0f * deltaTime;
 
-        // Right stick controls view (yaw/pitch)
-        float rightX = ApplyDeadzone(state.axes[GLFW_GAMEPAD_AXIS_RIGHT_X]);
-        float rightY = ApplyDeadzone(state.axes[GLFW_GAMEPAD_AXIS_RIGHT_Y]);
-
-        // Sensitivity scaling for controller
-        const float controllerSensitivity = 100.0f * deltaTime; // tweak this
-
-        m_yaw -= rightX * controllerSensitivity;
+        m_yaw   -= rightX * controllerSensitivity;
         m_pitch -= rightY * controllerSensitivity;
-
-        // Clamp pitch
         m_pitch = glm::clamp(m_pitch, -89.0f, 89.0f);
 
-        Update(); // update camera vectors
+        Update();
     }
+
+
+    // void ProcessControllerInput(const GLFWgamepadstate& state, float deltaTime) {
+    //     // Left stick controls movementm, Left trigger for speed boost
+    //     float leftX = ApplyDeadzone(state.axes[GLFW_GAMEPAD_AXIS_LEFT_X]);
+    //     float leftY = ApplyDeadzone(state.axes[GLFW_GAMEPAD_AXIS_LEFT_Y]);
+    //
+    //     glm::vec3 right = glm::normalize(glm::cross(m_front, m_up));
+    //     float joystick_camera_speed = CAMERA_SPEED  * 50;
+    //
+    //
+    //     // Move forward/backward
+    //     m_position += -CurveInput(leftY, 1.5f) * joystick_camera_speed * deltaTime * m_front;
+    //
+    //     // Strafe left/right
+    //     m_position +=  CurveInput(leftX, 1.5f) * joystick_camera_speed * deltaTime * right;
+    //
+    //
+    //
+    //
+    //     // Right stick controls view (yaw/pitch)
+    //     float rightX = CurveInput(ApplyDeadzone(state.axes[GLFW_GAMEPAD_AXIS_RIGHT_X]) ,1.8f);
+    //     float rightY = CurveInput(ApplyDeadzone(state.axes[GLFW_GAMEPAD_AXIS_RIGHT_Y]), 1.8f);
+    //
+    //     // Sensitivity scaling for controller
+    //     const float controllerSensitivity = 100.0f * deltaTime; // tweak this
+    //
+    //     m_yaw -= rightX * controllerSensitivity;
+    //     m_pitch -= rightY * controllerSensitivity;
+    //
+    //     // Clamp pitch
+    //     m_pitch = glm::clamp(m_pitch, -89.0f, 89.0f);
+    //
+    //     Update(); // update camera vectors
+    // }
 
 
     void Update()
