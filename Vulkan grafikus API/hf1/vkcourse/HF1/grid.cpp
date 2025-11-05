@@ -392,3 +392,8 @@ void Grid::Draw(const VkCommandBuffer cmdBuffer)
     vkCmdBindIndexBuffer(cmdBuffer, m_indexBuffer.buffer, 0, VK_INDEX_TYPE_UINT32);
     vkCmdDrawIndexed(cmdBuffer, m_vertexCount, 1, 0, 0, 0);
 }
+
+void Grid::setPosition(const float x, const float y, const float z)
+{
+    m_position = glm::translate(glm::mat4(1.0f), glm::vec3(x, y, z));
+}

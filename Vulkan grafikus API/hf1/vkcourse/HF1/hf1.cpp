@@ -178,9 +178,7 @@ int main(int /*argc*/, char** /*argv*/)
     cube.Create(context, swapchain.format(), sizeof(Camera::CameraPushConstant));
 
     Grid grid;
-    grid.Create(context, swapchain.format(), sizeof(Camera::CameraPushConstant), 4.0f, 4.0f, 2);
-    grid.position(glm::translate(glm::mat4(1.0f), glm::vec3(0.0f)));
-    grid.rotation(glm::rotate(glm::mat4(1.0f), glm::radians(90.0f), glm::vec3(1.0f, 0.0f, 0.0f)));
+    grid.Create(context, swapchain.format(), sizeof(Camera::CameraPushConstant), 8.0f, 8.0f, 2);
 
     glfwShowWindow(window);
 
