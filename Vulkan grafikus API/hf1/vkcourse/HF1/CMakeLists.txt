@@ -1,8 +1,8 @@
 add_executable(05_moving
         hf1.cpp
 
-    simple_cube.cpp
-    simple_cube.h
+        cube.cpp
+        cube.h
     grid.cpp
     grid.h
 )

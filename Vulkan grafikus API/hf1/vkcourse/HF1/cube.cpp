@@ -1,4 +1,4 @@
-#include "simple_cube.h"
+#include "cube.h"
 
 #include <cstdint>
 #include <cstring>

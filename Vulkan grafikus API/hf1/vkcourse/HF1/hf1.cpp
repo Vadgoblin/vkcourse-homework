@@ -16,9 +16,9 @@
 
 #include "camera.h"
 #include "context.h"
+#include "cube.h"
 #include "grid.h"
 #include "imgui_integration.h"
-#include "simple_cube.h"
 #include "swapchain.h"
 #include "wrappers.h"
 
