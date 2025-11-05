@@ -43,7 +43,14 @@ void KeyCallback(GLFWwindow* window, int key, int /*scancode*/, int /*action*/, 
     case GLFW_KEY_D:
         camera->Right();
         break;
+    case GLFW_KEY_Q:
+        camera->Down();
+        break;
+    case GLFW_KEY_E:
+        camera->Up();
+        break;
     }
+
 }
 
 void HandleJoystick(Camera* camera)
