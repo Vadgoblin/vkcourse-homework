@@ -5,6 +5,7 @@ add_executable(05_moving
         cube.h
     grid.cpp
     grid.h
+        cylinder.cpp
 )
 
 target_include_directories(05_moving

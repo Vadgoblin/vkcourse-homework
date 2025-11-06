@@ -17,6 +17,7 @@
 #include "camera.h"
 #include "context.h"
 #include "cube.h"
+#include "cylinder.h"
 #include "grid.h"
 #include "imgui_integration.h"
 #include "swapchain.h"
@@ -96,6 +97,26 @@ void MouseCallback(GLFWwindow* window, double xposIn, double yposIn)
     }
 }
 
+void RenderImGui(IMGUIIntegration imIntegration, const Camera& camera)
+{
+    ImGuiIO& io = ImGui::GetIO();
+    imIntegration.NewFrame();
+    ImGui::NewFrame();
+
+    ImGui::ShowDemoWindow();
+    ImGui::Begin("Info");
+
+    const glm::vec3& cameraPosition = camera.position();
+    ImGui::Text("Camera position x: %.3f y: %.3f z: %.3f", cameraPosition.x, cameraPosition.y,
+                cameraPosition.z);
+    const glm::vec3& targetPosition = camera.lookAtPosition();
+    ImGui::Text("Target position x: %.3f y: %.3f z: %.3f", targetPosition.x, targetPosition.y,
+                targetPosition.z);
+    ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / io.Framerate, io.Framerate);
+    ImGui::End();
+    ImGui::Render();
+}
+
 int main(int /*argc*/, char** /*argv*/)
 {
     if (glfwVulkanSupported()) {
@@ -172,10 +193,13 @@ int main(int /*argc*/, char** /*argv*/)
     Texture depthTexture = Texture::Create2D(context.physicalDevice(), context.device(), VK_FORMAT_D32_SFLOAT,
                                              swapchain.surfaceExtent(), VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT);
 
-    SimpleCube cube;
-    cube.setPosition(0.0f, 0.45f,0.0f);
+    Cube cube;
+    cube.setPosition(-10.0f, 0.45f,-10.0f);
     cube.setScale(1.0f,0.9f,1.0f);
     cube.Create(context, swapchain.format(), sizeof(Camera::CameraPushConstant));
+
+    Cylinder cylinder;
+    cylinder.Create(context, swapchain.format(), sizeof(Camera::CameraPushConstant));
 
     Grid grid;
     grid.Create(context, swapchain.format(), sizeof(Camera::CameraPushConstant), 8.0f, 8.0f, 2);
@@ -196,41 +220,13 @@ int main(int /*argc*/, char** /*argv*/)
         .extent = swapchain.surfaceExtent(),
     };
 
-    int32_t color = 0;
+    // int32_t color = 0;
     while (!glfwWindowShouldClose(window)) {
         glfwPollEvents();
         camera.Update();
         HandleJoystick(&camera);
 
-        {
-            ImGuiIO& io = ImGui::GetIO();
-            imIntegration.NewFrame();
-            ImGui::NewFrame();
-
-            ImGui::ShowDemoWindow();
-            ImGui::Begin("Info");
-
-            // static int  rotationDegree[3] = {0, 0, 0};
-            // static bool autoInc           = false;
-            //
-            // ImGui::Checkbox("Use auto increment", &autoInc);
-            //
-            // if (autoInc) {
-            //     rotationDegree[0] = (rotationDegree[0] + 1) % 360;
-            //     rotationDegree[1] = (rotationDegree[1] + 1) % 360;
-            //     rotationDegree[2] = (rotationDegree[2] + 1) % 360;
-            // }
-            // ImGui::SliderInt3("Rotation", rotationDegree, 0, 360);
-            const glm::vec3& cameraPosition = camera.position();
-            ImGui::Text("Camera position x: %.3f y: %.3f z: %.3f", cameraPosition.x, cameraPosition.y,
-                        cameraPosition.z);
-            const glm::vec3& targetPosition = camera.lookAtPosition();
-            ImGui::Text("Target position x: %.3f y: %.3f z: %.3f", targetPosition.x, targetPosition.y,
-                        targetPosition.z);
-            ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / io.Framerate, io.Framerate);
-            ImGui::End();
-            ImGui::Render();
-        }
+        RenderImGui(imIntegration, camera);
 
         // Get new image to render to
         vkResetFences(device, 1, &imageFence);
@@ -254,7 +250,7 @@ int main(int /*argc*/, char** /*argv*/)
             swapchain.CmdTransitionToRender(cmdBuffer, swapchainImage, queueFamilyIdx);
 
             // Begin render commands
-            const VkClearValue                 clearColor      = {{{color / 255.0f, 0.0f, 0.0f, 1.0f}}};
+            const VkClearValue                 clearColor      = {{{0.0f, 0.0f, 0.0f, 1.0f}}};
             const VkRenderingAttachmentInfoKHR colorAttachment = {
                 .sType              = VK_STRUCTURE_TYPE_RENDERING_ATTACHMENT_INFO_KHR,
                 .pNext              = nullptr,
@@ -300,6 +296,7 @@ int main(int /*argc*/, char** /*argv*/)
 
             grid.Draw(cmdBuffer);
             cube.Draw(cmdBuffer);
+            cylinder.Draw(cmdBuffer);
 
             // Render things
             imIntegration.Draw(cmdBuffer);
@@ -342,7 +339,7 @@ int main(int /*argc*/, char** /*argv*/)
 
     camera.Destroy(device);
     grid.Destroy(device);
-    cube.Destroy(device);
+    // cube.Destroy(device);
     swapchain.Destroy();
     context.Destroy();
 
