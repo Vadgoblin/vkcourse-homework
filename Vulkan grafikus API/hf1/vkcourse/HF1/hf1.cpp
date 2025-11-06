@@ -114,6 +114,15 @@ void RenderImGui(IMGUIIntegration imIntegration, const Camera& camera)
                 targetPosition.z);
     ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / io.Framerate, io.Framerate);
     ImGui::End();
+
+
+    // ImGui::Begin("Controls");
+    // ImGui::Text("w - forward");
+    // ImGui::Text("d - backward");
+    // ImGui::Text("a - left");
+    // ImGui::Text("d - right");
+    // ImGui::End();
+
     ImGui::Render();
 }
 
@@ -142,13 +151,13 @@ int main(int /*argc*/, char** /*argv*/)
 
     std::vector<const char*> extensions(glfwExtensions, glfwExtensions + count);
 
-    Context    context("03_triangle_vertex", true);
+    Context    context("vkcourse hf1", true);
     VkInstance instance = context.CreateInstance({}, extensions);
 
     // Create the window to render onto
     uint32_t    windowWidth  = 1024;
     uint32_t    windowHeight = 800;
-    GLFWwindow* window       = glfwCreateWindow(windowWidth, windowHeight, "02_triangle GLFW", NULL, NULL);
+    GLFWwindow* window       = glfwCreateWindow(windowWidth, windowHeight, "hf1 - h257398", NULL, NULL);
 
     Camera camera({windowWidth, windowHeight}, 45.0f, 0.1f, 100.0f);
 

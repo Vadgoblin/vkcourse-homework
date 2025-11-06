@@ -1,24 +1,24 @@
-add_executable(05_moving
+add_executable(hf1
         hf1.cpp
 
         cube.cpp
         cube.h
-    grid.cpp
-    grid.h
+        grid.cpp
+        grid.h
         cylinder.cpp
         PipelineUtils.h
         PipelineUtils.cpp
 )
 
-target_include_directories(05_moving
+target_include_directories(hf1
     PRIVATE ${Vulkan_INCLUDE_DIRS} ${glfw_INCLUDE_DIRS} ${EXTERNALS_BUILD_DIR}
 )
 
-target_link_libraries(05_moving
+target_link_libraries(hf1
     PRIVATE glfw Vulkan::Vulkan imgui vkcourse
 )
 
-add_shaders(05_moving
+add_shaders(hf1
     triangle_in.vert SPV_triangle_in_vert
     triangle_in.frag SPV_triangle_in_frag
     grid.vert SPV_grid_vert

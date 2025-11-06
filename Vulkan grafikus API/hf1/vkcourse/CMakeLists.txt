@@ -41,10 +41,4 @@ if(NOT WIN32)
 endif()
 
 add_subdirectory(lib)
-
-#add_subdir(lib)
-#add_subdirectory(01_window)
-#add_subdirectory(02_triangle)
-#add_subdirectory(03_triangle_vertex)
-#add_subdirectory(04_cube)
 add_subdirectory(HF1)
