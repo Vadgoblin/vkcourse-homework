@@ -8,6 +8,8 @@ add_executable(hf1
         cylinder.cpp
         PipelineUtils.h
         PipelineUtils.cpp
+        primitives/BasePrimitive.h
+        primitives/BasePrimitive.cpp
 )
 
 target_include_directories(hf1

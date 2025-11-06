@@ -92,6 +92,7 @@ void Cube::Draw(const VkCommandBuffer cmdBuffer)
     vkCmdBindVertexBuffers(cmdBuffer, 0u, 1u, &m_buffer.buffer, &nullOffset);
     vkCmdDraw(cmdBuffer, m_vertexCount, 1, 0, 0);
 }
+
 void Cube::setScale(const float x, const float y, const float z)
 {
     m_scale =  glm::scale(glm::mat4(1.0f), glm::vec3(x, y, z));
