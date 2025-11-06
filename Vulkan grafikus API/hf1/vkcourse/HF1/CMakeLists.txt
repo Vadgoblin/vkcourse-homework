@@ -6,6 +6,8 @@ add_executable(05_moving
     grid.cpp
     grid.h
         cylinder.cpp
+        PipelineUtils.h
+        PipelineUtils.cpp
 )
 
 target_include_directories(05_moving
