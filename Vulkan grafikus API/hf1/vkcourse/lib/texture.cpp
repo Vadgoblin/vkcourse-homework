@@ -46,61 +46,6 @@ VkImageView Create2DImageView(
     return view;
 }
 
-/*
-ImageInfo Texture::Create2DImage(
-    const VkPhysicalDevice  phyDevice,
-    const VkDevice          device,
-    uint32_t                width,
-    uint32_t                height,
-    VkFormat                format,
-    VkImageUsageFlags       usage) {
-
-    VkImageCreateInfo createInfo = {
-        .sType                  = VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO,
-        .pNext                  = nullptr,
-        .flags                  = 0,
-        .imageType              = VK_IMAGE_TYPE_2D,
-        .format                 = format,
-        .extent                 = { width, height, 1 },
-        .mipLevels              = 1,
-        .arrayLayers            = 1,
-        .samples                = VK_SAMPLE_COUNT_1_BIT,
-        .tiling                 = VK_IMAGE_TILING_OPTIMAL,
-        .usage                  = usage,
-        .sharingMode            = VK_SHARING_MODE_EXCLUSIVE,
-        .queueFamilyIndexCount  = 0,
-        .pQueueFamilyIndices    = nullptr,
-        .initialLayout          = VK_IMAGE_LAYOUT_UNDEFINED,
-    };
-
-    ImageInfo result = { format, width, height, 0, VK_NULL_HANDLE, VK_NULL_HANDLE };
-    VkResult createResult = vkCreateImage(device, &createInfo, nullptr, &result.image);
-    (void)createResult; // TODO: error check
-
-    // Memory
-    VkMemoryRequirements requirements = {};
-    vkGetImageMemoryRequirements(device, result.image, &requirements);
-
-    const uint32_t memoryTypeIdx = FindMemoryTypeIndex(phyDevice, requirements, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT);
-    // TODO: check for error
-
-    VkMemoryAllocateInfo allocInfo = {
-        .sType           = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO,
-        .pNext           = 0,
-        .allocationSize  = requirements.size,
-        .memoryTypeIndex = memoryTypeIdx,
-    };
-
-    vkAllocateMemory(device, &allocInfo, nullptr, &result.memory);
-
-    vkBindImageMemory(device, result.image, result.memory, 0);
-
-
-    return result;
-}
-
-*/
-
 static uint32_t FindMemoryTypeIndex(const VkPhysicalDevice phyDevice, const VkMemoryRequirements& requirements, VkMemoryPropertyFlags flags) {
     VkPhysicalDeviceMemoryProperties memoryProperties = {};
     vkGetPhysicalDeviceMemoryProperties(phyDevice, &memoryProperties);
@@ -136,50 +81,6 @@ bool Texture::InitFromBuffer(
 
     return true;
 }
-
-/*
-Texture *Texture::LoadFromData(
-    const VkPhysicalDevice  phyDevice,
-    const VkDevice          device,
-    const VkQueue           queue,
-    const VkCommandPool     cmdPool,
-    const std::string&      path,
-    const VkFormat          format,
-    VkImageUsageFlags       usage) {
-
-    struct Resource rs = GetResource(path.c_str());
-
-    if (rs.data == nullptr) {
-        printf("[ERROR] Resource: '%s' not found\n", path.c_str());
-        return nullptr;
-    }
-
-    int32_t width = 0;
-    int32_t height = 0;
-    int32_t channels = 0;
-
-    uint8_t *data = stbi_load_from_memory(rs.data, rs.size, &width, &height, &channels, 4);
-    if (!data) {
-        return nullptr;
-    }
-
-    printf("Loaded (rs) image: %s (%dx%d)\n", path.c_str(), width, height);
-
-    // 2) Upload image data to a staging buffer
-    const uint32_t rawSize = width * height * 4;
-    BufferInfo rawBuffer = BufferInfo::Create(phyDevice, device, rawSize, VK_BUFFER_USAGE_TRANSFER_SRC_BIT);
-    rawBuffer.Update(device, data, rawSize);
-
-    stbi_image_free(data);
-
-    Texture *texture = new Texture(format, width, height);
-    texture->InitFromBuffer(phyDevice, device, queue, cmdPool, usage, rawBuffer.buffer);
-
-    rawBuffer.Destroy(device);
-
-    return texture;
-}
-*/
 
 Texture *Texture::LoadFromFile(
     const VkPhysicalDevice  phyDevice,
@@ -242,7 +143,9 @@ Texture Texture::Create2D(
 
     if ((usage & requiresView) != 0) {
         texture.m_view = Create2DImageView(device, texture.m_format, texture.m_image);
-        texture.Create2DSampler(device);
+        if ((usage & VK_IMAGE_USAGE_SAMPLED_BIT) != 0) {
+            texture.Create2DSampler(device);
+        }
     }
 
     return texture;
@@ -266,7 +169,7 @@ VkResult Texture::CreateImage(
         .arrayLayers            = 1,
         .samples                = msaaSamples,
         .tiling                 = VK_IMAGE_TILING_OPTIMAL,
-        .usage                  = VK_IMAGE_USAGE_TRANSFER_DST_BIT | usage,
+        .usage                  = usage, //VK_IMAGE_USAGE_TRANSFER_DST_BIT |
         .sharingMode            = VK_SHARING_MODE_EXCLUSIVE,
         .queueFamilyIndexCount  = 0,
         .pQueueFamilyIndices    = nullptr,

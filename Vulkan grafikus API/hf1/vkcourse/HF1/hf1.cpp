@@ -148,6 +148,29 @@ void RenderImGui(IMGUIIntegration imIntegration, const Camera& camera)
     ImGui::Render();
 }
 
+VkSampleCountFlagBits getHighestSupportedSampleCount(VkPhysicalDevice phyDevice)
+{
+    VkPhysicalDeviceProperties properties;
+    vkGetPhysicalDeviceProperties(phyDevice, &properties);
+
+    VkSampleCountFlags counts = properties.limits.framebufferColorSampleCounts &
+                                properties.limits.framebufferDepthSampleCounts;
+
+    VkSampleCountFlagBits msaaSamples;
+    // Find the highest supported count (e.g., 8x, 4x, 2x)
+    if (counts & VK_SAMPLE_COUNT_8_BIT) {
+        msaaSamples = VK_SAMPLE_COUNT_8_BIT;
+    } else if (counts & VK_SAMPLE_COUNT_4_BIT) {
+        msaaSamples = VK_SAMPLE_COUNT_4_BIT;
+    } else if (counts & VK_SAMPLE_COUNT_2_BIT) {
+        msaaSamples = VK_SAMPLE_COUNT_2_BIT;
+    } else {
+        msaaSamples = VK_SAMPLE_COUNT_1_BIT; // No MSAA
+    }
+
+    return msaaSamples;
+}
+
 int main(int /*argc*/, char** /*argv*/)
 {
     if (glfwVulkanSupported()) {
@@ -205,6 +228,8 @@ int main(int /*argc*/, char** /*argv*/)
     uint32_t         queueFamilyIdx = context.queueFamilyIdx();
     VkQueue          queue          = context.queue();
 
+    VkSampleCountFlagBits  msaaSamples = getHighestSupportedSampleCount(phyDevice);
+
     Swapchain swapchain(instance, phyDevice, device, surface, {windowWidth, windowHeight});
     VkResult  swapchainCreated = swapchain.Create();
     assert(swapchainCreated == VK_SUCCESS);
@@ -222,7 +247,12 @@ int main(int /*argc*/, char** /*argv*/)
     camera.CreateVK(context.device());
 
     Texture depthTexture = Texture::Create2D(context.physicalDevice(), context.device(), VK_FORMAT_D32_SFLOAT,
-                                             swapchain.surfaceExtent(), VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT);
+                                             swapchain.surfaceExtent(), VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT, msaaSamples);
+
+    Texture msaaColorTexture = Texture::Create2D(context.physicalDevice(), context.device(), swapchain.format(),
+                                             swapchain.surfaceExtent(),
+                                             VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT | VK_IMAGE_USAGE_TRANSIENT_ATTACHMENT_BIT,
+                                             msaaSamples);
 
     Cube cube(true);
     cube.setPosition(0.0f, 0.45f,0.0f);
@@ -287,11 +317,11 @@ int main(int /*argc*/, char** /*argv*/)
             const VkRenderingAttachmentInfoKHR colorAttachment = {
                 .sType              = VK_STRUCTURE_TYPE_RENDERING_ATTACHMENT_INFO_KHR,
                 .pNext              = nullptr,
-                .imageView          = swapchainImage.view,
+                .imageView          = msaaColorTexture.view(),
                 .imageLayout        = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL,
-                .resolveMode        = VK_RESOLVE_MODE_NONE,
-                .resolveImageView   = VK_NULL_HANDLE,
-                .resolveImageLayout = VK_IMAGE_LAYOUT_UNDEFINED,
+                .resolveMode        = VK_RESOLVE_MODE_AVERAGE_BIT,
+                .resolveImageView   = swapchainImage.view,
+                .resolveImageLayout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL,
                 .loadOp             = VK_ATTACHMENT_LOAD_OP_CLEAR,
                 .storeOp            = VK_ATTACHMENT_STORE_OP_STORE,
                 .clearValue         = clearColor,

@@ -50,6 +50,7 @@ protected:
     VkResult             CreateVkSwapchain();
     std::vector<VkImage> GetVkSwapchainImages();
     VkResult             CreateImageResources(const std::vector<VkImage>& images);
+    VkResult             CreateMsaaColorResources();
 
     const VkInstance&       m_instance;
     const VkPhysicalDevice& m_phyDevice;

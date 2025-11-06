@@ -2,6 +2,7 @@
 #include <cassert>
 #include <vector>
 
+
 VkPipelineLayout CreateEmptyPipelineLayout(const VkDevice device, uint32_t pushConstantSize = 0)
 {
     const VkPushConstantRange pushConstantRange = {
@@ -125,7 +126,7 @@ VkPipeline CreateSimplePipeline(const VkDevice         device,
         .sType                 = VK_STRUCTURE_TYPE_PIPELINE_MULTISAMPLE_STATE_CREATE_INFO,
         .pNext                 = nullptr,
         .flags                 = 0,
-        .rasterizationSamples  = VK_SAMPLE_COUNT_1_BIT,
+        .rasterizationSamples  = VK_SAMPLE_COUNT_8_BIT, //!
         .sampleShadingEnable   = VK_FALSE,
         .minSampleShading      = 0.0f,
         .pSampleMask           = nullptr,
