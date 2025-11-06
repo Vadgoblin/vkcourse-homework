@@ -14,7 +14,7 @@ public:
         glm::mat4 model;
     };
 
-    Cylinder();
+    Cylinder(float baseRadius, float topRadius, float height, int sectorCount, int stackCount, bool wireframe = false);
 
     VkResult Create(const Context& context, const VkFormat colorFormat, const uint32_t pushConstantStart);
     void     Destroy(const VkDevice device);
@@ -27,11 +27,13 @@ private:
     VkPipelineLayout m_pipelineLayout = VK_NULL_HANDLE;
     VkPipeline       m_pipeline       = VK_NULL_HANDLE;
     uint32_t         m_constantOffset = 0;
-    // BufferInfo       m_buffer         = {};
     BufferInfo       m_vertexBuffer   = {};
-    BufferInfo       m_indexBuffer   = {};
+    BufferInfo       m_indexBuffer    = {};
     uint32_t         m_vertexCount    = 0;
-    glm::mat4        m_scale    = glm::mat4(1.0f);
+    glm::mat4        m_scale          = glm::mat4(1.0f);
     glm::mat4        m_position       = glm::mat4(1.0f);
     glm::mat4        m_rotation       = glm::mat4(1.0f);
+    bool wireframe;
+    float baseRadius, topRadius, height;
+    int sectorCount, stackCount;
 };

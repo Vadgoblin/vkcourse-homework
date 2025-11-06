@@ -13,13 +13,6 @@ namespace {
 #include "triangle_in.frag_include.h"
 #include "triangle_in.vert_include.h"
 
-static constexpr float g_cubeVertices[] = {
-#include "04_cube_vertices.inc"
-};
-static constexpr size_t g_cubePerVertexItemCount = 5;
-static constexpr size_t g_cubeVertexSize         = sizeof(float) * g_cubePerVertexItemCount;
-static constexpr size_t g_cubeVertexCount        = sizeof(g_cubeVertices) / g_cubeVertexSize;
-
 
 // Generate a cylinder mesh (smooth) with base radius, top radius (for truncated),
 // height, number of sectors (slices around) and stacks (segments along height).
@@ -331,10 +324,21 @@ VkPipeline CreateSimplePipeline(const VkDevice         device,
 
 } // anonymous namespace
 
-Cylinder::Cylinder()
+Cylinder::Cylinder(float baseRadius,
+                   float topRadius,
+                   float height,
+                   int sectorCount,
+                   int stackCount,
+                   bool wireframe)
     : m_pipelineLayout(VK_NULL_HANDLE)
     , m_pipeline(VK_NULL_HANDLE)
 {
+    this->baseRadius = baseRadius;
+    this->topRadius = topRadius;
+    this->height = height;
+    this->sectorCount = sectorCount;
+    this->stackCount = stackCount;
+    this->wireframe = wireframe;
 }
 
 VkResult Cylinder::Create(const Context& context, const VkFormat colorFormat, const uint32_t pushConstantStart)
@@ -356,7 +360,7 @@ VkResult Cylinder::Create(const Context& context, const VkFormat colorFormat, co
     std::vector<float> texCoords;
     std::vector<unsigned int> indices;
 
-    buildCylinder(2,2,10,300,100, vertexData,normals,texCoords,indices);
+    buildCylinder(this->baseRadius,this->topRadius,this->height,this->sectorCount,this->stackCount, vertexData,normals,texCoords,indices);
     m_vertexCount = static_cast<uint32_t>(indices.size());
 
     const uint32_t vertexDataSize = vertexData.size() * sizeof(float);
