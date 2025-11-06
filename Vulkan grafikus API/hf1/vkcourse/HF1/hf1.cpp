@@ -51,7 +51,6 @@ void KeyCallback(GLFWwindow* window, int key, int /*scancode*/, int /*action*/, 
         camera->Up();
         break;
     }
-
 }
 
 void HandleJoystick(Camera* camera)
@@ -100,12 +99,15 @@ void MouseCallback(GLFWwindow* window, double xposIn, double yposIn)
 void RenderImGui(IMGUIIntegration imIntegration, const Camera& camera)
 {
     ImGuiIO& io = ImGui::GetIO();
+    ImGui::GetIO().IniFilename = nullptr;
     imIntegration.NewFrame();
     ImGui::NewFrame();
 
-    ImGui::ShowDemoWindow();
-    ImGui::Begin("Info");
+    // ImGui::ShowDemoWindow();
 
+    ImGui::SetNextWindowPos(ImVec2(15, 20), ImGuiCond_FirstUseEver);
+    ImGui::SetNextWindowSize(ImVec2(358, 87), ImGuiCond_FirstUseEver);
+    ImGui::Begin("Info");
     const glm::vec3& cameraPosition = camera.position();
     ImGui::Text("Camera position x: %.3f y: %.3f z: %.3f", cameraPosition.x, cameraPosition.y,
                 cameraPosition.z);
@@ -116,12 +118,32 @@ void RenderImGui(IMGUIIntegration imIntegration, const Camera& camera)
     ImGui::End();
 
 
-    // ImGui::Begin("Controls");
-    // ImGui::Text("w - forward");
-    // ImGui::Text("d - backward");
-    // ImGui::Text("a - left");
-    // ImGui::Text("d - right");
-    // ImGui::End();
+    ImGui::SetNextWindowPos(ImVec2(15, 115), ImGuiCond_FirstUseEver);
+    ImGui::SetNextWindowSize(ImVec2(224, 209), ImGuiCond_FirstUseEver);
+    ImGui::Begin("Controls:");
+    ImGui::Text("Movement control:");
+    ImGui::Text("w - forward");
+    ImGui::Text("d - backward");
+    ImGui::Text("a - left");
+    ImGui::Text("d - right");
+    ImGui::Text("q - down");
+    ImGui::Text("e - up");
+    ImGui::Text(" ");
+    ImGui::Text("Camera control:");
+    ImGui::Text("mouse left click");
+    ImGui::End();
+
+    ImGui::SetNextWindowPos(ImVec2(15, 332), ImGuiCond_FirstUseEver);
+    ImGui::SetNextWindowSize(ImVec2(187, 158), ImGuiCond_FirstUseEver);
+    ImGui::Begin("Controls (controller):");
+    ImGui::Text("Movement control:");
+    ImGui::Text("Left Stick");
+    ImGui::Text("Left Trigger - down");
+    ImGui::Text("Right Trigger - up");
+    ImGui::Text(" ");
+    ImGui::Text("Camera control:");
+    ImGui::Text("Right Strick");
+    ImGui::End();
 
     ImGui::Render();
 }
