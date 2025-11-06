@@ -177,8 +177,6 @@ bool Context::FindQueueFamily(const VkPhysicalDevice phyDevice, const VkSurfaceK
 
 void Context::SetSampleCountFlagBits()
 {
-    m_SampleCountFlagBits = VK_SAMPLE_COUNT_8_BIT;
-    return;
     VkPhysicalDeviceProperties properties;
     vkGetPhysicalDeviceProperties(m_phyDevice, &properties);
 
