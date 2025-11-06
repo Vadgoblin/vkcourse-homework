@@ -26,9 +26,11 @@ public:
     VkDevice         device() const { return m_device; }
     uint32_t         queueFamilyIdx() const { return m_queueFamilyIdx; }
     VkQueue          queue() const { return m_queue; }
+    VkSampleCountFlagBits sampleCountFlagBits() const {return m_SampleCountFlagBits;};
 
 protected:
     bool FindQueueFamily(const VkPhysicalDevice phyDevice, const VkSurfaceKHR surface, uint32_t* outQueueFamilyIdx);
+    void SetSampleCountFlagBits();
 
     const std::string m_appName;
     const bool        m_useValidation;
@@ -38,4 +40,5 @@ protected:
     VkDevice         m_device         = VK_NULL_HANDLE;
     uint32_t         m_queueFamilyIdx = -1;
     VkQueue          m_queue          = VK_NULL_HANDLE;
+    VkSampleCountFlagBits m_SampleCountFlagBits = static_cast<VkSampleCountFlagBits>(0);
 };

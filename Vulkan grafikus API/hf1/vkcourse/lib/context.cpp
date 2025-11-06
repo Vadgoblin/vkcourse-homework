@@ -82,6 +82,7 @@ VkPhysicalDevice Context::SelectPhysicalDevice(const VkSurfaceKHR surface)
     for (const VkPhysicalDevice& phyDevice : devices) {
         if (FindQueueFamily(phyDevice, surface, &m_queueFamilyIdx)) {
             m_phyDevice = phyDevice;
+            SetSampleCountFlagBits();
             return m_phyDevice;
         }
     }
@@ -91,49 +92,47 @@ VkPhysicalDevice Context::SelectPhysicalDevice(const VkSurfaceKHR surface)
 
 VkDevice Context::CreateDevice(const std::vector<const char*>& extensions)
 {
-    const std::vector<const char *> swapchainExtensions = { VK_KHR_SWAPCHAIN_EXTENSION_NAME };
+    const std::vector<const char*> swapchainExtensions = {VK_KHR_SWAPCHAIN_EXTENSION_NAME};
 
-    std::vector<const char *> finalExtensions = extensions;
+    std::vector<const char*> finalExtensions = extensions;
     finalExtensions.insert(finalExtensions.end(), swapchainExtensions.begin(), swapchainExtensions.end());
 
     VkPhysicalDeviceSynchronization2Features syncFeatures = {
-        .sType              = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SYNCHRONIZATION_2_FEATURES,
-        .pNext              = nullptr,
-        .synchronization2   = VK_TRUE,
+        .sType            = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SYNCHRONIZATION_2_FEATURES,
+        .pNext            = nullptr,
+        .synchronization2 = VK_TRUE,
     };
 
     VkPhysicalDeviceDynamicRenderingFeaturesKHR dynamicRendering = {
-        .sType              = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_DYNAMIC_RENDERING_FEATURES,
-        .pNext              = &syncFeatures,
-        .dynamicRendering   = VK_TRUE,
+        .sType            = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_DYNAMIC_RENDERING_FEATURES,
+        .pNext            = &syncFeatures,
+        .dynamicRendering = VK_TRUE,
     };
 
-    const float queuePriority[1] = { 1.0f };
+    const float queuePriority[1] = {1.0f};
 
     const VkDeviceQueueCreateInfo queueInfo = {
-        .sType              = VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO,
-        .pNext              = nullptr,
-        .flags              = 0,
-        .queueFamilyIndex   = m_queueFamilyIdx,
-        .queueCount         = 1,
-        .pQueuePriorities   = queuePriority,
+        .sType            = VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO,
+        .pNext            = nullptr,
+        .flags            = 0,
+        .queueFamilyIndex = m_queueFamilyIdx,
+        .queueCount       = 1,
+        .pQueuePriorities = queuePriority,
     };
 
     VkPhysicalDeviceFeatures deviceFeatures{};
     deviceFeatures.fillModeNonSolid = VK_TRUE;
 
-    const VkDeviceCreateInfo createInfo = {
-        .sType                      = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO,
-        .pNext                      = &dynamicRendering,
-        .flags                      = 0,
-        .queueCreateInfoCount       = 1,
-        .pQueueCreateInfos          = &queueInfo,
-        .enabledLayerCount          = 0,        // deprecated
-        .ppEnabledLayerNames        = nullptr,  // deprecated
-        .enabledExtensionCount      = (uint32_t)finalExtensions.size(),
-        .ppEnabledExtensionNames    = finalExtensions.data(),
-        .pEnabledFeatures = &deviceFeatures
-    };
+    const VkDeviceCreateInfo createInfo = {.sType                   = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO,
+                                           .pNext                   = &dynamicRendering,
+                                           .flags                   = 0,
+                                           .queueCreateInfoCount    = 1,
+                                           .pQueueCreateInfos       = &queueInfo,
+                                           .enabledLayerCount       = 0,       // deprecated
+                                           .ppEnabledLayerNames     = nullptr, // deprecated
+                                           .enabledExtensionCount   = (uint32_t)finalExtensions.size(),
+                                           .ppEnabledExtensionNames = finalExtensions.data(),
+                                           .pEnabledFeatures        = &deviceFeatures};
 
     VkResult result = vkCreateDevice(m_phyDevice, &createInfo, nullptr, &m_device);
     assert((result == VK_SUCCESS) && "VkDevice creation failed");
@@ -142,7 +141,6 @@ VkDevice Context::CreateDevice(const std::vector<const char*>& extensions)
 
     return m_device;
 }
-
 
 void Context::Destroy()
 {
@@ -175,4 +173,26 @@ bool Context::FindQueueFamily(const VkPhysicalDevice phyDevice, const VkSurfaceK
     }
 
     return false;
+}
+
+void Context::SetSampleCountFlagBits()
+{
+    m_SampleCountFlagBits = VK_SAMPLE_COUNT_8_BIT;
+    return;
+    VkPhysicalDeviceProperties properties;
+    vkGetPhysicalDeviceProperties(m_phyDevice, &properties);
+
+    const VkSampleCountFlags counts = properties.limits.framebufferColorSampleCounts &
+                                properties.limits.framebufferDepthSampleCounts;
+
+    // Find the highest supported count (e.g., 8x, 4x, 2x)
+    if (counts & VK_SAMPLE_COUNT_8_BIT) {
+        m_SampleCountFlagBits = VK_SAMPLE_COUNT_8_BIT;
+    } else if (counts & VK_SAMPLE_COUNT_4_BIT) {
+        m_SampleCountFlagBits = VK_SAMPLE_COUNT_4_BIT;
+    } else if (counts & VK_SAMPLE_COUNT_2_BIT) {
+        m_SampleCountFlagBits = VK_SAMPLE_COUNT_2_BIT;
+    } else {
+        m_SampleCountFlagBits = VK_SAMPLE_COUNT_1_BIT; // No MSAA
+    }
 }

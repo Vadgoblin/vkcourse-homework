@@ -51,7 +51,7 @@ bool IMGUIIntegration::CreateContext(const Context& context, const Swapchain& sw
         .RenderPass          = VK_NULL_HANDLE,
         .MinImageCount       = 2,
         .ImageCount          = 2,
-        .MSAASamples         = VK_SAMPLE_COUNT_8_BIT,
+        .MSAASamples         = context.sampleCountFlagBits(),
         .PipelineCache       = VK_NULL_HANDLE,
         .Subpass             = 0,
         .UseDynamicRendering = true,

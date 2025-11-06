@@ -33,6 +33,7 @@ VkPipeline CreateSimplePipeline(const VkDevice         device,
                                 const VkPipelineLayout pipelineLayout,
                                 const VkShaderModule   shaderVertex,
                                 const VkShaderModule   shaderFragment,
+                                const VkSampleCountFlagBits vkSampleCountFlagBits,
                                 bool                   wireframe)
 {
     // shader stages
@@ -126,7 +127,7 @@ VkPipeline CreateSimplePipeline(const VkDevice         device,
         .sType                 = VK_STRUCTURE_TYPE_PIPELINE_MULTISAMPLE_STATE_CREATE_INFO,
         .pNext                 = nullptr,
         .flags                 = 0,
-        .rasterizationSamples  = VK_SAMPLE_COUNT_8_BIT, //!
+        .rasterizationSamples  = vkSampleCountFlagBits,
         .sampleShadingEnable   = VK_FALSE,
         .minSampleShading      = 0.0f,
         .pSampleMask           = nullptr,
