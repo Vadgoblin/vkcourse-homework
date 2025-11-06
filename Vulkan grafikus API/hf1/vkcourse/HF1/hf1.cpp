@@ -227,6 +227,7 @@ int main(int /*argc*/, char** /*argv*/)
     Cube cube(true);
     cube.setPosition(0.0f, 0.45f,0.0f);
     cube.setScale(1.0f,0.9f,1.0f);
+    cube.setRotation(15.0f,0.0f,0.0f);
     cube.Create(context, swapchain.format(), sizeof(Camera::CameraPushConstant));
 
     Cylinder cylinder(0.2, 0.2, 1, 25, 2, true);
@@ -371,7 +372,7 @@ int main(int /*argc*/, char** /*argv*/)
 
     camera.Destroy(device);
     grid.Destroy(device);
-    // cube.Destroy(device);
+    cube.Destroy(device);
     swapchain.Destroy();
     context.Destroy();
 

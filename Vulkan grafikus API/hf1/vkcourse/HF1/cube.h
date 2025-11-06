@@ -22,6 +22,7 @@ public:
 
     void setScale(float x, float y, float z);
     void setPosition(float x, float y, float z);
+    void setRotation(float rx, float ry, float rz);
 
 private:
     VkPipelineLayout m_pipelineLayout = VK_NULL_HANDLE;
