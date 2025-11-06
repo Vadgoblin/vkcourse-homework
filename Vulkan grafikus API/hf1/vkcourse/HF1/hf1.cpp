@@ -224,13 +224,14 @@ int main(int /*argc*/, char** /*argv*/)
     Texture depthTexture = Texture::Create2D(context.physicalDevice(), context.device(), VK_FORMAT_D32_SFLOAT,
                                              swapchain.surfaceExtent(), VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT);
 
-    Cube cube;
-    cube.setPosition(-10.0f, 0.45f,-10.0f);
+    Cube cube(true);
+    cube.setPosition(0.0f, 0.45f,0.0f);
     cube.setScale(1.0f,0.9f,1.0f);
     cube.Create(context, swapchain.format(), sizeof(Camera::CameraPushConstant));
 
-    Cylinder* cylinder = new Cylinder(2, 2, 5, 5, 2, true);
-    cylinder->Create(context, swapchain.format(), sizeof(Camera::CameraPushConstant));
+    Cylinder cylinder(0.2, 0.2, 1, 25, 2, true);
+    cylinder.setPosition(0.0f, 1.0f,0.0f);
+    cylinder.Create(context, swapchain.format(), sizeof(Camera::CameraPushConstant));
 
     Grid grid;
     grid.Create(context, swapchain.format(), sizeof(Camera::CameraPushConstant), 8.0f, 8.0f, 2);
@@ -327,7 +328,7 @@ int main(int /*argc*/, char** /*argv*/)
 
             grid.Draw(cmdBuffer);
             cube.Draw(cmdBuffer);
-            cylinder->Draw(cmdBuffer);
+            cylinder.Draw(cmdBuffer);
 
             // Render things
             imIntegration.Draw(cmdBuffer);

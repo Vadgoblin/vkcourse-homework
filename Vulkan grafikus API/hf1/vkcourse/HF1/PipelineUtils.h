@@ -6,4 +6,5 @@ VkPipeline CreateSimplePipeline(VkDevice device,
                                 VkFormat colorFormat,
                                 VkPipelineLayout layout,
                                 VkShaderModule vertShader,
-                                VkShaderModule fragShader);
+                                VkShaderModule fragShader,
+                                bool wireframe = false);

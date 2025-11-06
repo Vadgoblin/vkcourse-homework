@@ -31,7 +31,8 @@ VkPipeline CreateSimplePipeline(const VkDevice         device,
                                 const VkFormat         colorFormat,
                                 const VkPipelineLayout pipelineLayout,
                                 const VkShaderModule   shaderVertex,
-                                const VkShaderModule   shaderFragment)
+                                const VkShaderModule   shaderFragment,
+                                bool                   wireframe)
 {
     // shader stages
     const VkPipelineShaderStageCreateInfo shaders[] = {
@@ -109,7 +110,7 @@ VkPipeline CreateSimplePipeline(const VkDevice         device,
         .flags                   = 0,
         .depthClampEnable        = VK_FALSE,
         .rasterizerDiscardEnable = VK_FALSE,
-        .polygonMode             = VK_POLYGON_MODE_FILL,
+        .polygonMode             = wireframe ? VK_POLYGON_MODE_LINE : VK_POLYGON_MODE_FILL,
         .cullMode                = VK_CULL_MODE_NONE,
         .frontFace               = VK_FRONT_FACE_COUNTER_CLOCKWISE,
         .depthBiasEnable         = VK_FALSE,

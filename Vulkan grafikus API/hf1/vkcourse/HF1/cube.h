@@ -14,7 +14,7 @@ public:
         glm::mat4 model;
     };
 
-    Cube();
+    Cube(bool wireframe = false);
 
     VkResult Create(const Context& context, const VkFormat colorFormat, const uint32_t pushConstantStart);
     void     Destroy(const VkDevice device);
@@ -32,4 +32,5 @@ private:
     glm::mat4        m_scale    = glm::mat4(1.0f);
     glm::mat4        m_position       = glm::mat4(1.0f);
     glm::mat4        m_rotation       = glm::mat4(1.0f);
+    bool wireframe;
 };

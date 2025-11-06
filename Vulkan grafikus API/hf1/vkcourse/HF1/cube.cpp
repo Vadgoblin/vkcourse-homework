@@ -22,10 +22,11 @@ static constexpr size_t g_cubeVertexSize         = sizeof(float) * g_cubePerVert
 static constexpr size_t g_cubeVertexCount        = sizeof(g_cubeVertices) / g_cubeVertexSize;
 } // anonymous namespace
 
-Cube::Cube()
+Cube::Cube(bool wireframe)
     : m_pipelineLayout(VK_NULL_HANDLE)
     , m_pipeline(VK_NULL_HANDLE)
 {
+    this->wireframe = wireframe;
 }
 
 VkResult Cube::Create(const Context& context, const VkFormat colorFormat, const uint32_t pushConstantStart)
@@ -37,7 +38,7 @@ VkResult Cube::Create(const Context& context, const VkFormat colorFormat, const 
 
     m_constantOffset = pushConstantStart;
     m_pipelineLayout = CreateEmptyPipelineLayout(device, m_constantOffset + sizeof(ModelPushConstant));
-    m_pipeline       = CreateSimplePipeline(device, colorFormat, m_pipelineLayout, shaderVertex, shaderFragment);
+    m_pipeline       = CreateSimplePipeline(device, colorFormat, m_pipelineLayout, shaderVertex, shaderFragment, this->wireframe);
 
     vkDestroyShaderModule(device, shaderVertex, nullptr);
     vkDestroyShaderModule(device, shaderFragment, nullptr);
