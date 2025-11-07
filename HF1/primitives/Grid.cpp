@@ -61,15 +61,16 @@ void buildGrid(float    width,
 }
 }
 
-Grid::Grid()
-= default;
+Grid::Grid(uint subdivisions, bool wireframe)
+{
+    assert(subdivisions > 0);
+    this->wireframe = wireframe;
+    this->m_subdivisions = subdivisions;
+}
 
 VkResult Grid::Create(const Context& context,
                       const VkFormat colorFormat,
-                      const uint32_t pushConstantStart,
-                      float          width,
-                      float          height,
-                      uint32_t       count)
+                      const uint32_t pushConstantStart)
 {
     const VkDevice       device       = context.device();
     const VkShaderModule shaderVertex = CreateShaderModule(device, SPV_grid_vert, sizeof(SPV_grid_vert));
@@ -86,7 +87,7 @@ VkResult Grid::Create(const Context& context,
     std::vector<float> vertexData;
     std::vector<unsigned int> indices;
 
-    buildGrid(width, height, count, vertexData,  indices);
+    buildGrid(1, 1, this->m_subdivisions, vertexData,  indices);
     m_vertexCount = static_cast<uint32_t>(indices.size());
 
     const uint32_t vertexDataSize = vertexData.size() * sizeof(float);

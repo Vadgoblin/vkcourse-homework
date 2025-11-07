@@ -179,8 +179,10 @@ int main(int /*argc*/, char** /*argv*/)
     VkInstance instance = context.CreateInstance({}, extensions);
 
     // Create the window to render onto
-    uint32_t    windowWidth  = 1024;
-    uint32_t    windowHeight = 800;
+    // uint32_t    windowWidth  = 1024;
+    // uint32_t    windowHeight = 800;
+    uint32_t    windowWidth  = 1700;
+    uint32_t    windowHeight = 900;
     GLFWwindow* window       = glfwCreateWindow(windowWidth, windowHeight, "hf1 - h257398", NULL, NULL);
 
     Camera camera({windowWidth, windowHeight}, 45.0f, 0.1f, 100.0f);
@@ -245,9 +247,10 @@ int main(int /*argc*/, char** /*argv*/)
     cylinder.setPosition(0.0f, 1.0f,0.0f);
     cylinder.Create(context, swapchain.format(), sizeof(Camera::CameraPushConstant));
 
-    Grid grid;
-    grid.Create(context, swapchain.format(), sizeof(Camera::CameraPushConstant), 8.0f, 8.0f, 2);
+    Grid grid(2,true);
+    grid.Create(context, swapchain.format(), sizeof(Camera::CameraPushConstant));
     grid.setRotation(90.0f, 0.0f, 0.0f);
+    grid.setScale(8.0f, 8.0f, 0.0f);
 
     glfwShowWindow(window);
 
@@ -275,9 +278,7 @@ int main(int /*argc*/, char** /*argv*/)
 
         // Get new image to render to
         vkResetFences(device, 1, &imageFence);
-
         const Swapchain::Image& swapchainImage = swapchain.AquireNextImage(imageFence);
-
         vkWaitForFences(device, 1, &imageFence, VK_TRUE, UINT64_MAX);
 
         // Get command buffer based on swapchain image index
