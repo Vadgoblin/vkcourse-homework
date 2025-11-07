@@ -17,7 +17,8 @@
 #include "camera.h"
 #include "context.h"
 #include "primitives/Cube.h"
-#include "cylinder.h"
+#include "primitives/Cylinder.h"
+
 #include "grid.h"
 #include "imgui_integration.h"
 #include "swapchain.h"

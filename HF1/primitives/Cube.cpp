@@ -26,8 +26,6 @@ static constexpr size_t g_cubeVertexCount        = sizeof(g_cubeVertices) / g_cu
 } // anonymous namespace
 
 Cube::Cube(bool wireframe)
-    // : m_pipelineLayout(VK_NULL_HANDLE)
-    // , m_pipeline(VK_NULL_HANDLE)
 {
     this->wireframe = wireframe;
 }

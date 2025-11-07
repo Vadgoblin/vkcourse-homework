@@ -10,5 +10,6 @@ class Cube : public BasePrimitive {
     void     Draw(const VkCommandBuffer cmdBuffer);
 
     private:
+    BufferInfo       m_buffer         = {};
     uint32_t         m_vertexCount    = 0;
 };

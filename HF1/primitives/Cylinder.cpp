@@ -1,4 +1,4 @@
-#include "cylinder.h"
+#include "Cylinder.h"
 
 #include <cstdint>
 #include <cstring>
@@ -7,12 +7,12 @@
 
 #include "context.h"
 #include "wrappers.h"
-#include "PipelineUtils.h"
+#include "../PipelineUtils.h"
 
 namespace {
-
 #include "triangle_in.frag_include.h"
 #include "triangle_in.vert_include.h"
+
 
 
 // Generate a cylinder mesh (smooth) with base radius, top radius (for truncated),
@@ -94,11 +94,9 @@ void buildCylinder(float baseRadius,
 Cylinder::Cylinder(float baseRadius,
                    float topRadius,
                    float height,
-                   int sectorCount,
-                   int stackCount,
-                   bool wireframe)
-    : m_pipelineLayout(VK_NULL_HANDLE)
-    , m_pipeline(VK_NULL_HANDLE)
+                   int   sectorCount,
+                   int   stackCount,
+                   bool  wireframe)
 {
     this->baseRadius = baseRadius;
     this->topRadius = topRadius;
@@ -149,7 +147,8 @@ VkResult Cylinder::Create(const Context& context, const VkFormat colorFormat, co
 
 void Cylinder::Destroy(const VkDevice device)
 {
-    // m_buffer.Destroy(device);
+    m_vertexBuffer.Destroy(device);
+    m_indexBuffer.Destroy(device);
     vkDestroyPipeline(device, m_pipeline, nullptr);
     vkDestroyPipelineLayout(device, m_pipelineLayout, nullptr);
 }
@@ -170,13 +169,4 @@ void Cylinder::Draw(const VkCommandBuffer cmdBuffer)
 
     vkCmdBindIndexBuffer(cmdBuffer, m_indexBuffer.buffer, 0, VK_INDEX_TYPE_UINT32);
     vkCmdDrawIndexed(cmdBuffer, m_vertexCount, 1, 0, 0, 0);
-}
-void Cylinder::setScale(const float x, const float y, const float z)
-{
-    m_scale =  glm::scale(glm::mat4(1.0f), glm::vec3(x, y, z));
-}
-
-void Cylinder::setPosition(const float x, const float y, const float z)
-{
-    m_position = glm::translate(glm::mat4(1.0f), glm::vec3(x, y, z));
 }
