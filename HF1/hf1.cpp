@@ -366,7 +366,7 @@ int main(int /*argc*/, char** /*argv*/)
         vkDeviceWaitIdle(device);
     }
 
-    // if (context.sampleCountFlagBits() > VK_SAMPLE_COUNT_1_BIT) msaaColorTexture.Destroy(context.device());
+    if (context.sampleCountFlagBits() > VK_SAMPLE_COUNT_1_BIT) msaaColorTexture.Destroy(context.device());
     depthTexture.Destroy(context.device());
     imIntegration.Destroy(context);
 
