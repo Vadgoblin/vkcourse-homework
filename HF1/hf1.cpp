@@ -19,8 +19,8 @@
 #include "primitives/Cube.h"
 #include "primitives/Cylinder.h"
 #include "primitives/Grid.h"
+#include "ObjectManager.h"
 
-// #include "grid.h"
 #include "imgui_integration.h"
 #include "swapchain.h"
 #include "wrappers.h"
@@ -236,21 +236,7 @@ int main(int /*argc*/, char** /*argv*/)
                                              context.sampleCountFlagBits());
     }
 
-
-    Cube cube(true);
-    cube.setPosition(0.0f, 0.45f,0.0f);
-    cube.setScale(1.0f,0.9f,1.0f);
-    cube.setRotation(15.0f,0.0f,0.0f);
-    cube.Create(context, swapchain.format(), sizeof(Camera::CameraPushConstant));
-
-    Cylinder cylinder(0.2, 0.2, 1, 25, 2, true);
-    cylinder.setPosition(0.0f, 1.0f,0.0f);
-    cylinder.Create(context, swapchain.format(), sizeof(Camera::CameraPushConstant));
-
-    Grid grid(2,true);
-    grid.Create(context, swapchain.format(), sizeof(Camera::CameraPushConstant));
-    grid.setRotation(90.0f, 0.0f, 0.0f);
-    grid.setScale(8.0f, 8.0f, 0.0f);
+    ObjectManager::SetupAll(context,swapchain, sizeof(Camera::CameraPushConstant));
 
     glfwShowWindow(window);
 
@@ -347,9 +333,7 @@ int main(int /*argc*/, char** /*argv*/)
 
             camera.PushConstants(cmdBuffer);
 
-            grid.Draw(cmdBuffer);
-            cube.Draw(cmdBuffer);
-            cylinder.Draw(cmdBuffer);
+            ObjectManager::DrawAll(cmdBuffer);
 
             // Render things
             imIntegration.Draw(cmdBuffer);
@@ -391,8 +375,7 @@ int main(int /*argc*/, char** /*argv*/)
     vkDestroyCommandPool(device, cmdPool, nullptr);
 
     camera.Destroy(device);
-    grid.Destroy(device);
-    cube.Destroy(device);
+    ObjectManager::DestroyAll(device);
     swapchain.Destroy();
     context.Destroy();
 

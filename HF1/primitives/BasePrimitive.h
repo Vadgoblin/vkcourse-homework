@@ -13,11 +13,11 @@ public:
 
 
     BasePrimitive(bool wireframe = false);
-    virtual ~BasePrimitive();
+    virtual ~BasePrimitive() = default;
 
-    VkResult Create(const Context& context, const VkFormat colorFormat, const uint32_t pushConstantStart);
-    void     Destroy(const VkDevice device);
-    void     Draw(const VkCommandBuffer cmdBuffer);
+    virtual VkResult Create(const Context& context, const VkFormat colorFormat, const uint32_t pushConstantStart) = 0;
+    virtual void     Destroy(const VkDevice device) = 0;
+    virtual void     Draw(const VkCommandBuffer cmdBuffer) = 0;
 
     void setScale(float x, float y, float z);
     void setPosition(float x, float y, float z);

@@ -11,6 +11,8 @@ add_executable(hf1
         primitives/Cylinder.h
         primitives/Grid.cpp
         primitives/Grid.h
+        ObjectManager.cpp
+        ObjectManager.h
 )
 
 target_include_directories(hf1

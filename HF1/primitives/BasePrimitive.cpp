@@ -3,8 +3,6 @@
 #define GLM_ENABLE_EXPERIMENTAL
 #include <glm/gtx/quaternion.hpp>
 
-BasePrimitive::~BasePrimitive() {}
-
 BasePrimitive::BasePrimitive(const bool wireframe)
 {
      this->wireframe = wireframe;
