@@ -1,11 +1,8 @@
 add_executable(hf1
         hf1.cpp
 
-#        cube.cpp
-#        cube.h
-        grid.cpp
-        grid.h
-#        cylinder.cpp
+#        grid.cpp
+#        grid.h
         PipelineUtils.h
         PipelineUtils.cpp
         primitives/BasePrimitive.h
@@ -14,6 +11,8 @@ add_executable(hf1
         primitives/Cube.h
         primitives/Cylinder.cpp
         primitives/Cylinder.h
+        primitives/Grid.cpp
+        primitives/Grid.h
 )
 
 target_include_directories(hf1

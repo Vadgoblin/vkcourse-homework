@@ -18,8 +18,9 @@
 #include "context.h"
 #include "primitives/Cube.h"
 #include "primitives/Cylinder.h"
+#include "primitives/Grid.h"
 
-#include "grid.h"
+// #include "grid.h"
 #include "imgui_integration.h"
 #include "swapchain.h"
 #include "wrappers.h"
@@ -246,6 +247,7 @@ int main(int /*argc*/, char** /*argv*/)
 
     Grid grid;
     grid.Create(context, swapchain.format(), sizeof(Camera::CameraPushConstant), 8.0f, 8.0f, 2);
+    grid.setRotation(90.0f, 0.0f, 0.0f);
 
     glfwShowWindow(window);
 

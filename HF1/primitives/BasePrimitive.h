@@ -10,9 +10,7 @@ class Context;
 
 class BasePrimitive {
 public:
-    struct ModelPushConstant {
-        glm::mat4 model;
-    };
+
 
     BasePrimitive(bool wireframe = false);
     virtual ~BasePrimitive();
@@ -26,6 +24,10 @@ public:
     void setRotation(float rx, float ry, float rz);
 
 protected:
+    struct ModelPushConstant {
+        glm::mat4 model;
+    };
+
     VkPipelineLayout m_pipelineLayout = VK_NULL_HANDLE;
     VkPipeline       m_pipeline       = VK_NULL_HANDLE;
     uint32_t         m_constantOffset = 0;
