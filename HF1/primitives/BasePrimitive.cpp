@@ -10,9 +10,18 @@
 #include "context.h"
 #include "../PipelineUtils.h"
 
+namespace {
+#include "triangle_in.frag_include.h"
+#include "triangle_in.vert_include.h"
+}
+
 BasePrimitive::BasePrimitive(const bool wireframe)
 {
-     this->wireframe = wireframe;
+     this->wireframe  = wireframe;
+     m_shaderVertData = SPV_triangle_in_vert;
+     m_shaderVertSize = sizeof(SPV_triangle_in_vert);
+     m_shaderFragData = SPV_triangle_in_frag;
+     m_shaderFragSize = sizeof(SPV_triangle_in_frag);
 }
 
 VkResult BasePrimitive::Create(const Context& context, const VkFormat colorFormat, const uint32_t pushConstantStart)

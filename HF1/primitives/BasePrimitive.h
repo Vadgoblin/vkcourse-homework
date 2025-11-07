@@ -7,12 +7,6 @@
 #include "glm_config.h"
 #include <vector>
 
-namespace {
-#include "triangle_in.frag_include.h"
-#include "triangle_in.vert_include.h"
-
-}
-
 class Context;
 
 class BasePrimitive {
@@ -39,10 +33,10 @@ protected:
     VkPipeline       m_pipeline       = VK_NULL_HANDLE;
     uint32_t         m_constantOffset = 0;
 
-    const uint32_t*  m_shaderVertData   = SPV_triangle_in_vert;
-    size_t           m_shaderVertSize   = sizeof(SPV_triangle_in_vert);
-    const uint32_t*  m_shaderFragData   = SPV_triangle_in_frag;
-    size_t           m_shaderFragSize   = sizeof(SPV_triangle_in_frag);
+    const uint32_t* m_shaderVertData = nullptr;
+    size_t          m_shaderVertSize = 0;
+    const uint32_t* m_shaderFragData = nullptr;
+    size_t          m_shaderFragSize = 0;
 
     BufferInfo       m_vertexBuffer   = {};
     BufferInfo       m_indexBuffer    = {};

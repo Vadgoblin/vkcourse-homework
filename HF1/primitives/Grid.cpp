@@ -1,28 +1,12 @@
-//
-// Created by goblin on 2025.11.07..
-//
-
 #include "Grid.h"
 
-#include <cstdio>
-
-#include <vector>
-#include <vulkan/vulkan_core.h>
-
-#include "../PipelineUtils.h"
-#include "buffer.h"
 #include "context.h"
-#include "descriptors.h"
-#include "wrappers.h"
-
-#include <cstring>
+#include <vector>
 
 namespace {
-// #include "triangle_in.frag_include.h"
-// #include "triangle_in.vert_include.h"
-
 #include "grid.frag_include.h"
 #include "grid.vert_include.h"
+}
 
 
 void buildGrid(float width, float depth, int rows, int cols,
@@ -82,7 +66,7 @@ void buildGrid(float width, float depth, int rows, int cols,
         }
     }
 }
-}
+
 
 Grid::Grid(float width, float depth, int rows, int cols, bool wireframe) : BasePrimitive(wireframe)
 {
