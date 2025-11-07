@@ -25,47 +25,72 @@ namespace {
 #include "grid.vert_include.h"
 
 
-void buildGrid(float    width,
-               float    height,
-               uint32_t count,
-               std::vector<float>&        vertices,
-               std::vector<unsigned int>& indices   )
+void buildGrid(float width, float depth, int rows, int cols,
+               std::vector<float>& vertices,
+               std::vector<float>& normals,
+               std::vector<float>& texCoords,
+               std::vector<unsigned int>& indices)
 {
-    float halfWidth  = width / 2.0f;
-    float halfHeight = height / 2.0f;
+    rows = std::max(2, rows);
+    cols = std::max(2, cols);
 
-    for (uint32_t y = 0; y <= count; y++) {
-        for (uint32_t x = 0; x <= count; x++) {
-            vertices.push_back((float)x / count * width - halfWidth);
-            vertices.push_back((float)y / count * height - halfHeight);
-            vertices.push_back(0.0f);
-            // u = (float)x / count,
-            // v = (float)y / count,
+    float halfWidth = width * 0.5f;
+    float halfDepth = depth * 0.5f;
+    float dx = width / (cols - 1);
+    float dz = depth / (rows - 1);
+
+    // Generate vertices, normals, and texCoords
+    for (int i = 0; i < rows; ++i)
+    {
+        float z = i * dz - halfDepth;
+        for (int j = 0; j < cols; ++j)
+        {
+            float x = j * dx - halfWidth;
+
+            // Vertex position
+            vertices.push_back(x);
+            vertices.push_back(0.0f); // y-coordinate for flat grid
+            vertices.push_back(z);
+
+            // Normal pointing up
+            normals.push_back(0.0f);
+            normals.push_back(1.0f);
+            normals.push_back(0.0f);
+
+            // Texture coordinates
+            texCoords.push_back((float)j / (cols - 1));
+            texCoords.push_back((float)i / (rows - 1));
         }
     }
 
-    for (uint32_t y = 0; y < count; y++) {
-        for (uint32_t x = 0; x < count; x++) {
-            uint32_t row     = y * (count + 1);
-            uint32_t rowNext = (y + 1) * (count + 1);
+    // Generate indices (two triangles per quad)
+    for (int i = 0; i < rows - 1; ++i)
+    {
+        for (int j = 0; j < cols - 1; ++j)
+        {
+            unsigned int start = i * cols + j;
 
-            indices.push_back(row + x);
-            indices.push_back(row + x + 1);
-            indices.push_back(rowNext + x + 1);
+            // Triangle 1
+            indices.push_back(start);
+            indices.push_back(start + cols);
+            indices.push_back(start + 1);
 
-            indices.push_back(row + x);
-            indices.push_back(rowNext + x + 1);
-            indices.push_back(rowNext + x);
+            // Triangle 2
+            indices.push_back(start + 1);
+            indices.push_back(start + cols);
+            indices.push_back(start + cols + 1);
         }
     }
 }
 }
 
-Grid::Grid(uint subdivisions, bool wireframe)
+Grid::Grid(float width, float depth, int rows, int cols, bool wireframe)
 {
-    assert(subdivisions > 0);
     this->wireframe = wireframe;
-    this->m_subdivisions = subdivisions;
+    this->m_width = width;
+    this->m_depth = depth;
+    this->m_rows = rows;
+    this->m_cols = cols;
 }
 
 VkResult Grid::Create(const Context& context,
@@ -85,9 +110,12 @@ VkResult Grid::Create(const Context& context,
     vkDestroyShaderModule(device, shaderFragment, nullptr);
 
     std::vector<float> vertexData;
+    std::vector<float> normals;
+    std::vector<float> texCoords;
     std::vector<unsigned int> indices;
 
-    buildGrid(1, 1, this->m_subdivisions, vertexData,  indices);
+    buildGrid(m_width, m_depth, m_rows,m_cols, vertexData, normals,texCoords, indices);
+    // buildGrid(1, 1, 1,1, vertexData, normals,texCoords, indices);
     m_vertexCount = static_cast<uint32_t>(indices.size());
 
     const uint32_t vertexDataSize = vertexData.size() * sizeof(float);

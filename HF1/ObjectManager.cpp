@@ -11,10 +11,9 @@ std::vector<BasePrimitive*> objects;
 
 void SetupAll(const Context& context, const Swapchain& swapchain, size_t pushConstansStart)
 {
-    Grid* grid = new Grid(2,false);
+    Grid* grid = new Grid(1,1,3,2,false);
     grid->Create(context, swapchain.format(), pushConstansStart);
-    grid->setRotation(90.0f, 0.0f, 0.0f);
-    grid->setScale(12.0f, 12.0f, 0.0f);
+    grid->setScale(12.0f, 1.0f, 12.0f);
     objects.push_back(grid);
 
     Cube* cube = new Cube(1.0f, true);

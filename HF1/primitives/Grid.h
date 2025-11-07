@@ -3,7 +3,7 @@
 
 class Grid : public BasePrimitive {
 public:
-    Grid(uint subdivisions, bool wireframe);
+    Grid(float width = 1,float depth = 1, int rows = 1, int cols = 1, bool wireframe = false);
 
     VkResult Create(const Context& context,
                     const VkFormat colorFormat,
@@ -17,4 +17,8 @@ private:
     BufferInfo       m_indexBuffer    = {};
     uint32_t         m_vertexCount    = 0;
     uint             m_subdivisions;
+    float            m_width;
+    float m_depth;
+    int m_rows;
+    int m_cols;
 };
