@@ -17,7 +17,7 @@ void SetupAll(const Context& context, const Swapchain& swapchain, size_t pushCon
     grid->setScale(12.0f, 12.0f, 0.0f);
     objects.push_back(grid);
 
-    Cube* cube = new Cube(true);
+    Cube* cube = new Cube(1.0f, true);
     cube->setPosition(0.0f, 0.45f,0.0f);
     cube->setScale(1.0f,0.9f,1.0f);
     cube->Create(context, swapchain.format(), pushConstansStart);
@@ -29,7 +29,7 @@ void SetupAll(const Context& context, const Swapchain& swapchain, size_t pushCon
     cylinder->Create(context, swapchain.format(), pushConstansStart);
     objects.push_back(cylinder);
 
-    Cube* cube2 = new Cube(true);
+    Cube* cube2 = new Cube(1.0f, true);
     cube2->setPosition(0.0f, 0.95f,0.0f);
     cube2->setScale(1.0f,0.1f,1.0f);
     cube2->Create(context, swapchain.format(), pushConstansStart);
