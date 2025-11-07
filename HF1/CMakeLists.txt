@@ -1,8 +1,6 @@
 add_executable(hf1
         hf1.cpp
 
-#        grid.cpp
-#        grid.h
         PipelineUtils.h
         PipelineUtils.cpp
         primitives/BasePrimitive.h
@@ -24,8 +22,8 @@ target_link_libraries(hf1
 )
 
 add_shaders(hf1
-    triangle_in.vert SPV_triangle_in_vert
-    triangle_in.frag SPV_triangle_in_frag
-    grid.vert SPV_grid_vert
-    grid.frag SPV_grid_frag
+        shaders/triangle_in.vert SPV_triangle_in_vert
+        shaders/triangle_in.frag SPV_triangle_in_frag
+        shaders/grid.vert SPV_grid_vert
+        shaders/grid.frag SPV_grid_frag
 )
