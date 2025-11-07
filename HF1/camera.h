@@ -1,8 +1,20 @@
 #pragma once
 
 #include <vulkan/vulkan_core.h>
-
 #include "glm_config.h"
+
+namespace {
+static float ApplyDeadzone(float value, float deadzone = 0.18f) {
+    if (value > -deadzone && value < deadzone)
+        return 0.0f;
+    return value;
+}
+
+static float CurveInput(float value, float power = 2.0f) {
+    float sign = (value >= 0.0f) ? 1.0f : -1.0f;
+    return sign * std::pow(std::abs(value), power);
+};
+}
 
 class Camera {
 public:
@@ -41,17 +53,6 @@ public:
 
         Update();
     }
-
-    static float ApplyDeadzone(float value, float deadzone = 0.18f) {
-        if (value > -deadzone && value < deadzone)
-            return 0.0f;
-        return value;
-    }
-
-    static float CurveInput(float value, float power = 2.0f) {
-        float sign = (value >= 0.0f) ? 1.0f : -1.0f;
-        return sign * std::pow(std::abs(value), power);
-    };
 
     void ProcessControllerInput(const GLFWgamepadstate& state, float deltaTime) {
         // Left stick controls movement, triggers control vertical movement
