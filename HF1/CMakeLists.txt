@@ -15,6 +15,8 @@ add_executable(hf1
         ObjectManager.h
         debug.h
         debug.cpp
+        primitives/Sphere.cpp
+        primitives/Sphere.h
 )
 
 target_include_directories(hf1
