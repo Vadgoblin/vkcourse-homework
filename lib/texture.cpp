@@ -2,6 +2,7 @@
 
 #include <vulkan/vulkan_core.h>
 
+#include "../HF1/debug.h"
 #include "buffer.h"
 #include "stb_image.h"
 
@@ -193,6 +194,7 @@ VkResult Texture::CreateImage(
     };
 
     vkAllocateMemory(device, &allocInfo, nullptr, &m_memory);
+    debug::SetDebugObjectName(device,VK_OBJECT_TYPE_DEVICE_MEMORY,(uint64_t)m_memory,"Texture::CreateImage m_memory");
     vkBindImageMemory(device, m_image, m_memory, 0);
 
     return VK_SUCCESS;

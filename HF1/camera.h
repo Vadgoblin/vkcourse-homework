@@ -92,41 +92,6 @@ public:
     }
 
 
-    // void ProcessControllerInput(const GLFWgamepadstate& state, float deltaTime) {
-    //     // Left stick controls movementm, Left trigger for speed boost
-    //     float leftX = ApplyDeadzone(state.axes[GLFW_GAMEPAD_AXIS_LEFT_X]);
-    //     float leftY = ApplyDeadzone(state.axes[GLFW_GAMEPAD_AXIS_LEFT_Y]);
-    //
-    //     glm::vec3 right = glm::normalize(glm::cross(m_front, m_up));
-    //     float joystick_camera_speed = CAMERA_SPEED  * 50;
-    //
-    //
-    //     // Move forward/backward
-    //     m_position += -CurveInput(leftY, 1.5f) * joystick_camera_speed * deltaTime * m_front;
-    //
-    //     // Strafe left/right
-    //     m_position +=  CurveInput(leftX, 1.5f) * joystick_camera_speed * deltaTime * right;
-    //
-    //
-    //
-    //
-    //     // Right stick controls view (yaw/pitch)
-    //     float rightX = CurveInput(ApplyDeadzone(state.axes[GLFW_GAMEPAD_AXIS_RIGHT_X]) ,1.8f);
-    //     float rightY = CurveInput(ApplyDeadzone(state.axes[GLFW_GAMEPAD_AXIS_RIGHT_Y]), 1.8f);
-    //
-    //     // Sensitivity scaling for controller
-    //     const float controllerSensitivity = 100.0f * deltaTime; // tweak this
-    //
-    //     m_yaw -= rightX * controllerSensitivity;
-    //     m_pitch -= rightY * controllerSensitivity;
-    //
-    //     // Clamp pitch
-    //     m_pitch = glm::clamp(m_pitch, -89.0f, 89.0f);
-    //
-    //     Update(); // update camera vectors
-    // }
-
-
     void Update()
     {
         const float yawRadians   = glm::radians(m_yaw);

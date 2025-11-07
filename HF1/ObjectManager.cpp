@@ -5,8 +5,6 @@
 #include "primitives/Cylinder.h"
 #include "primitives/Grid.h"
 
-#include <memory>
-
 namespace ObjectManager {
 std::vector<BasePrimitive*> objects;
 

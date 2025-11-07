@@ -13,6 +13,8 @@ add_executable(hf1
         primitives/Grid.h
         ObjectManager.cpp
         ObjectManager.h
+        debug.h
+        debug.cpp
 )
 
 target_include_directories(hf1

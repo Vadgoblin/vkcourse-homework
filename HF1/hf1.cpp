@@ -16,10 +16,8 @@
 
 #include "camera.h"
 #include "context.h"
-#include "primitives/Cube.h"
-#include "primitives/Cylinder.h"
-#include "primitives/Grid.h"
 #include "ObjectManager.h"
+#include "debug.h"
 
 #include "imgui_integration.h"
 #include "swapchain.h"
@@ -177,6 +175,8 @@ int main(int /*argc*/, char** /*argv*/)
 
     Context    context("vkcourse hf1", true);
     VkInstance instance = context.CreateInstance({}, extensions);
+
+    debug::setDebugUtilsObjectName((PFN_vkSetDebugUtilsObjectNameEXT)vkGetInstanceProcAddr(instance, "vkSetDebugUtilsObjectNameEXT"));
 
     // Create the window to render onto
     // uint32_t    windowWidth  = 1024;
@@ -366,6 +366,7 @@ int main(int /*argc*/, char** /*argv*/)
         vkDeviceWaitIdle(device);
     }
 
+    // if (context.sampleCountFlagBits() > VK_SAMPLE_COUNT_1_BIT) msaaColorTexture.Destroy(context.device());
     depthTexture.Destroy(context.device());
     imIntegration.Destroy(context);
 

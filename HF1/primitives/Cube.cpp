@@ -8,9 +8,10 @@
 #define GLM_ENABLE_EXPERIMENTAL
 #include <glm/gtx/quaternion.hpp>
 
+#include "../PipelineUtils.h"
+#include "../debug.h"
 #include "context.h"
 #include "wrappers.h"
-#include "../PipelineUtils.h"
 
 namespace {
 
@@ -40,6 +41,8 @@ VkResult Cube::Create(const Context& context, const VkFormat colorFormat, const 
     m_constantOffset = pushConstantStart;
     m_pipelineLayout = CreateEmptyPipelineLayout(device, m_constantOffset + sizeof(ModelPushConstant));
     m_pipeline       = CreateSimplePipeline(device, colorFormat, m_pipelineLayout, shaderVertex, shaderFragment, context.sampleCountFlagBits() , this->wireframe);
+    debug::SetDebugObjectName(context.device(), VK_OBJECT_TYPE_PIPELINE, (uint64_t)m_pipeline, "Cube::Create m_pipeline");
+    debug::SetDebugObjectName(context.device(), VK_OBJECT_TYPE_PIPELINE_LAYOUT, (uint64_t)m_pipelineLayout, "Cube::Create m_pipelineLayout");
 
     vkDestroyShaderModule(device, shaderVertex, nullptr);
     vkDestroyShaderModule(device, shaderFragment, nullptr);
