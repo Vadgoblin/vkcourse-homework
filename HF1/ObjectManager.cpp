@@ -4,6 +4,7 @@
 #include "primitives/Cube.h"
 #include "primitives/Cylinder.h"
 #include "primitives/Grid.h"
+#include "primitives/Sphere.h"
 
 namespace ObjectManager {
 std::vector<BasePrimitive*> objects;
@@ -33,6 +34,11 @@ void SetupAll(const Context& context, const Swapchain& swapchain, size_t pushCon
     cube2->setScale(1.0f,0.1f,1.0f);
     cube2->Create(context, swapchain.format(), pushConstansStart);
     objects.push_back(cube2);
+
+    Sphere* sphere = new Sphere(0.4f,25,25,true);
+    sphere->setPosition(0.0f, 1.4f,0.0f);
+    sphere->Create(context, swapchain.format(), pushConstansStart);
+    objects.push_back(sphere);
 }
 
 void DrawAll(VkCommandBuffer cmd)
