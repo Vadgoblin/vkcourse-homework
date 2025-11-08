@@ -8,60 +8,69 @@
 #include "primitives/Sphere.h"
 
 namespace ObjectManager {
-std::vector<BasePrimitive*> objects;
-ObjectGroup objectGroup;
+std::vector<BasePrimitive*> primitives;
+std::vector<ObjectGroup*> objectGroups;
 
 void SetupAll(const Context& context, const Swapchain& swapchain, size_t pushConstansStart)
 {
+    ObjectGroup* group1 = new ObjectGroup();
+    ObjectGroup* group2 = new ObjectGroup();
+    group1->addChild(group2);
+
     Grid* grid = new Grid(1,1,3,2,false);
-    grid->Create(context, swapchain.format(), pushConstansStart);
+    grid->create(context, swapchain.format(), pushConstansStart);
     grid->setScale(12.0f, 1.0f, 12.0f);
     // objects.push_back(grid);
-    objectGroup.addChild(grid);
+    group1->addChild(grid);
 
     Cube* cube = new Cube(1.0f, true);
     cube->setPosition(0.0f, 0.45f,0.0f);
     cube->setScale(1.0f,0.9f,1.0f);
-    cube->Create(context, swapchain.format(), pushConstansStart);
+    cube->create(context, swapchain.format(), pushConstansStart);
     // objects.push_back(cube);
-    objectGroup.addChild(cube);
+    group2->addChild(cube);
 
     Cylinder* cylinder = new Cylinder(0.05, 0.05, 1, 25, 2, true);
     cylinder->setPosition(0.0f, 0.5f,0.0f);
     cylinder->setRotation(90.0f,0.0f,0.0f);
-    cylinder->Create(context, swapchain.format(), pushConstansStart);
+    cylinder->create(context, swapchain.format(), pushConstansStart);
     // objects.push_back(cylinder);
-    objectGroup.addChild(cylinder);
+    group2->addChild(cylinder);
 
     Cube* cube2 = new Cube(1.0f, true);
     cube2->setPosition(0.0f, 0.95f,0.0f);
     cube2->setScale(1.0f,0.1f,1.0f);
-    cube2->Create(context, swapchain.format(), pushConstansStart);
+    cube2->create(context, swapchain.format(), pushConstansStart);
     // objects.push_back(cube2);
-    objectGroup.addChild(cube2);
+    group2->addChild(cube2);
 
     Sphere* sphere = new Sphere(0.4f,25,25,true);
     sphere->setPosition(0.0f, 1.4f,0.0f);
-    sphere->Create(context, swapchain.format(), pushConstansStart);
+    sphere->create(context, swapchain.format(), pushConstansStart);
     // objects.push_back(sphere);
-    objectGroup.addChild(sphere);
+    group2->addChild(sphere);
 
 
-    objectGroup.setRotation(0.0f, 0.0f,14.0f);
-    objectGroup.setPosition(0.0f, -4.0f,0.0f);
+    group2->setRotation(0.0f, 0.0f,-14.0f);
+    group1->setRotation(0.0f, 0.0f,14.0f);
+    group1->setPosition(0.0f, -4.0f,0.0f);
+
+    objectGroups.push_back(group1);
 }
 
 void DrawAll(VkCommandBuffer cmd)
 {
-    objectGroup.draw(cmd);
-    for (BasePrimitive* object : objects) {
-        object->Draw(cmd);
+    for (ObjectGroup* object : objectGroups) {
+        object->draw(cmd);
+    }
+    for (BasePrimitive* object : primitives) {
+        object->draw(cmd);
     }
 }
 
 void DestroyAll(VkDevice device) {
-    for (BasePrimitive* object : objects) {
-        object->Destroy(device);
+    for (BasePrimitive* object : primitives) {
+        object->destroy(device);
     }
 }
 

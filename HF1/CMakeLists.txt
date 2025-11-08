@@ -21,6 +21,7 @@ add_executable(hf1
         primitives/ITransformable.h
         containers/ObjectGroup.cpp
         containers/ObjectGroup.h
+        primitives/IDrawable.h
 )
 
 target_include_directories(hf1

@@ -24,7 +24,7 @@ BasePrimitive::BasePrimitive(const bool wireframe)
      m_shaderFragSize = sizeof(SPV_triangle_in_frag);
 }
 
-VkResult BasePrimitive::Create(const Context& context, const VkFormat colorFormat, const uint32_t pushConstantStart)
+VkResult BasePrimitive::create(const Context& context, const VkFormat colorFormat, const uint32_t pushConstantStart)
 {
     const VkDevice       device         = context.device();
     const VkShaderModule shaderVertex   = CreateShaderModule(device, m_shaderVertData, m_shaderVertSize);
@@ -56,7 +56,7 @@ VkResult BasePrimitive::Create(const Context& context, const VkFormat colorForma
     return VK_SUCCESS;
 }
 
-void BasePrimitive::Destroy(const VkDevice device)
+void BasePrimitive::destroy(const VkDevice device)
 {
     m_vertexBuffer.Destroy(device);
     m_indexBuffer.Destroy(device);
@@ -64,7 +64,7 @@ void BasePrimitive::Destroy(const VkDevice device)
     vkDestroyPipelineLayout(device, m_pipelineLayout, nullptr);
 }
 
-void BasePrimitive::Draw(const VkCommandBuffer cmdBuffer, const glm::mat4& parentModel)
+void BasePrimitive::draw(const VkCommandBuffer cmdBuffer, const glm::mat4& parentModel)
 {
     const ModelPushConstant modelData = {
         .model = parentModel * getModelMatrix(),

@@ -1,5 +1,6 @@
 #pragma once
 
+#include "IDrawable.h"
 #include "ITransformable.h"
 
 #include <vulkan/vulkan_core.h>
@@ -11,15 +12,15 @@
 
 class Context;
 
-class BasePrimitive  : public ITransformable{
+class BasePrimitive  : public ITransformable, public IDrawable{
 public:
 
     BasePrimitive(bool wireframe = false);
     virtual ~BasePrimitive() = default;
 
-    VkResult Create(const Context& context, VkFormat colorFormat, uint32_t pushConstantStart);
-    void     Destroy(VkDevice device);
-    void     Draw(VkCommandBuffer cmdBuffer, const glm::mat4& parentModel = glm::mat4(1.0f));
+    VkResult create(const Context& context, VkFormat colorFormat, uint32_t pushConstantStart);
+    void     destroy(VkDevice device);
+    void     draw(VkCommandBuffer cmdBuffer, const glm::mat4& parentModel = glm::mat4(1.0f)) override;
 
 
 
