@@ -11,7 +11,7 @@
 namespace ObjectManager {
 std::vector<BasePrimitive*> primitives;
 std::vector<ObjectGroup*> objectGroups;
-RotatingCube* rotatingCube;
+std::vector<BaseEntity*> entities;
 
 void SetupAll(const Context& context, const Swapchain& swapchain, size_t pushConstansStart)
 {
@@ -52,9 +52,11 @@ void SetupAll(const Context& context, const Swapchain& swapchain, size_t pushCon
     // objects.push_back(sphere);
     group2->addChild(sphere);
 
-    rotatingCube = new RotatingCube();
+
+    RotatingCube* rotatingCube = new RotatingCube();
     rotatingCube->create(context, swapchain.format(), pushConstansStart);
     rotatingCube->setPosition(3.0f, 2.0f, 0.0f);
+    entities.push_back(rotatingCube);
     // group1->addChild(rotatingCube);
 
 
@@ -67,10 +69,12 @@ void SetupAll(const Context& context, const Swapchain& swapchain, size_t pushCon
     objectGroups.push_back(group1);
 }
 
-void DrawAll(VkCommandBuffer cmd)
+void DrawAll(const VkCommandBuffer cmd)
 {
-    rotatingCube->draw(cmd);
-    rotatingCube->tick();
+    for (BaseEntity* object : entities) {
+        object->tick();
+        object->draw(cmd);
+    }
     for (ObjectGroup* object : objectGroups) {
         object->draw(cmd);
     }
@@ -79,8 +83,10 @@ void DrawAll(VkCommandBuffer cmd)
     }
 }
 
-void DestroyAll(VkDevice device) {
-    rotatingCube->destroy(device);
+void DestroyAll(const VkDevice device) {
+    for (BaseEntity* object : entities) {
+        object->destroy(device);
+    }
     for (ObjectGroup* object : objectGroups) {
         object->destroyChildren(device);
     }
