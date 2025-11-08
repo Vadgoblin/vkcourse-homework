@@ -35,6 +35,12 @@ public:
     {
     }
 
+    void UpdateDimensions(VkExtent2D viewport, float fov = 45.0f, float nearPlane = 0.1f, float farPlane = 100.0f)
+    {
+        m_aspectRatio = viewport.width / (float)viewport.height;
+        m_projection = glm::mat4(glm::perspective(glm::radians(fov), m_aspectRatio, nearPlane, farPlane));
+    }
+
     void Forward() { m_position += CAMERA_SPEED * m_front; }
     void Back() { m_position -= CAMERA_SPEED * m_front; }
     void Left() { m_position -= glm::normalize(glm::cross(m_front, m_up)) * CAMERA_SPEED; }
@@ -98,12 +104,12 @@ public:
         const float yawRadians   = glm::radians(m_yaw);
         const float pitchRadians = glm::radians(m_pitch);
 
-        m_target = m_position + m_front;
-
         // calculate the new Front vector
         const glm::vec3 front(cos(yawRadians) * cos(pitchRadians), sin(pitchRadians),
                               sin(yawRadians) * cos(pitchRadians));
         m_front = glm::normalize(front);
+
+        m_target = m_position + m_front;
 
         // also re-calculate the Right and Up vector
         const glm::vec3 right = glm::normalize(glm::cross(m_front, m_up));

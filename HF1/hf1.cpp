@@ -23,6 +23,12 @@
 #include "swapchain.h"
 #include "wrappers.h"
 
+void FramebufferSizeCallback(GLFWwindow* window, int width, int height)
+{
+    Camera* camera = reinterpret_cast<Camera*>(glfwGetWindowUserPointer(window));
+    camera->UpdateDimensions({(uint)width,(uint) height});
+}
+
 void KeyCallback(GLFWwindow* window, int key, int /*scancode*/, int /*action*/, int /*mods*/)
 {
     Camera* camera = reinterpret_cast<Camera*>(glfwGetWindowUserPointer(window));
@@ -50,17 +56,6 @@ void KeyCallback(GLFWwindow* window, int key, int /*scancode*/, int /*action*/, 
     case GLFW_KEY_E:
         camera->Up();
         break;
-    }
-}
-
-void HandleJoystick(Camera* camera)
-{
-    if (glfwJoystickIsGamepad(GLFW_JOYSTICK_1)) {
-        GLFWgamepadstate state;
-        if (glfwGetGamepadState(GLFW_JOYSTICK_1, &state)) {
-            const float deltaTime = 0.016f; // or calculate frame delta
-            camera->ProcessControllerInput(state, deltaTime);
-        }
     }
 }
 
@@ -93,6 +88,17 @@ void MouseCallback(GLFWwindow* window, double xposIn, double yposIn)
         camera->ProcessMouseMovement(xoffset, yoffset);
     } else {
         firstMouse = true;
+    }
+}
+
+void HandleJoystick(Camera* camera)
+{
+    if (glfwJoystickIsGamepad(GLFW_JOYSTICK_1)) {
+        GLFWgamepadstate state;
+        if (glfwGetGamepadState(GLFW_JOYSTICK_1, &state)) {
+            const float deltaTime = 0.016f; // or calculate frame delta
+            camera->ProcessControllerInput(state, deltaTime);
+        }
     }
 }
 
@@ -161,7 +167,8 @@ int main(int /*argc*/, char** /*argv*/)
     }
 
     glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
-    glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
+    // glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
+    glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE);
 
     uint32_t     count          = 0;
     const char** glfwExtensions = glfwGetRequiredInstanceExtensions(&count);
@@ -193,6 +200,7 @@ int main(int /*argc*/, char** /*argv*/)
     glfwSetWindowUserPointer(window, &camera);
     glfwSetKeyCallback(window, KeyCallback);
     glfwSetCursorPosCallback(window, MouseCallback);
+    glfwSetFramebufferSizeCallback(window, FramebufferSizeCallback);
 
 
     // We have the window, the instance, create a surface from the window to draw onto.
