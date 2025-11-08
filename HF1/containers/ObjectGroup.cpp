@@ -20,6 +20,8 @@ void ObjectGroup::destroyChildren(const VkDevice device)
         } else if (ObjectGroup* d = dynamic_cast<ObjectGroup*>(child)) {
             d->destroyChildren(device);
         }
+        delete child;
     }
+    m_children.clear();
 }
 

@@ -86,13 +86,21 @@ void DrawAll(const VkCommandBuffer cmd)
 void DestroyAll(const VkDevice device) {
     for (BaseEntity* object : entities) {
         object->destroy(device);
+        delete object;
     }
+    entities.clear();
+
     for (ObjectGroup* object : objectGroups) {
         object->destroyChildren(device);
+        delete object;
     }
+    objectGroups.clear();
+
     for (BasePrimitive* object : primitives) {
         object->destroy(device);
+        delete object;
     }
+    primitives.clear();
 }
 
 
