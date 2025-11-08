@@ -67,7 +67,7 @@ void BasePrimitive::Destroy(const VkDevice device)
 void BasePrimitive::Draw(const VkCommandBuffer cmdBuffer)
 {
     const ModelPushConstant modelData = {
-        .model = m_position * m_rotation * m_scale,
+        .model = getModelMatrix(),
     };
 
     vkCmdPushConstants(cmdBuffer, m_pipelineLayout, VK_SHADER_STAGE_VERTEX_BIT, m_constantOffset,
@@ -80,24 +80,4 @@ void BasePrimitive::Draw(const VkCommandBuffer cmdBuffer)
 
     vkCmdBindIndexBuffer(cmdBuffer, m_indexBuffer.buffer, 0, VK_INDEX_TYPE_UINT32);
     vkCmdDrawIndexed(cmdBuffer, m_vertexCount, 1, 0, 0, 0);
-}
-
-void BasePrimitive::setScale(const float x, const float y, const float z)
-{
-    m_scale =  glm::scale(glm::mat4(1.0f), glm::vec3(x, y, z));
-}
-
-void BasePrimitive::setPosition(const float x, const float y, const float z)
-{
-    m_position = glm::translate(glm::mat4(1.0f), glm::vec3(x, y, z));
-}
-
-void BasePrimitive::setRotation(float rx, float ry, float rz)
-{
-    rx = glm::radians(rx);
-    ry = glm::radians(ry);
-    rz = glm::radians(rz);
-    const glm::vec3 angle = glm::vec3(rx, ry, rz);
-    const glm::quat q = glm::quat(angle);
-    m_rotation = glm::toMat4(q);
 }

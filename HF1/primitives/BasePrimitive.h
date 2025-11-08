@@ -1,5 +1,7 @@
 #pragma once
 
+#include "ITransformable.h"
+
 #include <vulkan/vulkan_core.h>
 
 #include "buffer.h"
@@ -9,20 +11,17 @@
 
 class Context;
 
-class BasePrimitive {
+class BasePrimitive  : public ITransformable{
 public:
-
 
     BasePrimitive(bool wireframe = false);
     virtual ~BasePrimitive() = default;
 
-    VkResult Create(const Context& context, const VkFormat colorFormat, const uint32_t pushConstantStart);
-    void     Destroy(const VkDevice device);
-    void     Draw(const VkCommandBuffer cmdBuffer);
+    VkResult Create(const Context& context, VkFormat colorFormat, uint32_t pushConstantStart);
+    void     Destroy(VkDevice device);
+    void     Draw(VkCommandBuffer cmdBuffer);
 
-    void setScale(float x, float y, float z);
-    void setPosition(float x, float y, float z);
-    void setRotation(float rx, float ry, float rz);
+
 
 protected:
     struct ModelPushConstant {
@@ -47,11 +46,6 @@ protected:
     std::vector<unsigned int> m_indices;
 
     uint32_t         m_vertexCount;
-
-
-    glm::mat4        m_scale          = glm::mat4(1.0f);
-    glm::mat4        m_position       = glm::mat4(1.0f);
-    glm::mat4        m_rotation       = glm::mat4(1.0f);
 
     bool wireframe;
 };
