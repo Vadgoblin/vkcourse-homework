@@ -64,10 +64,10 @@ void BasePrimitive::Destroy(const VkDevice device)
     vkDestroyPipelineLayout(device, m_pipelineLayout, nullptr);
 }
 
-void BasePrimitive::Draw(const VkCommandBuffer cmdBuffer)
+void BasePrimitive::Draw(const VkCommandBuffer cmdBuffer, const glm::mat4& parentModel)
 {
     const ModelPushConstant modelData = {
-        .model = getModelMatrix(),
+        .model = parentModel * getModelMatrix(),
     };
 
     vkCmdPushConstants(cmdBuffer, m_pipelineLayout, VK_SHADER_STAGE_VERTEX_BIT, m_constantOffset,

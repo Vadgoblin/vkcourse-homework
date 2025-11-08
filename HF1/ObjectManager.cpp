@@ -1,5 +1,6 @@
 #include "ObjectManager.h"
 
+#include "containers/ObjectGroup.h"
 #include "primitives/BasePrimitive.h"
 #include "primitives/Cube.h"
 #include "primitives/Cylinder.h"
@@ -8,40 +9,51 @@
 
 namespace ObjectManager {
 std::vector<BasePrimitive*> objects;
+ObjectGroup objectGroup;
 
 void SetupAll(const Context& context, const Swapchain& swapchain, size_t pushConstansStart)
 {
     Grid* grid = new Grid(1,1,3,2,false);
     grid->Create(context, swapchain.format(), pushConstansStart);
     grid->setScale(12.0f, 1.0f, 12.0f);
-    objects.push_back(grid);
+    // objects.push_back(grid);
+    objectGroup.addChild(grid);
 
     Cube* cube = new Cube(1.0f, true);
     cube->setPosition(0.0f, 0.45f,0.0f);
     cube->setScale(1.0f,0.9f,1.0f);
     cube->Create(context, swapchain.format(), pushConstansStart);
-    objects.push_back(cube);
+    // objects.push_back(cube);
+    objectGroup.addChild(cube);
 
     Cylinder* cylinder = new Cylinder(0.05, 0.05, 1, 25, 2, true);
     cylinder->setPosition(0.0f, 0.5f,0.0f);
     cylinder->setRotation(90.0f,0.0f,0.0f);
     cylinder->Create(context, swapchain.format(), pushConstansStart);
-    objects.push_back(cylinder);
+    // objects.push_back(cylinder);
+    objectGroup.addChild(cylinder);
 
     Cube* cube2 = new Cube(1.0f, true);
     cube2->setPosition(0.0f, 0.95f,0.0f);
     cube2->setScale(1.0f,0.1f,1.0f);
     cube2->Create(context, swapchain.format(), pushConstansStart);
-    objects.push_back(cube2);
+    // objects.push_back(cube2);
+    objectGroup.addChild(cube2);
 
     Sphere* sphere = new Sphere(0.4f,25,25,true);
     sphere->setPosition(0.0f, 1.4f,0.0f);
     sphere->Create(context, swapchain.format(), pushConstansStart);
-    objects.push_back(sphere);
+    // objects.push_back(sphere);
+    objectGroup.addChild(sphere);
+
+
+    objectGroup.setRotation(0.0f, 0.0f,14.0f);
+    objectGroup.setPosition(0.0f, -4.0f,0.0f);
 }
 
 void DrawAll(VkCommandBuffer cmd)
 {
+    objectGroup.draw(cmd);
     for (BasePrimitive* object : objects) {
         object->Draw(cmd);
     }

@@ -19,6 +19,8 @@ add_executable(hf1
         primitives/Sphere.h
         primitives/ITransformable.cpp
         primitives/ITransformable.h
+        containers/ObjectGroup.cpp
+        containers/ObjectGroup.h
 )
 
 target_include_directories(hf1
