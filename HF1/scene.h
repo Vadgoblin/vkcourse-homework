@@ -4,7 +4,7 @@
 #include <vulkan/vulkan_core.h>
 
 namespace ObjectManager {
-    void SetupAll(const Context& context, const Swapchain& swapchain, size_t pushConstansStart);
-    void DrawAll(VkCommandBuffer cmdBuffer);
-    void DestroyAll(VkDevice device);
+    void setup(const Context& context, const Swapchain& swapchain, size_t pushConstansStart);
+    void draw(VkCommandBuffer cmdBuffer);
+    void destroy(VkDevice device);
 }

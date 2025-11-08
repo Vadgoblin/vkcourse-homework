@@ -16,8 +16,8 @@
 
 #include "camera.h"
 #include "context.h"
-#include "ObjectManager.h"
 #include "debug.h"
+#include "scene.h"
 
 #include "imgui_integration.h"
 #include "swapchain.h"
@@ -236,7 +236,7 @@ int main(int /*argc*/, char** /*argv*/)
                                              context.sampleCountFlagBits());
     }
 
-    ObjectManager::SetupAll(context,swapchain, sizeof(Camera::CameraPushConstant));
+    ObjectManager::setup(context,swapchain, sizeof(Camera::CameraPushConstant));
 
     glfwShowWindow(window);
 
@@ -333,7 +333,7 @@ int main(int /*argc*/, char** /*argv*/)
 
             camera.PushConstants(cmdBuffer);
 
-            ObjectManager::DrawAll(cmdBuffer);
+            ObjectManager::draw(cmdBuffer);
 
             // Render things
             imIntegration.Draw(cmdBuffer);
@@ -376,7 +376,7 @@ int main(int /*argc*/, char** /*argv*/)
     vkDestroyCommandPool(device, cmdPool, nullptr);
 
     camera.Destroy(device);
-    ObjectManager::DestroyAll(device);
+    ObjectManager::destroy(device);
     swapchain.Destroy();
     context.Destroy();
 

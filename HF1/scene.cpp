@@ -3,6 +3,7 @@
 #include "containers/ObjectGroup.h"
 #include "entities/RotatingCube.h"
 #include "primitives/BasePrimitive.h"
+#include "primitives/Cone.h"
 #include "primitives/Cube.h"
 #include "primitives/Cylinder.h"
 #include "primitives/Grid.h"
@@ -13,7 +14,7 @@ std::vector<BasePrimitive*> primitives;
 std::vector<ObjectGroup*> objectGroups;
 std::vector<BaseEntity*> entities;
 
-void SetupAll(const Context& context, const Swapchain& swapchain, size_t pushConstansStart)
+void setup(const Context& context, const Swapchain& swapchain, size_t pushConstansStart)
 {
     ObjectGroup* group1 = new ObjectGroup();
     ObjectGroup* group2 = new ObjectGroup();
@@ -59,7 +60,10 @@ void SetupAll(const Context& context, const Swapchain& swapchain, size_t pushCon
     entities.push_back(rotatingCube);
     // group1->addChild(rotatingCube);
 
-
+    Cone* cone = new Cone(1.0f,1.0f,3, true, false);
+    cone->create(context, swapchain.format(), pushConstansStart);
+    cone->setPosition(-4.0f, 1.2f, 0.0f);
+    primitives.push_back(cone);
 
 
     // group2->setRotation(0.0f, 0.0f,-14.0f);
@@ -69,7 +73,7 @@ void SetupAll(const Context& context, const Swapchain& swapchain, size_t pushCon
     objectGroups.push_back(group1);
 }
 
-void DrawAll(const VkCommandBuffer cmd)
+void draw(const VkCommandBuffer cmd)
 {
     for (BaseEntity* object : entities) {
         object->tick();
@@ -83,7 +87,7 @@ void DrawAll(const VkCommandBuffer cmd)
     }
 }
 
-void DestroyAll(const VkDevice device) {
+void destroy(const VkDevice device) {
     for (BaseEntity* object : entities) {
         object->destroy(device);
         delete object;

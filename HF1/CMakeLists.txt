@@ -11,8 +11,8 @@ add_executable(hf1
         primitives/Cylinder.h
         primitives/Grid.cpp
         primitives/Grid.h
-        ObjectManager.cpp
-        ObjectManager.h
+        scene.cpp
+        scene.h
         debug.h
         debug.cpp
         primitives/Sphere.cpp
@@ -26,6 +26,8 @@ add_executable(hf1
         entities/RotatingCube.cpp
         entities/RotatingCube.h
         entities/RotatingCube.h
+        primitives/Cone.cpp
+        primitives/Cone.h
 )
 
 target_include_directories(hf1
