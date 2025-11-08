@@ -60,4 +60,17 @@ void PistonWithBouncingBall::destroy(const VkDevice device)
 void PistonWithBouncingBall::tick()
 {
     m_animationProgress += 1.0f * m_speed;
+    if (m_animationProgress >= 5 * PI)
+        m_animationProgress -= 5 * PI;
+
+    float t = std::fmod(m_animationProgress, PI);
+
+    float bounceHeight = std::abs(std::sin(t)) * std::exp(-0.14f * m_animationProgress);
+    m_ball->setPosition(0.0f, bounceHeight* 4, 0.0f);
+
+    if (m_animationProgress <= PI / 2.0f) {
+        m_pistonMovingPart->setPosition(0.0f, 0.9 * std::sin(t * 2),0.0f);
+    } else {
+        m_pistonMovingPart->setPosition(0.0f, 0.0f, 0.0f);
+    }
 }

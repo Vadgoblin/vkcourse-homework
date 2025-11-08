@@ -12,8 +12,9 @@ public:
     void tick() override;
 
 private:
+    const float PI = 3.14159265359f;
     float        m_animationProgress = 0.0f;
-    float        m_speed = 1.0f;
+    float        m_speed = 0.075f;
 
     ObjectGroup* m_pistonBase;
     ObjectGroup* m_pistonMovingPart;
