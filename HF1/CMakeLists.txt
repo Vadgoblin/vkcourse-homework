@@ -28,6 +28,8 @@ add_executable(hf1
         entities/RotatingCube.h
         primitives/Cone.cpp
         primitives/Cone.h
+        entities/RotatingTetrahedron.cpp
+        entities/RotatingTetrahedron.h
 )
 
 target_include_directories(hf1

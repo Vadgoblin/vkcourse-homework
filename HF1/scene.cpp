@@ -2,6 +2,7 @@
 
 #include "containers/ObjectGroup.h"
 #include "entities/RotatingCube.h"
+#include "entities/RotatingTetrahedron.h"
 #include "primitives/BasePrimitive.h"
 #include "primitives/Cone.h"
 #include "primitives/Cube.h"
@@ -58,12 +59,11 @@ void setup(const Context& context, const Swapchain& swapchain, size_t pushConsta
     rotatingCube->create(context, swapchain.format(), pushConstansStart);
     rotatingCube->setPosition(3.0f, 2.0f, 0.0f);
     entities.push_back(rotatingCube);
-    // group1->addChild(rotatingCube);
 
-    Cone* cone = new Cone(1.0f,1.0f,3, true, false);
-    cone->create(context, swapchain.format(), pushConstansStart);
-    cone->setPosition(-4.0f, 1.2f, 0.0f);
-    primitives.push_back(cone);
+    RotatingTetrahedron* rotating_tetrahedron = new RotatingTetrahedron();
+    rotating_tetrahedron->create(context,swapchain.format(), pushConstansStart);
+    rotating_tetrahedron->setPosition(-4.0f, 1.2f, 0.0f);
+    entities.push_back(rotating_tetrahedron);
 
 
     // group2->setRotation(0.0f, 0.0f,-14.0f);
