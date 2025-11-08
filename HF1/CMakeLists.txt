@@ -17,6 +17,15 @@ add_executable(hf1
         debug.cpp
         primitives/Sphere.cpp
         primitives/Sphere.h
+        primitives/ITransformable.cpp
+        primitives/ITransformable.h
+        containers/ObjectGroup.cpp
+        containers/ObjectGroup.h
+        primitives/IDrawable.h
+        entities/BaseEntity.h
+        entities/RotatingCube.cpp
+        entities/RotatingCube.h
+        entities/RotatingCube.h
 )
 
 target_include_directories(hf1

@@ -24,7 +24,7 @@ BasePrimitive::BasePrimitive(const bool wireframe)
      m_shaderFragSize = sizeof(SPV_triangle_in_frag);
 }
 
-VkResult BasePrimitive::Create(const Context& context, const VkFormat colorFormat, const uint32_t pushConstantStart)
+VkResult BasePrimitive::create(const Context& context, const VkFormat colorFormat, const uint32_t pushConstantStart)
 {
     const VkDevice       device         = context.device();
     const VkShaderModule shaderVertex   = CreateShaderModule(device, m_shaderVertData, m_shaderVertSize);
@@ -56,7 +56,7 @@ VkResult BasePrimitive::Create(const Context& context, const VkFormat colorForma
     return VK_SUCCESS;
 }
 
-void BasePrimitive::Destroy(const VkDevice device)
+void BasePrimitive::destroy(const VkDevice device)
 {
     m_vertexBuffer.Destroy(device);
     m_indexBuffer.Destroy(device);
@@ -64,10 +64,10 @@ void BasePrimitive::Destroy(const VkDevice device)
     vkDestroyPipelineLayout(device, m_pipelineLayout, nullptr);
 }
 
-void BasePrimitive::Draw(const VkCommandBuffer cmdBuffer)
+void BasePrimitive::draw(const VkCommandBuffer cmdBuffer, const glm::mat4& parentModel)
 {
     const ModelPushConstant modelData = {
-        .model = m_position * m_rotation * m_scale,
+        .model = parentModel * getModelMatrix(),
     };
 
     vkCmdPushConstants(cmdBuffer, m_pipelineLayout, VK_SHADER_STAGE_VERTEX_BIT, m_constantOffset,
@@ -80,24 +80,4 @@ void BasePrimitive::Draw(const VkCommandBuffer cmdBuffer)
 
     vkCmdBindIndexBuffer(cmdBuffer, m_indexBuffer.buffer, 0, VK_INDEX_TYPE_UINT32);
     vkCmdDrawIndexed(cmdBuffer, m_vertexCount, 1, 0, 0, 0);
-}
-
-void BasePrimitive::setScale(const float x, const float y, const float z)
-{
-    m_scale =  glm::scale(glm::mat4(1.0f), glm::vec3(x, y, z));
-}
-
-void BasePrimitive::setPosition(const float x, const float y, const float z)
-{
-    m_position = glm::translate(glm::mat4(1.0f), glm::vec3(x, y, z));
-}
-
-void BasePrimitive::setRotation(float rx, float ry, float rz)
-{
-    rx = glm::radians(rx);
-    ry = glm::radians(ry);
-    rz = glm::radians(rz);
-    const glm::vec3 angle = glm::vec3(rx, ry, rz);
-    const glm::quat q = glm::quat(angle);
-    m_rotation = glm::toMat4(q);
 }
