@@ -69,6 +69,9 @@ void DrawAll(VkCommandBuffer cmd)
 }
 
 void DestroyAll(VkDevice device) {
+    for (ObjectGroup* object : objectGroups) {
+        object->destroyChildren(device);
+    }
     for (BasePrimitive* object : primitives) {
         object->destroy(device);
     }

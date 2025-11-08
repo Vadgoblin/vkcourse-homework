@@ -9,6 +9,7 @@ class ObjectGroup : public ITransformable, public IDrawable{
 public:
     void     addChild(IDrawable *);
     void     draw(VkCommandBuffer cmdBuffer, const glm::mat4& parentModel = glm::mat4(1.0f)) override;
+    void     destroyChildren(VkDevice device);
 
 protected:
     std::vector<IDrawable*> m_children;
