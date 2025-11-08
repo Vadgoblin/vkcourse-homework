@@ -30,6 +30,8 @@ add_executable(hf1
         primitives/Cone.h
         entities/RotatingTetrahedron.cpp
         entities/RotatingTetrahedron.h
+        entities/PistonWithBouncingBall.cpp
+        entities/PistonWithBouncingBall.h
 )
 
 target_include_directories(hf1
