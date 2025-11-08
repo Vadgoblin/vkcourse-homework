@@ -1,4 +1,4 @@
-#include "ObjectManager.h"
+#include "scene.h"
 
 #include "containers/ObjectGroup.h"
 #include "entities/RotatingCube.h"
