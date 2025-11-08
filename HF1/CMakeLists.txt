@@ -32,6 +32,8 @@ add_executable(hf1
         entities/RotatingTetrahedron.h
         entities/PistonWithBouncingBall.cpp
         entities/PistonWithBouncingBall.h
+        entities/OrbitingHelicopter.cpp
+        entities/OrbitingHelicopter.h
 )
 
 target_include_directories(hf1

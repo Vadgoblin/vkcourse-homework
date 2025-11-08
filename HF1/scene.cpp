@@ -1,6 +1,7 @@
 #include "scene.h"
 
 #include "containers/ObjectGroup.h"
+#include "entities/OrbitingHelicopter.h"
 #include "entities/PistonWithBouncingBall.h"
 #include "entities/RotatingCube.h"
 #include "entities/RotatingTetrahedron.h"
@@ -36,6 +37,11 @@ void setup(const Context& context, const Swapchain& swapchain, size_t pushConsta
     PistonWithBouncingBall* piston_with_bouncing_ball = new PistonWithBouncingBall();
     piston_with_bouncing_ball->create(context, swapchain.format(), pushConstansStart);
     entities.push_back(piston_with_bouncing_ball);
+
+    OrbitingHelicopter* orbiting_helicopter = new OrbitingHelicopter();
+    orbiting_helicopter->create(context, swapchain.format(), pushConstansStart);
+    orbiting_helicopter->setPosition(0.0f, 5.0f, 0.0f);
+    entities.push_back(orbiting_helicopter);
 }
 
 void draw(const VkCommandBuffer cmd)
