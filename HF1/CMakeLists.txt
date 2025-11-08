@@ -22,6 +22,10 @@ add_executable(hf1
         containers/ObjectGroup.cpp
         containers/ObjectGroup.h
         primitives/IDrawable.h
+        entities/BaseEntity.h
+        entities/RotatingCube.cpp
+        entities/RotatingCube.h
+        entities/RotatingCube.h
 )
 
 target_include_directories(hf1
