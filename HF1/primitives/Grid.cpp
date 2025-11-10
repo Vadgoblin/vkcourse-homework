@@ -4,8 +4,8 @@
 #include <vector>
 
 namespace {
-#include "grid.frag_include.h"
-#include "grid.vert_include.h"
+#include "shaders/grid.frag_include.h"
+#include "shaders/grid.vert_include.h"
 }
 
 

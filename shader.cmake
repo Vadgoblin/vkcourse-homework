@@ -5,10 +5,12 @@ function(add_shader SHADER_TARGET SHADER_FILE SHADER_VAR_NAME)
     set(SHADER_OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/${SHADER_FILE}_include.h)
 
     get_filename_component(SHADER_NAME ${SHADER_FILE} NAME)
+    get_filename_component(SHADER_OUTPUT_DIR "${SHADER_OUTPUT}" DIRECTORY)
 
     # Create command which compiles the shader
     add_custom_command(OUTPUT ${SHADER_OUTPUT}
             DEPENDS ${SHADER_INPUT}
+            COMMAND ${CMAKE_COMMAND} -E make_directory "${SHADER_OUTPUT_DIR}"
             COMMAND ${Vulkan_GLSLANG_VALIDATOR_EXECUTABLE}
             -V
             --variable-name ${SHADER_VAR_NAME}

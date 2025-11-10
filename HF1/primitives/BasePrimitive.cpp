@@ -11,8 +11,8 @@
 #include "../PipelineUtils.h"
 
 namespace {
-#include "triangle_in.frag_include.h"
-#include "triangle_in.vert_include.h"
+#include "shaders/triangle_in.frag_include.h"
+#include "shaders/triangle_in.vert_include.h"
 }
 
 BasePrimitive::BasePrimitive(const bool wireframe)
