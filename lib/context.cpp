@@ -144,6 +144,8 @@ VkDevice Context::CreateDevice(const std::vector<const char*>& extensions)
 
 void Context::Destroy()
 {
+    m_pipeline->Destroy();
+    delete m_pipeline;
     vkDestroyDevice(m_device, nullptr);
     vkDestroyInstance(m_instance, nullptr);
 }
@@ -193,4 +195,9 @@ void Context::SetSampleCountFlagBits()
     } else {
         m_SampleCountFlagBits = VK_SAMPLE_COUNT_1_BIT; // No MSAA
     }
+}
+
+void Context::CreatePipeline(VkFormat swapchainFormat)
+{
+    m_pipeline = new Pipeline(m_device, swapchainFormat, m_SampleCountFlagBits);
 }

@@ -2,6 +2,7 @@
 
 #include <vulkan/vulkan_core.h>
 #include "glm_config.h"
+#include <GLFW/glfw3.h>
 
 namespace {
 static float ApplyDeadzone(float value, float deadzone = 0.18f) {

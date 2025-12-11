@@ -240,25 +240,7 @@ int main(int /*argc*/, char** /*argv*/)
                                              context.sampleCountFlagBits());
     }
 
-    struct ModelPushConstant {
-        glm::mat4 model;
-    };
-
-    const uint32_t* m_shaderVertData = SPV_triangle_in_vert;
-    size_t m_shaderVertSize = sizeof(SPV_triangle_in_vert);
-    const uint32_t* m_shaderFragData = SPV_triangle_in_frag;
-    size_t m_shaderFragSize = sizeof(SPV_triangle_in_frag);
-
-    const VkShaderModule shaderVertex   = CreateShaderModule(device, m_shaderVertData, m_shaderVertSize);
-    const VkShaderModule shaderFragment = CreateShaderModule(device, m_shaderFragData, m_shaderFragSize);
-
-    uint32_t m_constantOffset = sizeof(Camera::CameraPushConstant);
-    VkPipelineLayout m_pipelineLayout = CreateEmptyPipelineLayout(device, m_constantOffset + sizeof(ModelPushConstant));
-    VkPipeline m_pipeline       = CreateSimplePipeline(device, swapchain.format(), m_pipelineLayout, shaderVertex, shaderFragment, context.sampleCountFlagBits());
-
-    context.pipelineLayout(m_pipelineLayout);
-    context.pipeline(m_pipeline);
-    context.constantOffset(m_constantOffset);
+    context.CreatePipeline(swapchain.format());
 
     ObjectManager::setup(context);
 

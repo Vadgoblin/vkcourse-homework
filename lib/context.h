@@ -1,5 +1,7 @@
 #pragma once
 
+#include "../HF1/Pipeline.h"
+
 #include <string>
 #include <vector>
 
@@ -28,13 +30,8 @@ public:
     VkQueue          queue() const { return m_queue; }
     VkSampleCountFlagBits sampleCountFlagBits() const {return m_SampleCountFlagBits;};
 
-    VkPipelineLayout pipelineLayout() const { return m_pipelineLayout; }
-    VkPipeline       pipeline() const { return m_pipeline; }
-    uint32_t         constantOffset() const { return m_constantOffset; }
-
-    void pipelineLayout(VkPipelineLayout layout) { m_pipelineLayout = layout; }
-    void pipeline(VkPipeline pipeline) { m_pipeline = pipeline; }
-    void constantOffset(uint32_t constantOffset) {m_constantOffset = constantOffset;}
+    void CreatePipeline(VkFormat swapchainFormat);
+    Pipeline& pipeline() const { return *m_pipeline; }
 
 protected:
     bool FindQueueFamily(const VkPhysicalDevice phyDevice, const VkSurfaceKHR surface, uint32_t* outQueueFamilyIdx);
@@ -50,7 +47,6 @@ protected:
     VkQueue          m_queue          = VK_NULL_HANDLE;
     VkSampleCountFlagBits m_SampleCountFlagBits = static_cast<VkSampleCountFlagBits>(0);
 
-    VkPipelineLayout m_pipelineLayout;
-    VkPipeline m_pipeline;
-    uint32_t         m_constantOffset = 0;
+    Pipeline* m_pipeline = nullptr;
+
 };

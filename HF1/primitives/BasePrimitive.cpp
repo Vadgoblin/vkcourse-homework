@@ -26,9 +26,9 @@ BasePrimitive::BasePrimitive()
 
 VkResult BasePrimitive::create(const Context& context)
 {
-    m_pipeline = context.pipeline();
-    m_pipelineLayout = context.pipelineLayout();
-    m_constantOffset = context.constantOffset();
+    m_pipeline = context.pipeline().pipeline();
+    m_pipelineLayout = context.pipeline().pipelineLayout();
+    m_constantOffset = context.pipeline().constantOffset();
 
     m_vertexCount = static_cast<uint32_t>(m_indices.size());
 
