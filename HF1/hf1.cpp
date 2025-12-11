@@ -23,9 +23,6 @@
 #include "swapchain.h"
 #include "wrappers.h"
 
-#include "PipelineUtils.h"
-#include "shaders/triangle_in.frag_include.h"
-#include "shaders/triangle_in.vert_include.h"
 
 void KeyCallback(GLFWwindow* window, int key, int /*scancode*/, int /*action*/, int /*mods*/)
 {

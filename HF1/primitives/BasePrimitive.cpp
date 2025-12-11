@@ -8,7 +8,6 @@
 #include <vector>
 #include <vulkan/vulkan_core.h>
 #include "context.h"
-#include "../PipelineUtils.h"
 #include "../ModelPushConstant.h"
 
 namespace {

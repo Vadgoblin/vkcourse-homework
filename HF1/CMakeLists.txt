@@ -1,8 +1,6 @@
 add_executable(hf1
         hf1.cpp
 
-        PipelineUtils.h
-        PipelineUtils.cpp
         primitives/BasePrimitive.h
         primitives/BasePrimitive.cpp
         primitives/Cube.cpp

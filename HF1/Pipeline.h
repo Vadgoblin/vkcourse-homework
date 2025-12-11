@@ -15,6 +15,14 @@ public:
     uint32_t         constantOffset() const { return m_constantOffset; }
 
 private:
+    static VkPipelineLayout CreateEmptyPipelineLayout(const VkDevice device, uint32_t pushConstantSize = 0);
+    static VkPipeline CreateSimplePipeline(const VkDevice         device,
+                                    const VkFormat         colorFormat,
+                                    const VkPipelineLayout pipelineLayout,
+                                    const VkShaderModule   shaderVertex,
+                                    const VkShaderModule   shaderFragment,
+                                    const VkSampleCountFlagBits vkSampleCountFlagBits);
+
     VkDevice    m_vkDevice;
     VkPipelineLayout  m_pipelineLayout;
     VkPipeline        m_pipeline;
