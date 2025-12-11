@@ -260,7 +260,7 @@ int main(int /*argc*/, char** /*argv*/)
     context.pipeline(m_pipeline);
     context.constantOffset(m_constantOffset);
 
-    ObjectManager::setup(context,swapchain, sizeof(Camera::CameraPushConstant), m_pipeline);
+    ObjectManager::setup(context);
 
     glfwShowWindow(window);
 

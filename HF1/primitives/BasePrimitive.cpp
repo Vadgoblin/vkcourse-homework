@@ -24,19 +24,8 @@ BasePrimitive::BasePrimitive(const bool wireframe)
      m_shaderFragSize = sizeof(SPV_triangle_in_frag);
 }
 
-VkResult BasePrimitive::create(const Context& context, const VkFormat colorFormat, const uint32_t pushConstantStart,VkPipeline pipeline)
+VkResult BasePrimitive::create(const Context& context)
 {
-    const VkDevice       device         = context.device();
-    // const VkShaderModule shaderVertex   = CreateShaderModule(device, m_shaderVertData, m_shaderVertSize);
-    // const VkShaderModule shaderFragment = CreateShaderModule(device, m_shaderFragData, m_shaderFragSize);
-    //
-    // m_constantOffset = pushConstantStart;
-    // m_pipelineLayout = CreateEmptyPipelineLayout(device, m_constantOffset + sizeof(ModelPushConstant));
-    //  m_pipeline       = CreateSimplePipeline(device, colorFormat, m_pipelineLayout, shaderVertex, shaderFragment, context.sampleCountFlagBits() ,this->wireframe);
-    //
-    // vkDestroyShaderModule(device, shaderVertex, nullptr);
-    // vkDestroyShaderModule(device, shaderFragment, nullptr);
-
     m_pipeline = context.pipeline();
     m_pipelineLayout = context.pipelineLayout();
     m_constantOffset = context.constantOffset();
@@ -44,18 +33,18 @@ VkResult BasePrimitive::create(const Context& context, const VkFormat colorForma
     m_vertexCount = static_cast<uint32_t>(m_indices.size());
 
     const uint32_t vertexDataSize = m_vertices.size() * sizeof(float);
-    m_vertexBuffer = BufferInfo::Create(context.physicalDevice(), device, vertexDataSize,
+    m_vertexBuffer = BufferInfo::Create(context.physicalDevice(), context.device(), vertexDataSize,
         VK_BUFFER_USAGE_VERTEX_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT);
-    void* dataPtr = m_vertexBuffer.Map(device);
+    void* dataPtr = m_vertexBuffer.Map(context.device());
     memcpy(dataPtr, m_vertices.data(), vertexDataSize);
-    m_vertexBuffer.Unmap(device);
+    m_vertexBuffer.Unmap(context.device());
 
     const uint32_t indexDataSize = m_indices.size() * sizeof(uint32_t);
-    m_indexBuffer = BufferInfo::Create(context.physicalDevice(), device, indexDataSize,
+    m_indexBuffer = BufferInfo::Create(context.physicalDevice(), context.device(), indexDataSize,
         VK_BUFFER_USAGE_INDEX_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT);
-    dataPtr = m_indexBuffer.Map(device);
+    dataPtr = m_indexBuffer.Map(context.device());
     memcpy(dataPtr, m_indices.data(), indexDataSize);
-    m_indexBuffer.Unmap(device);
+    m_indexBuffer.Unmap(context.device());
 
     return VK_SUCCESS;
 }
@@ -64,8 +53,8 @@ void BasePrimitive::destroy(const VkDevice device)
 {
     m_vertexBuffer.Destroy(device);
     m_indexBuffer.Destroy(device);
-    vkDestroyPipeline(device, m_pipeline, nullptr);
-    vkDestroyPipelineLayout(device, m_pipelineLayout, nullptr);
+    // vkDestroyPipeline(device, m_pipeline, nullptr);
+    // vkDestroyPipelineLayout(device, m_pipelineLayout, nullptr);
 }
 
 void BasePrimitive::draw(const VkCommandBuffer cmdBuffer, const glm::mat4& parentModel)

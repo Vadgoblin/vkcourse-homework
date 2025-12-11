@@ -18,7 +18,7 @@ public:
     BasePrimitive(bool wireframe = false);
     virtual ~BasePrimitive() = default;
 
-    VkResult create(const Context& context, VkFormat colorFormat, uint32_t pushConstantStart,VkPipeline pipeline);
+    VkResult create(const Context& context);
     void     destroy(VkDevice device);
     void     draw(VkCommandBuffer cmdBuffer, const glm::mat4& parentModel = glm::mat4(1.0f)) override;
 
