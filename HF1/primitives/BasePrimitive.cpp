@@ -38,6 +38,13 @@ VkResult BasePrimitive::create(const Context& context)
     memcpy(dataPtr, m_vertices.data(), vertexDataSize);
     m_vertexBuffer.Unmap(context.device());
 
+    const uint32_t texCoordDataSize = m_texCoords.size() * sizeof(float);
+    m_texCoordBuffer = BufferInfo::Create(context.physicalDevice(), context.device(), texCoordDataSize,
+        VK_BUFFER_USAGE_VERTEX_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT);
+    dataPtr = m_texCoordBuffer.Map(context.device());
+    memcpy(dataPtr, m_texCoords.data(), vertexDataSize);
+    m_texCoordBuffer.Unmap(context.device());
+
     const uint32_t indexDataSize = m_indices.size() * sizeof(uint32_t);
     m_indexBuffer = BufferInfo::Create(context.physicalDevice(), context.device(), indexDataSize,
         VK_BUFFER_USAGE_INDEX_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT);
@@ -52,8 +59,7 @@ void BasePrimitive::destroy(const VkDevice device)
 {
     m_vertexBuffer.Destroy(device);
     m_indexBuffer.Destroy(device);
-    // vkDestroyPipeline(device, m_pipeline, nullptr);
-    // vkDestroyPipelineLayout(device, m_pipelineLayout, nullptr);
+    m_texCoordBuffer.Destroy(device);
 }
 
 void BasePrimitive::draw(const VkCommandBuffer cmdBuffer, const glm::mat4& parentModel)
@@ -62,13 +68,13 @@ void BasePrimitive::draw(const VkCommandBuffer cmdBuffer, const glm::mat4& paren
         .model = parentModel * getModelMatrix(),
     };
 
+    vkCmdBindPipeline(cmdBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, m_pipeline);
     vkCmdPushConstants(cmdBuffer, m_pipelineLayout, VK_SHADER_STAGE_VERTEX_BIT, m_constantOffset,
                        sizeof(ModelPushConstant), &modelData);
-    vkCmdBindPipeline(cmdBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, m_pipeline);
 
-    VkBuffer vertexBuffers[] = { m_vertexBuffer.buffer };
-    VkDeviceSize offsets[] = { 0 };
-    vkCmdBindVertexBuffers(cmdBuffer, 0, 1, vertexBuffers, offsets);
+    VkBuffer vertexBuffers[] = { m_vertexBuffer.buffer,m_texCoordBuffer.buffer };
+    VkDeviceSize offsets[] = { 0,0 };
+    vkCmdBindVertexBuffers(cmdBuffer, 0, 2,  vertexBuffers, offsets);
 
     vkCmdBindIndexBuffer(cmdBuffer, m_indexBuffer.buffer, 0, VK_INDEX_TYPE_UINT32);
     vkCmdDrawIndexed(cmdBuffer, m_vertexCount, 1, 0, 0, 0);

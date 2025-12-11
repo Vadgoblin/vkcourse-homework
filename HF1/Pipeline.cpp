@@ -87,27 +87,41 @@ VkPipeline Pipeline::CreateSimplePipeline(const VkDevice         device,
         },
     };
 
-    const VkVertexInputBindingDescription bindingInfo = {
-        .binding   = 0,
-        .stride    = sizeof(float) * 3,
-        .inputRate = VK_VERTEX_INPUT_RATE_VERTEX,
+    const VkVertexInputBindingDescription bindingInfo[2] = {
+        {
+            .binding   = 0,
+            .stride    = sizeof(float) * 3,
+            .inputRate = VK_VERTEX_INPUT_RATE_VERTEX,
+        },{
+            .binding   = 1,
+            .stride    = sizeof(float) * 2,
+            .inputRate = VK_VERTEX_INPUT_RATE_VERTEX,
+        }
     };
 
-    const VkVertexInputAttributeDescription attributeInfo = {
-        .location = 0,
-        .binding  = 0,
-        .format   = VK_FORMAT_R32G32B32_SFLOAT,
-        .offset   = 0u,
+    VkVertexInputAttributeDescription vertexAttributes[2] = {
+        { // position
+            .location = 0,                          // layout location=0 in shader
+            .binding  = 0,                          // binding position in Vulkan API
+            .format   = VK_FORMAT_R32G32B32_SFLOAT, // use "vec3" values from the buffer
+            .offset   = 0,                          // use buffer from the 0 byte
+        },
+        { // uv
+            .location = 1,                          // layout location=1 in shader
+            .binding  = 1,                          // binding position in Vulkan API
+            .format   = VK_FORMAT_R32G32_SFLOAT, // use "vec2" values from the buffer
+            .offset   = 0,//sizeof(float) * 3,          // use buffer from the 3*float
+        }
     };
 
     const VkPipelineVertexInputStateCreateInfo vertexInputInfo = {
         .sType                           = VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO,
         .pNext                           = 0,
         .flags                           = 0,
-        .vertexBindingDescriptionCount   = 1u,
-        .pVertexBindingDescriptions      = &bindingInfo,
-        .vertexAttributeDescriptionCount = 1u,
-        .pVertexAttributeDescriptions    = &attributeInfo,
+        .vertexBindingDescriptionCount   = 2u,
+        .pVertexBindingDescriptions      = bindingInfo,
+        .vertexAttributeDescriptionCount = 2u,
+        .pVertexAttributeDescriptions    = vertexAttributes,
     };
 
     // input assembly
@@ -188,18 +202,17 @@ VkPipeline Pipeline::CreateSimplePipeline(const VkDevice         device,
     };
 
     // color blend
-    const VkPipelineColorBlendAttachmentState blendAttachment = {
-        .blendEnable = VK_FALSE,
+    VkPipelineColorBlendAttachmentState blendAttachment = {
+        .blendEnable         = VK_TRUE,
         // as blend is disabled fill these with default values,
-        .srcColorBlendFactor = VK_BLEND_FACTOR_SRC_COLOR,
-        .dstColorBlendFactor = VK_BLEND_FACTOR_DST_COLOR,
+        .srcColorBlendFactor = VK_BLEND_FACTOR_SRC_ALPHA,
+        .dstColorBlendFactor = VK_BLEND_FACTOR_ONE_MINUS_SRC_ALPHA, //VK_BLEND_FACTOR_ZERO, //ONE, //DST_COLOR,
         .colorBlendOp        = VK_BLEND_OP_ADD,
-        .srcAlphaBlendFactor = VK_BLEND_FACTOR_SRC_ALPHA,
-        .dstAlphaBlendFactor = VK_BLEND_FACTOR_DST_ALPHA,
+        .srcAlphaBlendFactor = VK_BLEND_FACTOR_ONE, //SRC_ALPHA, //SRC_ALPHA, //VK_BLEND_FACTOR_SRC_ALPHA,
+        .dstAlphaBlendFactor = VK_BLEND_FACTOR_ZERO, //VK_BLEND_FACTOR_DST_ALPHA, //ZERO,
         .alphaBlendOp        = VK_BLEND_OP_ADD,
         // Important!
-        .colorWriteMask =
-            VK_COLOR_COMPONENT_R_BIT | VK_COLOR_COMPONENT_G_BIT | VK_COLOR_COMPONENT_B_BIT | VK_COLOR_COMPONENT_A_BIT,
+        .colorWriteMask      = VK_COLOR_COMPONENT_R_BIT | VK_COLOR_COMPONENT_G_BIT | VK_COLOR_COMPONENT_B_BIT | VK_COLOR_COMPONENT_A_BIT,
     };
 
     const VkPipelineColorBlendStateCreateInfo colorBlendInfo = {
@@ -240,6 +253,7 @@ VkPipeline Pipeline::CreateSimplePipeline(const VkDevice         device,
     const VkGraphicsPipelineCreateInfo pipelineCreateInfo = {
         .sType               = VK_STRUCTURE_TYPE_GRAPHICS_PIPELINE_CREATE_INFO,
         .pNext               = &renderingInfo,
+        // .pNext               = nullptr,
         .flags               = 0,
         .stageCount          = 2,
         .pStages             = shaders,

@@ -37,6 +37,7 @@ protected:
 
     BufferInfo       m_vertexBuffer   = {};
     BufferInfo       m_indexBuffer    = {};
+    BufferInfo       m_texCoordBuffer   = {};
 
     std::vector<float>        m_vertices;
     std::vector<float>        m_normals;
