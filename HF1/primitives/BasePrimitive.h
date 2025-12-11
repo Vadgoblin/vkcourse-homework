@@ -9,14 +9,15 @@
 #include "glm/fwd.hpp"
 #include "glm_config.h"
 #include <vector>
+// #include "../ModelPushConstant.h"
 
 class Context;
 
 class BasePrimitive  : public ITransformable, public IDrawable{
 public:
 
-    BasePrimitive(bool wireframe = false);
-    virtual ~BasePrimitive() = default;
+    BasePrimitive();
+    ~BasePrimitive() override = default;
 
     VkResult create(const Context& context);
     void     destroy(VkDevice device);
@@ -25,10 +26,6 @@ public:
 
 
 protected:
-    struct ModelPushConstant {
-        glm::mat4 model;
-    };
-
     VkPipelineLayout m_pipelineLayout = VK_NULL_HANDLE;
     VkPipeline       m_pipeline       = VK_NULL_HANDLE;
     uint32_t         m_constantOffset = 0;
@@ -47,6 +44,4 @@ protected:
     std::vector<unsigned int> m_indices;
 
     uint32_t         m_vertexCount;
-
-    bool wireframe;
 };

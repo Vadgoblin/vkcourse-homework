@@ -68,7 +68,7 @@ void buildGrid(float width, float depth, int rows, int cols,
 }
 
 
-Grid::Grid(float width, float depth, int rows, int cols, bool wireframe) : BasePrimitive(wireframe)
+Grid::Grid(float width, float depth, int rows, int cols) : BasePrimitive()
 {
     buildGrid(width, depth, rows, cols,m_vertices, m_normals, m_texCoords, m_indices);
 

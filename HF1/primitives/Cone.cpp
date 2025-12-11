@@ -67,7 +67,7 @@ void buildCone(float baseRadius, float height, int sectorCount, bool capBase,
     }
 }
 
-Cone::Cone(const float baseRadius, const float height, const int sectorCount, const bool capBase, const bool wireframe) : BasePrimitive(wireframe)
+Cone::Cone(const float baseRadius, const float height, const int sectorCount, const bool capBase) : BasePrimitive()
 {
     buildCone(baseRadius, height, sectorCount, capBase,m_vertices,m_normals,m_texCoords,m_indices);
 }

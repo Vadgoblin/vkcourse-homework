@@ -82,7 +82,7 @@ void buildSphere(float                      radius,
     }
 }
 
-Sphere::Sphere(float radius, int sectorCount, int stackCount, bool wireframe) : BasePrimitive(wireframe)
+Sphere::Sphere(float radius, int sectorCount, int stackCount) : BasePrimitive()
 {
     buildSphere(radius,sectorCount,stackCount,m_vertices,m_normals,m_texCoords,m_indices);
 }

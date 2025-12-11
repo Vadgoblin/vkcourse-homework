@@ -7,5 +7,4 @@ VkPipeline CreateSimplePipeline(VkDevice device,
                                 VkPipelineLayout layout,
                                 VkShaderModule vertShader,
                                 VkShaderModule fragShader,
-                                VkSampleCountFlagBits vkSampleCountFlagBits,
-                                bool wireframe = false);
+                                VkSampleCountFlagBits vkSampleCountFlagBits);

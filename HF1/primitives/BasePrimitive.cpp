@@ -9,15 +9,15 @@
 #include <vulkan/vulkan_core.h>
 #include "context.h"
 #include "../PipelineUtils.h"
+#include "../ModelPushConstant.h"
 
 namespace {
 #include "shaders/triangle_in.frag_include.h"
 #include "shaders/triangle_in.vert_include.h"
 }
 
-BasePrimitive::BasePrimitive(const bool wireframe)
+BasePrimitive::BasePrimitive()
 {
-     this->wireframe  = wireframe;
      m_shaderVertData = SPV_triangle_in_vert;
      m_shaderVertSize = sizeof(SPV_triangle_in_vert);
      m_shaderFragData = SPV_triangle_in_frag;

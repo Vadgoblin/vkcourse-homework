@@ -75,7 +75,7 @@ void buildCube(float size,
 
 
 
-Cube::Cube(const float size, const bool wireframe): BasePrimitive(wireframe)
+Cube::Cube(const float size): BasePrimitive()
 {
     buildCube(size,m_vertices,m_normals,m_texCoords,m_indices);
 }

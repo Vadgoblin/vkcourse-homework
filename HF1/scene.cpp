@@ -19,7 +19,7 @@ std::vector<BaseEntity*> entities;
 
 void setup(const Context& context)
 {
-    Grid* grid = new Grid(1,1,3,2,false);
+    Grid* grid = new Grid(1,1,3,2);
     grid->create(context);
     grid->setScale(12.0f, 1.0f, 12.0f);
     primitives.push_back(grid);

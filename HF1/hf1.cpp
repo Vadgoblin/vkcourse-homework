@@ -254,7 +254,7 @@ int main(int /*argc*/, char** /*argv*/)
 
     uint32_t m_constantOffset = sizeof(Camera::CameraPushConstant);
     VkPipelineLayout m_pipelineLayout = CreateEmptyPipelineLayout(device, m_constantOffset + sizeof(ModelPushConstant));
-    VkPipeline m_pipeline       = CreateSimplePipeline(device, swapchain.format(), m_pipelineLayout, shaderVertex, shaderFragment, context.sampleCountFlagBits(), false);
+    VkPipeline m_pipeline       = CreateSimplePipeline(device, swapchain.format(), m_pipelineLayout, shaderVertex, shaderFragment, context.sampleCountFlagBits());
 
     context.pipelineLayout(m_pipelineLayout);
     context.pipeline(m_pipeline);

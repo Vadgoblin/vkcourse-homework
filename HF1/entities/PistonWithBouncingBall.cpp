@@ -26,25 +26,25 @@ void PistonWithBouncingBall::draw(const VkCommandBuffer cmdBuffer, const glm::ma
 
 void PistonWithBouncingBall::create(const Context& context)
 {
-    Cube* pistonBase = new Cube(1.0f, true);
+    Cube* pistonBase = new Cube(1.0f);
     pistonBase->setPosition(0.0f, 0.45f,0.0f);
     pistonBase->setScale(1.0f,0.9f,1.0f);
     pistonBase->create(context);
     m_pistonBase->addChild(pistonBase);
 
-    Cylinder* pistonRod = new Cylinder(0.05, 0.05, 1, 25, 2, true);
+    Cylinder* pistonRod = new Cylinder(0.05, 0.05, 1, 25, 2);
     pistonRod->setPosition(0.0f, 0.5f,0.0f);
     pistonRod->setRotation(90.0f,0.0f,0.0f);
     pistonRod->create(context);
     m_pistonMovingPart->addChild(pistonRod);
 
-    Cube* pistonHead = new Cube(1.0f, true);
+    Cube* pistonHead = new Cube(1.0f);
     pistonHead->setPosition(0.0f, 0.95f,0.0f);
     pistonHead->setScale(1.0f,0.1f,1.0f);
     pistonHead->create(context);
     m_pistonMovingPart->addChild(pistonHead);
 
-    Sphere* ball = new Sphere(0.4f,25,25,true);
+    Sphere* ball = new Sphere(0.4f,25,25);
     ball->setPosition(0.0f, 1.4f,0.0f);
     ball->create(context);
     m_ball->addChild(ball);

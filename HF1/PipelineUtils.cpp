@@ -33,8 +33,7 @@ VkPipeline CreateSimplePipeline(const VkDevice         device,
                                 const VkPipelineLayout pipelineLayout,
                                 const VkShaderModule   shaderVertex,
                                 const VkShaderModule   shaderFragment,
-                                const VkSampleCountFlagBits vkSampleCountFlagBits,
-                                bool                   wireframe)
+                                const VkSampleCountFlagBits vkSampleCountFlagBits)
 {
     // shader stages
     const VkPipelineShaderStageCreateInfo shaders[] = {
@@ -102,17 +101,13 @@ VkPipeline CreateSimplePipeline(const VkDevice         device,
     };
 
     // rasterization info
-    // Experiments:
-    //  1) Switch polygon mode to "wireframe".
-    //  2) Switch cull mode to front.
-    //  3) Switch front face mode to clockwise.
     const VkPipelineRasterizationStateCreateInfo rasterizationInfo = {
         .sType                   = VK_STRUCTURE_TYPE_PIPELINE_RASTERIZATION_STATE_CREATE_INFO,
         .pNext                   = nullptr,
         .flags                   = 0,
         .depthClampEnable        = VK_FALSE,
         .rasterizerDiscardEnable = VK_FALSE,
-        .polygonMode             = wireframe ? VK_POLYGON_MODE_LINE : VK_POLYGON_MODE_FILL,
+        .polygonMode             = VK_POLYGON_MODE_FILL,
         .cullMode                = VK_CULL_MODE_NONE,
         .frontFace               = VK_FRONT_FACE_COUNTER_CLOCKWISE,
         .depthBiasEnable         = VK_FALSE,

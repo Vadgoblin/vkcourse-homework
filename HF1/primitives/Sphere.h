@@ -3,5 +3,5 @@
 
 class Sphere : public BasePrimitive {
 public:
-    Sphere(float radius, int sectorCount, int stackCount, bool wireframe);
+    Sphere(float radius, int sectorCount, int stackCount);
 };

@@ -34,6 +34,9 @@ add_executable(hf1
         entities/PistonWithBouncingBall.h
         entities/OrbitingHelicopter.cpp
         entities/OrbitingHelicopter.h
+        ModelPushConstant.h
+        Pipeline.cpp
+        Pipeline.h
 )
 
 target_include_directories(hf1

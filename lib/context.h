@@ -29,7 +29,7 @@ public:
     VkSampleCountFlagBits sampleCountFlagBits() const {return m_SampleCountFlagBits;};
 
     VkPipelineLayout pipelineLayout() const { return m_pipelineLayout; }
-    VkPipeline pipeline() const { return m_pipeline; }
+    VkPipeline       pipeline() const { return m_pipeline; }
     uint32_t         constantOffset() const { return m_constantOffset; }
 
     void pipelineLayout(VkPipelineLayout layout) { m_pipelineLayout = layout; }

@@ -7,6 +7,5 @@ public:
                    float topRadius,
                    float height,
                    int sectorCount,
-                   int stackCount,
-                   bool wireframe = false);
+                   int stackCount);
 };

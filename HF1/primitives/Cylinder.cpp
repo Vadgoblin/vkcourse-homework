@@ -74,8 +74,7 @@ Cylinder::Cylinder(float baseRadius,
                    float topRadius,
                    float height,
                    int   sectorCount,
-                   int   stackCount,
-                   bool  wireframe) : BasePrimitive(wireframe)
+                   int   stackCount) : BasePrimitive()
 {
     buildCylinder(baseRadius, topRadius, height, sectorCount, stackCount,m_vertices,m_normals,m_texCoords,m_indices);
 }

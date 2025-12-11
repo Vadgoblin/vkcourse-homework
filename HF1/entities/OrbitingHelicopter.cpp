@@ -36,23 +36,23 @@ void OrbitingHelicopter::destroy(VkDevice device)
 
 void OrbitingHelicopter::create(const Context& context)
 {
-    Cube* helicopterCabin = new Cube(1,true);
+    Cube* helicopterCabin = new Cube(1);
     helicopterCabin->create(context);
     m_helicopterBody->addChild(helicopterCabin);
 
-    Cube* helicopterTail = new Cube(1, true);
+    Cube* helicopterTail = new Cube(1);
     helicopterTail->create(context);
     helicopterTail->setScale(3.0f, 0.5f, 0.5f);
     helicopterTail->setPosition(-2.0f,0.0f,0.0f);
     m_helicopterBody->addChild(helicopterTail);
 
-    Cube* helicopterRotor1 = new Cube(1, true);
+    Cube* helicopterRotor1 = new Cube(1);
     helicopterRotor1->create(context);
     helicopterRotor1->setScale(4.0f, 0.25f, 0.5f);
     helicopterRotor1->setPosition(0.0f, 0.5f + (0.25f / 2.0f), 0.0f);
     m_helicopterRotor1->addChild(helicopterRotor1);
 
-    Cube* helicopterRotor2 = new Cube(1, true);
+    Cube* helicopterRotor2 = new Cube(1);
     helicopterRotor2->create(context);
     helicopterRotor2->setScale(0.25f, 1.0f, 0.125f);
     m_helicopterRotor2->addChild(helicopterRotor2);
