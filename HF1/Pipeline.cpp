@@ -59,11 +59,11 @@ VkPipelineLayout Pipeline::CreateEmptyPipelineLayout(const VkDevice device, uint
 }
 
 VkPipeline Pipeline::CreateSimplePipeline(const VkDevice         device,
-                                const VkFormat         colorFormat,
-                                const VkPipelineLayout pipelineLayout,
-                                const VkShaderModule   shaderVertex,
-                                const VkShaderModule   shaderFragment,
-                                const VkSampleCountFlagBits vkSampleCountFlagBits)
+                                          const VkFormat         colorFormat,
+                                          const VkPipelineLayout pipelineLayout,
+                                          const VkShaderModule   shaderVertex,
+                                          const VkShaderModule   shaderFragment,
+                                          const VkSampleCountFlagBits vkSampleCountFlagBits)
 {
     // shader stages
     const VkPipelineShaderStageCreateInfo shaders[] = {

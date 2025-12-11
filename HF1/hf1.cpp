@@ -177,11 +177,9 @@ int main(int /*argc*/, char** /*argv*/)
     Context    context("vkcourse hf1", true);
     VkInstance instance = context.CreateInstance({}, extensions);
 
-    debug::setDebugUtilsObjectName((PFN_vkSetDebugUtilsObjectNameEXT)vkGetInstanceProcAddr(instance, "vkSetDebugUtilsObjectNameEXT"));
+    debug::setDebugUtilsObjectName(reinterpret_cast<PFN_vkSetDebugUtilsObjectNameEXT>(
+        vkGetInstanceProcAddr(instance, "vkSetDebugUtilsObjectNameEXT")));
 
-    // Create the window to render onto
-    // uint32_t    windowWidth  = 1024;
-    // uint32_t    windowHeight = 800;
     uint32_t    windowWidth  = 1700;
     uint32_t    windowHeight = 900;
     GLFWwindow* window       = glfwCreateWindow(windowWidth, windowHeight, "hf1 - h257398", NULL, NULL);
