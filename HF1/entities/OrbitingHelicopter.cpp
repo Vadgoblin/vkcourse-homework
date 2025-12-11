@@ -34,26 +34,26 @@ void OrbitingHelicopter::destroy(VkDevice device)
     m_helicopterOrbiting->destroyChildren(device);
 }
 
-void OrbitingHelicopter::create(const Context& context, VkFormat colorFormat, uint32_t pushConstantStart)
+void OrbitingHelicopter::create(const Context& context, VkFormat colorFormat, uint32_t pushConstantStart, VkPipeline pipeline )
 {
     Cube* helicopterCabin = new Cube(1,true);
-    helicopterCabin->create(context, colorFormat, pushConstantStart);
+    helicopterCabin->create(context, colorFormat, pushConstantStart,pipeline);
     m_helicopterBody->addChild(helicopterCabin);
 
     Cube* helicopterTail = new Cube(1, true);
-    helicopterTail->create(context, colorFormat, pushConstantStart);
+    helicopterTail->create(context, colorFormat, pushConstantStart,pipeline);
     helicopterTail->setScale(3.0f, 0.5f, 0.5f);
     helicopterTail->setPosition(-2.0f,0.0f,0.0f);
     m_helicopterBody->addChild(helicopterTail);
 
     Cube* helicopterRotor1 = new Cube(1, true);
-    helicopterRotor1->create(context, colorFormat, pushConstantStart);
+    helicopterRotor1->create(context, colorFormat, pushConstantStart,pipeline);
     helicopterRotor1->setScale(4.0f, 0.25f, 0.5f);
     helicopterRotor1->setPosition(0.0f, 0.5f + (0.25f / 2.0f), 0.0f);
     m_helicopterRotor1->addChild(helicopterRotor1);
 
     Cube* helicopterRotor2 = new Cube(1, true);
-    helicopterRotor2->create(context, colorFormat, pushConstantStart);
+    helicopterRotor2->create(context, colorFormat, pushConstantStart,pipeline);
     helicopterRotor2->setScale(0.25f, 1.0f, 0.125f);
     m_helicopterRotor2->addChild(helicopterRotor2);
     m_helicopterRotor2Moved->addChild(m_helicopterRotor2);

@@ -24,29 +24,29 @@ void PistonWithBouncingBall::draw(const VkCommandBuffer cmdBuffer, const glm::ma
     m_ball->draw(cmdBuffer, parentModel * getModelMatrix());
 }
 
-void PistonWithBouncingBall::create(const Context& context, VkFormat colorFormat, uint32_t pushConstantStart)
+void PistonWithBouncingBall::create(const Context& context, VkFormat colorFormat, uint32_t pushConstantStart, VkPipeline pipeline )
 {
     Cube* pistonBase = new Cube(1.0f, true);
     pistonBase->setPosition(0.0f, 0.45f,0.0f);
     pistonBase->setScale(1.0f,0.9f,1.0f);
-    pistonBase->create(context, colorFormat, pushConstantStart);
+    pistonBase->create(context, colorFormat, pushConstantStart,pipeline);
     m_pistonBase->addChild(pistonBase);
 
     Cylinder* pistonRod = new Cylinder(0.05, 0.05, 1, 25, 2, true);
     pistonRod->setPosition(0.0f, 0.5f,0.0f);
     pistonRod->setRotation(90.0f,0.0f,0.0f);
-    pistonRod->create(context, colorFormat, pushConstantStart);
+    pistonRod->create(context, colorFormat, pushConstantStart,pipeline);
     m_pistonMovingPart->addChild(pistonRod);
 
     Cube* pistonHead = new Cube(1.0f, true);
     pistonHead->setPosition(0.0f, 0.95f,0.0f);
     pistonHead->setScale(1.0f,0.1f,1.0f);
-    pistonHead->create(context, colorFormat, pushConstantStart);
+    pistonHead->create(context, colorFormat, pushConstantStart, pipeline);
     m_pistonMovingPart->addChild(pistonHead);
 
     Sphere* ball = new Sphere(0.4f,25,25,true);
     ball->setPosition(0.0f, 1.4f,0.0f);
-    ball->create(context, colorFormat, pushConstantStart);
+    ball->create(context, colorFormat, pushConstantStart, pipeline);
     m_ball->addChild(ball);
 }
 

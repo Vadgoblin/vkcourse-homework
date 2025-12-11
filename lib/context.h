@@ -28,6 +28,14 @@ public:
     VkQueue          queue() const { return m_queue; }
     VkSampleCountFlagBits sampleCountFlagBits() const {return m_SampleCountFlagBits;};
 
+    VkPipelineLayout pipelineLayout() const { return m_pipelineLayout; }
+    VkPipeline pipeline() const { return m_pipeline; }
+    uint32_t         constantOffset() const { return m_constantOffset; }
+
+    void pipelineLayout(VkPipelineLayout layout) { m_pipelineLayout = layout; }
+    void pipeline(VkPipeline pipeline) { m_pipeline = pipeline; }
+    void constantOffset(uint32_t constantOffset) {m_constantOffset = constantOffset;}
+
 protected:
     bool FindQueueFamily(const VkPhysicalDevice phyDevice, const VkSurfaceKHR surface, uint32_t* outQueueFamilyIdx);
     void SetSampleCountFlagBits();
@@ -41,4 +49,8 @@ protected:
     uint32_t         m_queueFamilyIdx = -1;
     VkQueue          m_queue          = VK_NULL_HANDLE;
     VkSampleCountFlagBits m_SampleCountFlagBits = static_cast<VkSampleCountFlagBits>(0);
+
+    VkPipelineLayout m_pipelineLayout;
+    VkPipeline m_pipeline;
+    uint32_t         m_constantOffset = 0;
 };

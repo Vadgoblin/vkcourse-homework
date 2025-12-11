@@ -17,29 +17,29 @@ std::vector<BasePrimitive*> primitives;
 std::vector<ObjectGroup*> objectGroups;
 std::vector<BaseEntity*> entities;
 
-void setup(const Context& context, const Swapchain& swapchain, size_t pushConstansStart)
+void setup(const Context& context, const Swapchain& swapchain, size_t pushConstansStart,VkPipeline pipeline)
 {
     Grid* grid = new Grid(1,1,3,2,false);
-    grid->create(context, swapchain.format(), pushConstansStart);
+    grid->create(context, swapchain.format(), pushConstansStart,pipeline);
     grid->setScale(12.0f, 1.0f, 12.0f);
     primitives.push_back(grid);
 
     RotatingCube* rotatingCube = new RotatingCube();
-    rotatingCube->create(context, swapchain.format(), pushConstansStart);
+    rotatingCube->create(context, swapchain.format(), pushConstansStart,pipeline);
     rotatingCube->setPosition(3.0f, 2.0f, 0.0f);
     entities.push_back(rotatingCube);
 
     RotatingTetrahedron* rotating_tetrahedron = new RotatingTetrahedron();
-    rotating_tetrahedron->create(context,swapchain.format(), pushConstansStart);
+    rotating_tetrahedron->create(context,swapchain.format(), pushConstansStart,pipeline);
     rotating_tetrahedron->setPosition(-4.0f, 1.2f, 0.0f);
     entities.push_back(rotating_tetrahedron);
 
     PistonWithBouncingBall* piston_with_bouncing_ball = new PistonWithBouncingBall();
-    piston_with_bouncing_ball->create(context, swapchain.format(), pushConstansStart);
+    piston_with_bouncing_ball->create(context, swapchain.format(), pushConstansStart,pipeline);
     entities.push_back(piston_with_bouncing_ball);
 
     OrbitingHelicopter* orbiting_helicopter = new OrbitingHelicopter();
-    orbiting_helicopter->create(context, swapchain.format(), pushConstansStart);
+    orbiting_helicopter->create(context, swapchain.format(), pushConstansStart,pipeline);
     orbiting_helicopter->setPosition(0.0f, 5.0f, 0.0f);
     entities.push_back(orbiting_helicopter);
 }

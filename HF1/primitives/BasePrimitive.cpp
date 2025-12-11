@@ -24,18 +24,22 @@ BasePrimitive::BasePrimitive(const bool wireframe)
      m_shaderFragSize = sizeof(SPV_triangle_in_frag);
 }
 
-VkResult BasePrimitive::create(const Context& context, const VkFormat colorFormat, const uint32_t pushConstantStart)
+VkResult BasePrimitive::create(const Context& context, const VkFormat colorFormat, const uint32_t pushConstantStart,VkPipeline pipeline)
 {
     const VkDevice       device         = context.device();
-    const VkShaderModule shaderVertex   = CreateShaderModule(device, m_shaderVertData, m_shaderVertSize);
-    const VkShaderModule shaderFragment = CreateShaderModule(device, m_shaderFragData, m_shaderFragSize);
+    // const VkShaderModule shaderVertex   = CreateShaderModule(device, m_shaderVertData, m_shaderVertSize);
+    // const VkShaderModule shaderFragment = CreateShaderModule(device, m_shaderFragData, m_shaderFragSize);
+    //
+    // m_constantOffset = pushConstantStart;
+    // m_pipelineLayout = CreateEmptyPipelineLayout(device, m_constantOffset + sizeof(ModelPushConstant));
+    //  m_pipeline       = CreateSimplePipeline(device, colorFormat, m_pipelineLayout, shaderVertex, shaderFragment, context.sampleCountFlagBits() ,this->wireframe);
+    //
+    // vkDestroyShaderModule(device, shaderVertex, nullptr);
+    // vkDestroyShaderModule(device, shaderFragment, nullptr);
 
-    m_constantOffset = pushConstantStart;
-    m_pipelineLayout = CreateEmptyPipelineLayout(device, m_constantOffset + sizeof(ModelPushConstant));
-    m_pipeline       = CreateSimplePipeline(device, colorFormat, m_pipelineLayout, shaderVertex, shaderFragment, context.sampleCountFlagBits() ,this->wireframe);
-
-    vkDestroyShaderModule(device, shaderVertex, nullptr);
-    vkDestroyShaderModule(device, shaderFragment, nullptr);
+    m_pipeline = context.pipeline();
+    m_pipelineLayout = context.pipelineLayout();
+    m_constantOffset = context.constantOffset();
 
     m_vertexCount = static_cast<uint32_t>(m_indices.size());
 
