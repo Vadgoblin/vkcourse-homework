@@ -144,8 +144,8 @@ VkDevice Context::CreateDevice(const std::vector<const char*>& extensions)
 
 void Context::Destroy()
 {
-    m_pipeline->Destroy();
-    delete m_pipeline;
+    m_pipelineWrapper->Destroy();
+    delete m_pipelineWrapper;
     vkDestroyDevice(m_device, nullptr);
     vkDestroyInstance(m_instance, nullptr);
 }
@@ -197,7 +197,7 @@ void Context::SetSampleCountFlagBits()
     }
 }
 
-void Context::CreatePipeline(VkFormat swapchainFormat)
+void Context::BuildPipeline(VkFormat swapchainFormat, VkDescriptorSetLayout setLayout)
 {
-    m_pipeline = new Pipeline(m_device, swapchainFormat, m_SampleCountFlagBits);
+    m_pipelineWrapper = new PipelineWrapper(m_device, swapchainFormat, m_SampleCountFlagBits);
 }

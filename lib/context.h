@@ -1,7 +1,8 @@
 #pragma once
 
-#include "../HF1/Pipeline.h"
+#include "../HF1/PipelineWrapper.h"
 
+#include <descriptors.h>
 #include <string>
 #include <vector>
 
@@ -30,8 +31,8 @@ public:
     VkQueue          queue() const { return m_queue; }
     VkSampleCountFlagBits sampleCountFlagBits() const {return m_SampleCountFlagBits;};
 
-    void CreatePipeline(VkFormat swapchainFormat);
-    Pipeline& pipeline() const { return *m_pipeline; }
+    void BuildPipeline(VkFormat swapchainFormat, VkDescriptorSetLayout descriptor_set_layout = nullptr);
+    PipelineWrapper& pipeline() const { return *m_pipelineWrapper; }
 
 protected:
     bool FindQueueFamily(const VkPhysicalDevice phyDevice, const VkSurfaceKHR surface, uint32_t* outQueueFamilyIdx);
@@ -47,6 +48,6 @@ protected:
     VkQueue          m_queue          = VK_NULL_HANDLE;
     VkSampleCountFlagBits m_SampleCountFlagBits = static_cast<VkSampleCountFlagBits>(0);
 
-    Pipeline* m_pipeline = nullptr;
+    PipelineWrapper* m_pipelineWrapper = nullptr;
 
 };
