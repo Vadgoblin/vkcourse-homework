@@ -9,6 +9,7 @@
 #include <vulkan/vulkan_core.h>
 #include "context.h"
 #include "../ModelPushConstant.h"
+#include "../sharedcarp.h"
 
 namespace {
 #include "shaders/triangle_in.frag_include.h"
@@ -71,6 +72,9 @@ void BasePrimitive::draw(const VkCommandBuffer cmdBuffer, const glm::mat4& paren
     vkCmdBindPipeline(cmdBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, m_pipeline);
     vkCmdPushConstants(cmdBuffer, m_pipelineLayout, VK_SHADER_STAGE_VERTEX_BIT, m_constantOffset,
                        sizeof(ModelPushConstant), &modelData);
+
+    vkCmdBindDescriptorSets(cmdBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, m_pipelineLayout, 0, 1, &asd->Get(), 0, nullptr);
+
 
     VkBuffer vertexBuffers[] = { m_vertexBuffer.buffer,m_texCoordBuffer.buffer };
     VkDeviceSize offsets[] = { 0,0 };

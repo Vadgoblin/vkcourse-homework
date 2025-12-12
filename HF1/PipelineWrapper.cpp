@@ -6,6 +6,7 @@
 #include "shaders/triangle_in.vert_include.h"
 
 #include <wrappers.h>
+#include "sharedcarp.h"
 
 PipelineWrapper::PipelineWrapper(const VkDevice device, const VkFormat swapchainFormat, const VkSampleCountFlagBits sampleCountFlagBits)
 {
@@ -41,12 +42,13 @@ VkPipelineLayout PipelineWrapper::CreateEmptyPipelineLayout(const VkDevice devic
         .size       = pushConstantSize,
     };
 
+    VkDescriptorSetLayout setLayout = asd_descriptors->Layout();
     const VkPipelineLayoutCreateInfo pipelineLayoutCreateInfo = {
         .sType                  = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO,
         .pNext                  = nullptr,
         .flags                  = 0,
-        .setLayoutCount         = 0,
-        .pSetLayouts            = nullptr,
+        .setLayoutCount         = 1,
+        .pSetLayouts            = &setLayout,
         .pushConstantRangeCount = (pushConstantSize > 0) ? 1u : 0u,
         .pPushConstantRanges    = &pushConstantRange,
     };
