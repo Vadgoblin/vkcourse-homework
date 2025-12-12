@@ -36,6 +36,8 @@ add_executable(hf1
         PipelineWrapper.cpp
         PipelineWrapper.h
         textures/textures.h
+        TextureManager.cpp
+        TextureManager.h
 )
 
 target_include_directories(hf1

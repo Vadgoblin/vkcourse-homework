@@ -234,6 +234,7 @@ int main(int /*argc*/, char** /*argv*/)
     }
 
     context.BuildPipeline(swapchain.format());
+    context.CreateTextureManager();
 
     ObjectManager::setup(context);
 

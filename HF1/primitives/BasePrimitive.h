@@ -50,5 +50,4 @@ protected:
 
 
     VkDescriptorSet       m_modelSet      = VK_NULL_HANDLE;
-    Texture* m_texture = {};
 };

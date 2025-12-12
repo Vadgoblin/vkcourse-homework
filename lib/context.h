@@ -1,6 +1,7 @@
 #pragma once
 
 #include "../HF1/PipelineWrapper.h"
+#include "../HF1/TextureManager.h"
 
 #include <descriptors.h>
 #include <string>
@@ -24,6 +25,7 @@ public:
     VkDevice         CreateDevice(const std::vector<const char*>& extensions);
     DescriptorPool   CreateDescriptorPool(const std::unordered_map<VkDescriptorType, uint32_t>& countPerType, uint32_t maxSets);
     VkCommandPool    CreateCommandPool();
+    TextureManager*  CreateTextureManager();
 
     void             Destroy();
 
@@ -35,6 +37,7 @@ public:
     VkSampleCountFlagBits sampleCountFlagBits() const {return m_SampleCountFlagBits;};
     VkCommandPool    commandPool() const { return m_commandPool; }
     DescriptorPool&  descriptorPool() { return m_descriptorPool; }
+    TextureManager&  texture_manager() { return *m_textureManager; }
 
     void BuildPipeline(VkFormat swapchainFormat);
     PipelineWrapper& pipeline() const { return *m_pipelineWrapper; }
@@ -57,5 +60,5 @@ protected:
 
     VkCommandPool    m_commandPool    = VK_NULL_HANDLE;
     DescriptorPool   m_descriptorPool = {};
-
+    TextureManager*  m_textureManager;
 };
