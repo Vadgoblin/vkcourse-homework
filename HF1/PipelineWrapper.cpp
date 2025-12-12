@@ -6,9 +6,10 @@
 #include "shaders/triangle_in.vert_include.h"
 
 #include <wrappers.h>
-#include "sharedcarp.h"
 
-PipelineWrapper::PipelineWrapper(const VkDevice device, const VkFormat swapchainFormat, const VkSampleCountFlagBits sampleCountFlagBits)
+#include <context.h>
+
+PipelineWrapper::PipelineWrapper(Context& context, const VkDevice device, const VkFormat colorFormat, const VkSampleCountFlagBits sampleCountFlagBits)
 {
     m_vkDevice = device;
 
@@ -20,9 +21,21 @@ PipelineWrapper::PipelineWrapper(const VkDevice device, const VkFormat swapchain
     const VkShaderModule shaderVertex   = CreateShaderModule(device, m_shaderVertData, m_shaderVertSize);
     const VkShaderModule shaderFragment = CreateShaderModule(device, m_shaderFragData, m_shaderFragSize);
 
+    const std::vector<VkDescriptorSetLayoutBinding> layoutBindings = {
+        VkDescriptorSetLayoutBinding{
+            .binding            = 0,
+            .descriptorType     = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER,
+            .descriptorCount    = 1,
+            .stageFlags         = VK_SHADER_STAGE_ALL,
+            .pImmutableSamplers = nullptr,
+        },
+    };
+
+    m_descSetLayout = context.descriptorPool().CreateLayout(layoutBindings);
+
     m_constantOffset = sizeof(Camera::CameraPushConstant);
-    m_pipelineLayout = CreateEmptyPipelineLayout(device, m_constantOffset + sizeof(ModelPushConstant));
-    m_pipeline       = CreateSimplePipeline(device, swapchainFormat, m_pipelineLayout, shaderVertex, shaderFragment, sampleCountFlagBits);
+    m_pipelineLayout = CreatePipelineLayout(device, {m_descSetLayout},m_constantOffset + sizeof(ModelPushConstant));
+    m_pipeline       = CreateSimplePipeline(device, colorFormat, m_pipelineLayout, shaderVertex, shaderFragment, sampleCountFlagBits);
 
     vkDestroyShaderModule(device, shaderVertex, nullptr);
     vkDestroyShaderModule(device, shaderFragment, nullptr);
@@ -34,7 +47,7 @@ void PipelineWrapper::Destroy() const
     vkDestroyPipelineLayout(m_vkDevice, m_pipelineLayout, nullptr);
 }
 
-VkPipelineLayout PipelineWrapper::CreateEmptyPipelineLayout(const VkDevice device, uint32_t pushConstantSize)
+VkPipelineLayout PipelineWrapper::CreatePipelineLayout(const VkDevice device, const std::vector<VkDescriptorSetLayout>& layouts, uint32_t pushConstantSize)
 {
     const VkPushConstantRange pushConstantRange = {
         .stageFlags = VK_SHADER_STAGE_VERTEX_BIT,
@@ -42,13 +55,12 @@ VkPipelineLayout PipelineWrapper::CreateEmptyPipelineLayout(const VkDevice devic
         .size       = pushConstantSize,
     };
 
-    VkDescriptorSetLayout setLayout = asd_descriptors->Layout();
     const VkPipelineLayoutCreateInfo pipelineLayoutCreateInfo = {
         .sType                  = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO,
         .pNext                  = nullptr,
         .flags                  = 0,
-        .setLayoutCount         = 1,
-        .pSetLayouts            = &setLayout,
+        .setLayoutCount         =  (uint32_t)layouts.size(),
+        .pSetLayouts            = layouts.data(),
         .pushConstantRangeCount = (pushConstantSize > 0) ? 1u : 0u,
         .pPushConstantRanges    = &pushConstantRange,
     };

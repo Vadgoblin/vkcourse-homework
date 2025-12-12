@@ -8,6 +8,8 @@
 #include "buffer.h"
 #include "glm/fwd.hpp"
 #include "glm_config.h"
+
+#include <texture.h>
 #include <vector>
 // #include "../ModelPushConstant.h"
 
@@ -19,7 +21,7 @@ public:
     BasePrimitive();
     ~BasePrimitive() override = default;
 
-    VkResult create(const Context& context);
+    VkResult create(Context& context);
     void     destroy(VkDevice device);
     void     draw(VkCommandBuffer cmdBuffer, const glm::mat4& parentModel = glm::mat4(1.0f)) override;
 
@@ -45,4 +47,13 @@ protected:
     std::vector<unsigned int> m_indices;
 
     uint32_t         m_vertexCount;
+
+
+    // TODO: idk :(
+    BufferInfo            m_uniformBuffer = {};
+    VkDescriptorPool      m_pool          = VK_NULL_HANDLE;
+    // VkDescriptorSetLayout m_descSetLayout = VK_NULL_HANDLE;
+    VkDescriptorSet       m_modelSet      = VK_NULL_HANDLE;
+    VkDevice              m_device        = VK_NULL_HANDLE;
+    Texture m_texture = {};
 };

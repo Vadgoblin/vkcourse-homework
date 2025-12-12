@@ -23,9 +23,6 @@
 #include "swapchain.h"
 #include "wrappers.h"
 
-#include <descriptors.h>
-#include "sharedcarp.h"
-
 void KeyCallback(GLFWwindow* window, int key, int /*scancode*/, int /*action*/, int /*mods*/)
 {
     Camera* camera = reinterpret_cast<Camera*>(glfwGetWindowUserPointer(window));
@@ -214,8 +211,7 @@ int main(int /*argc*/, char** /*argv*/)
     VkResult  swapchainCreated = swapchain.Create();
     assert(swapchainCreated == VK_SUCCESS);
 
-    VkCommandPool cmdPool = VK_NULL_HANDLE;
-    CreateCommandPool(device, queueFamilyIdx, &cmdPool); // TODO: check result
+    VkCommandPool cmdPool = context.CreateCommandPool();
 
     std::vector<VkCommandBuffer> cmdBuffers = AllocateCommandBuffers(device, cmdPool, swapchain.images().size());
 
@@ -237,29 +233,7 @@ int main(int /*argc*/, char** /*argv*/)
                                              context.sampleCountFlagBits());
     }
 
-
-    const char *textureName = "/mnt/ssd/git/vkcourse-hw/HF1/textures/checker-map_tho.png";
-    Texture *uvTexture = Texture::LoadFromFile(phyDevice, device, queue, cmdPool, textureName, VK_FORMAT_R8G8B8A8_UNORM, VK_IMAGE_USAGE_SAMPLED_BIT| VK_IMAGE_USAGE_TRANSFER_DST_BIT);
-
-    if (uvTexture == nullptr) {
-        printf("[ERROR] Was unable to create texture %s\n", textureName);
-        exit(-1);
-    }
-
-    DescriptorMgmt descriptors;
-    descriptors.SetDescriptor(0, VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, 1);
-    descriptors.CreateLayout(device);
-    descriptors.CreatePool(device);
-    descriptors.CreateDescriptorSets(device, 1);
-
-    DescriptorSetMgmt &gridSet = descriptors.Set(0);
-    gridSet.SetImage(0, uvTexture->view(), uvTexture->sampler());
-    gridSet.Update(device);
-
-    asd = &gridSet;
-    asd_descriptors = &descriptors;
-
-    context.BuildPipeline(swapchain.format(),descriptors.Layout());
+    context.BuildPipeline(swapchain.format());
 
     ObjectManager::setup(context);
 
@@ -399,8 +373,8 @@ int main(int /*argc*/, char** /*argv*/)
 
     vkDestroyCommandPool(device, cmdPool, nullptr);
 
-    descriptors.Destroy(device);
-    uvTexture->Destroy(device);
+    // descriptors.Destroy(device);
+    // uvTexture->Destroy(device);
 
     camera.Destroy(device);
     ObjectManager::destroy(device);

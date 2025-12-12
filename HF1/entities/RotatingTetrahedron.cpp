@@ -17,7 +17,7 @@ void RotatingTetrahedron::draw(const VkCommandBuffer cmdBuffer, const glm::mat4&
     m_objectGroup->draw(cmdBuffer, parentModel * getModelMatrix());
 }
 
-void RotatingTetrahedron::create(const Context& context)
+void RotatingTetrahedron::create(Context& context)
 {
     Cone* cone = new Cone();
     cone->create(context);

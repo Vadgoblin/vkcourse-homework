@@ -3,13 +3,12 @@
 #define GLM_ENABLE_EXPERIMENTAL
 #include <glm/gtx/quaternion.hpp>
 
+#include "../ModelPushConstant.h"
+#include "context.h"
 #include <cstring>
-#include <wrappers.h>
 #include <vector>
 #include <vulkan/vulkan_core.h>
-#include "context.h"
-#include "../ModelPushConstant.h"
-#include "../sharedcarp.h"
+#include <texture.h>
 
 namespace {
 #include "shaders/triangle_in.frag_include.h"
@@ -24,12 +23,11 @@ BasePrimitive::BasePrimitive()
      m_shaderFragSize = sizeof(SPV_triangle_in_frag);
 }
 
-VkResult BasePrimitive::create(const Context& context)
+VkResult BasePrimitive::create(Context& context)
 {
     m_pipeline = context.pipeline().pipeline();
     m_pipelineLayout = context.pipeline().pipelineLayout();
     m_constantOffset = context.pipeline().constantOffset();
-
     m_vertexCount = static_cast<uint32_t>(m_indices.size());
 
     const uint32_t vertexDataSize = m_vertices.size() * sizeof(float);
@@ -53,11 +51,23 @@ VkResult BasePrimitive::create(const Context& context)
     memcpy(dataPtr, m_indices.data(), indexDataSize);
     m_indexBuffer.Unmap(context.device());
 
+
+    const char *textureName = "/mnt/ssd/git/vkcourse-hw/HF1/textures/checker-map_tho.png";
+    m_texture = *Texture::LoadFromFile(context.physicalDevice(), context.device(), context.queue(), context.commandPool(), textureName, VK_FORMAT_R8G8B8A8_UNORM, VK_IMAGE_USAGE_SAMPLED_BIT| VK_IMAGE_USAGE_TRANSFER_DST_BIT);
+
+    VkDescriptorSetLayout descSetLayout  = context.pipeline().descSetLayout();
+    m_modelSet = context.descriptorPool().CreateSet(descSetLayout);
+
+    DescriptorSetMgmt setMgmt(m_modelSet);
+    setMgmt.SetImage(0, m_texture.view(), m_texture.sampler());
+    setMgmt.Update(context.device());
+
     return VK_SUCCESS;
 }
 
 void BasePrimitive::destroy(const VkDevice device)
 {
+    m_texture.Destroy(device);
     m_vertexBuffer.Destroy(device);
     m_indexBuffer.Destroy(device);
     m_texCoordBuffer.Destroy(device);
@@ -73,8 +83,8 @@ void BasePrimitive::draw(const VkCommandBuffer cmdBuffer, const glm::mat4& paren
     vkCmdPushConstants(cmdBuffer, m_pipelineLayout, VK_SHADER_STAGE_VERTEX_BIT, m_constantOffset,
                        sizeof(ModelPushConstant), &modelData);
 
-    vkCmdBindDescriptorSets(cmdBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, m_pipelineLayout, 0, 1, &asd->Get(), 0, nullptr);
-
+    vkCmdBindDescriptorSets(cmdBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, m_pipelineLayout, 0, 1, &m_modelSet, 0,
+                            nullptr);
 
     VkBuffer vertexBuffers[] = { m_vertexBuffer.buffer,m_texCoordBuffer.buffer };
     VkDeviceSize offsets[] = { 0,0 };

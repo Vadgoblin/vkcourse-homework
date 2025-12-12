@@ -12,7 +12,7 @@ void RotatingCube::draw(const VkCommandBuffer cmdBuffer, const glm::mat4& parent
     m_objectGroup->draw(cmdBuffer, parentModel * getModelMatrix());
 }
 
-void RotatingCube::create(const Context& context)
+void RotatingCube::create(Context& context)
 {
     Cube* cube = new Cube();
     cube->create(context);

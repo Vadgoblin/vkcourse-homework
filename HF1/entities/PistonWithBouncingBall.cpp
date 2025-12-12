@@ -24,7 +24,7 @@ void PistonWithBouncingBall::draw(const VkCommandBuffer cmdBuffer, const glm::ma
     m_ball->draw(cmdBuffer, parentModel * getModelMatrix());
 }
 
-void PistonWithBouncingBall::create(const Context& context)
+void PistonWithBouncingBall::create(Context& context)
 {
     Cube* pistonBase = new Cube(1.0f);
     pistonBase->setPosition(0.0f, 0.45f,0.0f);

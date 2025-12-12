@@ -4,7 +4,7 @@
 #include <vulkan/vulkan_core.h>
 
 namespace ObjectManager {
-    void setup(const Context& context);
+    void setup(Context& context);
     void draw(VkCommandBuffer cmdBuffer);
     void destroy(VkDevice device);
 }

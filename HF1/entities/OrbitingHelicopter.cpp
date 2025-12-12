@@ -34,7 +34,7 @@ void OrbitingHelicopter::destroy(VkDevice device)
     m_helicopterOrbiting->destroyChildren(device);
 }
 
-void OrbitingHelicopter::create(const Context& context)
+void OrbitingHelicopter::create(Context& context)
 {
     Cube* helicopterCabin = new Cube(1);
     helicopterCabin->create(context);

@@ -17,7 +17,7 @@ std::vector<BasePrimitive*> primitives;
 std::vector<ObjectGroup*> objectGroups;
 std::vector<BaseEntity*> entities;
 
-void setup(const Context& context)
+void setup(Context& context)
 {
     Grid* grid = new Grid(1,1,3,2);
     grid->create(context);

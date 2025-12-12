@@ -139,13 +139,43 @@ VkDevice Context::CreateDevice(const std::vector<const char*>& extensions)
 
     vkGetDeviceQueue(m_device, m_queueFamilyIdx, 0, &m_queue);
 
+    CreateDescriptorPool(
+    {
+        {VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, 100},
+        {VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, 100},
+    },
+    100);
+
     return m_device;
+}
+
+DescriptorPool Context::CreateDescriptorPool(const std::unordered_map<VkDescriptorType, uint32_t>& countPerType, uint32_t maxSets)
+{
+    VkResult result = m_descriptorPool.Create(m_device, countPerType, maxSets);
+    assert((result == VK_SUCCESS) && "DescriptorPool creation failed");
+    return m_descriptorPool;
+}
+
+VkCommandPool Context::CreateCommandPool()
+{
+    const VkCommandPoolCreateInfo createInfo = {
+        .sType            = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO,
+        .pNext            = nullptr,
+        .flags            = VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT,
+        .queueFamilyIndex = m_queueFamilyIdx,
+    };
+
+    const VkResult result = vkCreateCommandPool(m_device, &createInfo, nullptr, &m_commandPool);
+    assert((result == VK_SUCCESS) && "VkCreateCommandPool failed");
+
+    return m_commandPool;
 }
 
 void Context::Destroy()
 {
     m_pipelineWrapper->Destroy();
     delete m_pipelineWrapper;
+    m_descriptorPool.Destroy();
     vkDestroyDevice(m_device, nullptr);
     vkDestroyInstance(m_instance, nullptr);
 }
@@ -197,7 +227,7 @@ void Context::SetSampleCountFlagBits()
     }
 }
 
-void Context::BuildPipeline(VkFormat swapchainFormat, VkDescriptorSetLayout setLayout)
+void Context::BuildPipeline(VkFormat swapchainFormat)
 {
-    m_pipelineWrapper = new PipelineWrapper(m_device, swapchainFormat, m_SampleCountFlagBits);
+    m_pipelineWrapper = new PipelineWrapper(*this,m_device, swapchainFormat, m_SampleCountFlagBits);
 }

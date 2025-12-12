@@ -22,6 +22,9 @@ public:
     VkInstance       CreateInstance(const std::vector<const char*>& layers, const std::vector<const char*>& extensions);
     VkPhysicalDevice SelectPhysicalDevice(const VkSurfaceKHR surface);
     VkDevice         CreateDevice(const std::vector<const char*>& extensions);
+    DescriptorPool   CreateDescriptorPool(const std::unordered_map<VkDescriptorType, uint32_t>& countPerType, uint32_t maxSets);
+    VkCommandPool    CreateCommandPool();
+
     void             Destroy();
 
     VkInstance       instance() const { return m_instance; }
@@ -30,8 +33,10 @@ public:
     uint32_t         queueFamilyIdx() const { return m_queueFamilyIdx; }
     VkQueue          queue() const { return m_queue; }
     VkSampleCountFlagBits sampleCountFlagBits() const {return m_SampleCountFlagBits;};
+    VkCommandPool    commandPool() const { return m_commandPool; }
+    DescriptorPool&  descriptorPool() { return m_descriptorPool; }
 
-    void BuildPipeline(VkFormat swapchainFormat, VkDescriptorSetLayout descriptor_set_layout = nullptr);
+    void BuildPipeline(VkFormat swapchainFormat);
     PipelineWrapper& pipeline() const { return *m_pipelineWrapper; }
 
 protected:
@@ -49,5 +54,8 @@ protected:
     VkSampleCountFlagBits m_SampleCountFlagBits = static_cast<VkSampleCountFlagBits>(0);
 
     PipelineWrapper* m_pipelineWrapper = nullptr;
+
+    VkCommandPool    m_commandPool    = VK_NULL_HANDLE;
+    DescriptorPool   m_descriptorPool = {};
 
 };

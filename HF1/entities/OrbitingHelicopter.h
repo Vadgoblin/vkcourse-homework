@@ -7,7 +7,7 @@ public:
     OrbitingHelicopter();
     ~OrbitingHelicopter();
     void draw(VkCommandBuffer cmdBuffer, const glm::mat4& parentModel = glm::mat4(1.0f)) override;
-    void create(const Context& context) override;
+    void create(Context& context) override;
     void destroy(VkDevice device) override;
     void tick() override;
 
