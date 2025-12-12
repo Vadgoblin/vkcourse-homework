@@ -3,10 +3,10 @@
 #include <glm/fwd.hpp>
 #include <vulkan/vulkan_core.h>
 
-class Pipeline {
+class PipelineWrapper {
 
 public:
-    explicit Pipeline(VkDevice device, VkFormat swapchainFormat,VkSampleCountFlagBits sampleCountFlagBits);
+    explicit PipelineWrapper(VkDevice device, VkFormat swapchainFormat,VkSampleCountFlagBits sampleCountFlagBits);
 
     void Destroy() const;
 

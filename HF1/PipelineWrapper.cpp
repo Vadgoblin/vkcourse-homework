@@ -1,4 +1,4 @@
-#include "Pipeline.h"
+#include "PipelineWrapper.h"
 
 #include "ModelPushConstant.h"
 #include "camera.h"
@@ -7,7 +7,7 @@
 
 #include <wrappers.h>
 
-Pipeline::Pipeline(const VkDevice device, const VkFormat swapchainFormat, const VkSampleCountFlagBits sampleCountFlagBits)
+PipelineWrapper::PipelineWrapper(const VkDevice device, const VkFormat swapchainFormat, const VkSampleCountFlagBits sampleCountFlagBits)
 {
     m_vkDevice = device;
 
@@ -27,13 +27,13 @@ Pipeline::Pipeline(const VkDevice device, const VkFormat swapchainFormat, const 
     vkDestroyShaderModule(device, shaderFragment, nullptr);
 }
 
-void Pipeline::Destroy() const
+void PipelineWrapper::Destroy() const
 {
     vkDestroyPipeline(m_vkDevice, m_pipeline, nullptr);
     vkDestroyPipelineLayout(m_vkDevice, m_pipelineLayout, nullptr);
 }
 
-VkPipelineLayout Pipeline::CreateEmptyPipelineLayout(const VkDevice device, uint32_t pushConstantSize)
+VkPipelineLayout PipelineWrapper::CreateEmptyPipelineLayout(const VkDevice device, uint32_t pushConstantSize)
 {
     const VkPushConstantRange pushConstantRange = {
         .stageFlags = VK_SHADER_STAGE_VERTEX_BIT,
@@ -58,7 +58,7 @@ VkPipelineLayout Pipeline::CreateEmptyPipelineLayout(const VkDevice device, uint
     return layout;
 }
 
-VkPipeline Pipeline::CreateSimplePipeline(const VkDevice         device,
+VkPipeline PipelineWrapper::CreateSimplePipeline(const VkDevice         device,
                                           const VkFormat         colorFormat,
                                           const VkPipelineLayout pipelineLayout,
                                           const VkShaderModule   shaderVertex,
