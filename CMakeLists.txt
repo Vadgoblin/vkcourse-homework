@@ -42,3 +42,5 @@ endif()
 
 add_subdirectory(lib)
 add_subdirectory(HF1)
+
+file(COPY ${CMAKE_SOURCE_DIR}/HF1/textures DESTINATION ${CMAKE_BINARY_DIR}/bin/HF1/)

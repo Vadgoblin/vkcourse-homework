@@ -373,9 +373,6 @@ int main(int /*argc*/, char** /*argv*/)
 
     vkDestroyCommandPool(device, cmdPool, nullptr);
 
-    // descriptors.Destroy(device);
-    // uvTexture->Destroy(device);
-
     camera.Destroy(device);
     ObjectManager::destroy(device);
     swapchain.Destroy();

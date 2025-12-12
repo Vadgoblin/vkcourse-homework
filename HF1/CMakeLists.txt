@@ -35,6 +35,7 @@ add_executable(hf1
         ModelPushConstant.h
         PipelineWrapper.cpp
         PipelineWrapper.h
+        textures/textures.h
 )
 
 target_include_directories(hf1

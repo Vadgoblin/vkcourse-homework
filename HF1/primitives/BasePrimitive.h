@@ -11,7 +11,7 @@
 
 #include <texture.h>
 #include <vector>
-// #include "../ModelPushConstant.h"
+
 
 class Context;
 
@@ -39,7 +39,7 @@ protected:
 
     BufferInfo       m_vertexBuffer   = {};
     BufferInfo       m_indexBuffer    = {};
-    BufferInfo       m_texCoordBuffer   = {};
+    BufferInfo       m_texCoordBuffer = {};
 
     std::vector<float>        m_vertices;
     std::vector<float>        m_normals;
@@ -49,11 +49,6 @@ protected:
     uint32_t         m_vertexCount;
 
 
-    // TODO: idk :(
-    BufferInfo            m_uniformBuffer = {};
-    VkDescriptorPool      m_pool          = VK_NULL_HANDLE;
-    // VkDescriptorSetLayout m_descSetLayout = VK_NULL_HANDLE;
     VkDescriptorSet       m_modelSet      = VK_NULL_HANDLE;
-    VkDevice              m_device        = VK_NULL_HANDLE;
-    Texture m_texture = {};
+    Texture* m_texture = {};
 };

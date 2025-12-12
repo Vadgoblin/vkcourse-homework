@@ -4,11 +4,14 @@
 #include <glm/gtx/quaternion.hpp>
 
 #include "../ModelPushConstant.h"
+#include "../textures/textures.h"
 #include "context.h"
+
+#include "textures/textures.h"
 #include <cstring>
+#include <texture.h>
 #include <vector>
 #include <vulkan/vulkan_core.h>
-#include <texture.h>
 
 namespace {
 #include "shaders/triangle_in.frag_include.h"
@@ -52,14 +55,18 @@ VkResult BasePrimitive::create(Context& context)
     m_indexBuffer.Unmap(context.device());
 
 
-    const char *textureName = "/mnt/ssd/git/vkcourse-hw/HF1/textures/checker-map_tho.png";
-    m_texture = *Texture::LoadFromFile(context.physicalDevice(), context.device(), context.queue(), context.commandPool(), textureName, VK_FORMAT_R8G8B8A8_UNORM, VK_IMAGE_USAGE_SAMPLED_BIT| VK_IMAGE_USAGE_TRANSFER_DST_BIT);
+    const char *textureName = textures::default_texture;
+    m_texture = Texture::LoadFromFile(context.physicalDevice(), context.device(), context.queue(), context.commandPool(), textureName, VK_FORMAT_R8G8B8A8_UNORM, VK_IMAGE_USAGE_SAMPLED_BIT| VK_IMAGE_USAGE_TRANSFER_DST_BIT);
+    if (m_texture == nullptr) {
+        printf("[ERROR] Was unable to create texture %s\n", textureName);
+        exit(-1);
+    }
 
     VkDescriptorSetLayout descSetLayout  = context.pipeline().descSetLayout();
     m_modelSet = context.descriptorPool().CreateSet(descSetLayout);
 
     DescriptorSetMgmt setMgmt(m_modelSet);
-    setMgmt.SetImage(0, m_texture.view(), m_texture.sampler());
+    setMgmt.SetImage(0, m_texture->view(), m_texture->sampler());
     setMgmt.Update(context.device());
 
     return VK_SUCCESS;
@@ -67,7 +74,7 @@ VkResult BasePrimitive::create(Context& context)
 
 void BasePrimitive::destroy(const VkDevice device)
 {
-    m_texture.Destroy(device);
+    m_texture->Destroy(device);
     m_vertexBuffer.Destroy(device);
     m_indexBuffer.Destroy(device);
     m_texCoordBuffer.Destroy(device);
