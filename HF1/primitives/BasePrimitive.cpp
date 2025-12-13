@@ -6,9 +6,6 @@
 #include "../ModelPushConstant.h"
 #include "../textures/textures.h"
 #include "context.h"
-
-#include "textures/textures.h"
-#include <cstring>
 #include <texture.h>
 #include <vector>
 #include <vulkan/vulkan_core.h>
@@ -33,26 +30,9 @@ VkResult BasePrimitive::create(Context& context)
     m_constantOffset = context.pipeline().constantOffset();
     m_vertexCount = static_cast<uint32_t>(m_indices.size());
 
-    const uint32_t vertexDataSize = m_vertices.size() * sizeof(float);
-    m_vertexBuffer = BufferInfo::Create(context.physicalDevice(), context.device(), vertexDataSize,
-        VK_BUFFER_USAGE_VERTEX_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT);
-    void* dataPtr = m_vertexBuffer.Map(context.device());
-    memcpy(dataPtr, m_vertices.data(), vertexDataSize);
-    m_vertexBuffer.Unmap(context.device());
-
-    const uint32_t texCoordDataSize = m_texCoords.size() * sizeof(float);
-    m_texCoordBuffer = BufferInfo::Create(context.physicalDevice(), context.device(), texCoordDataSize,
-        VK_BUFFER_USAGE_VERTEX_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT);
-    dataPtr = m_texCoordBuffer.Map(context.device());
-    memcpy(dataPtr, m_texCoords.data(), vertexDataSize);
-    m_texCoordBuffer.Unmap(context.device());
-
-    const uint32_t indexDataSize = m_indices.size() * sizeof(uint32_t);
-    m_indexBuffer = BufferInfo::Create(context.physicalDevice(), context.device(), indexDataSize,
-        VK_BUFFER_USAGE_INDEX_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT);
-    dataPtr = m_indexBuffer.Map(context.device());
-    memcpy(dataPtr, m_indices.data(), indexDataSize);
-    m_indexBuffer.Unmap(context.device());
+    m_vertexBuffer = UploadToGPU(context, m_vertices, VK_BUFFER_USAGE_VERTEX_BUFFER_BIT);
+    m_texCoordBuffer = UploadToGPU(context, m_texCoords, VK_BUFFER_USAGE_VERTEX_BUFFER_BIT);
+    m_indexBuffer = UploadToGPU(context, m_indices, VK_BUFFER_USAGE_INDEX_BUFFER_BIT);
 
 
     Texture *texture = context.texture_manager().GetTexture("default");
@@ -87,9 +67,9 @@ void BasePrimitive::draw(const VkCommandBuffer cmdBuffer, const glm::mat4& paren
     vkCmdBindDescriptorSets(cmdBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, m_pipelineLayout, 0, 1, &m_modelSet, 0,
                             nullptr);
 
-    VkBuffer vertexBuffers[] = { m_vertexBuffer.buffer,m_texCoordBuffer.buffer };
-    VkDeviceSize offsets[] = { 0,0 };
-    vkCmdBindVertexBuffers(cmdBuffer, 0, 2,  vertexBuffers, offsets);
+    VkBuffer     vertexBuffers[] = {m_vertexBuffer.buffer, m_texCoordBuffer.buffer};
+    VkDeviceSize offsets[]       = {0, 0};
+    vkCmdBindVertexBuffers(cmdBuffer, 0, 2, vertexBuffers, offsets);
 
     vkCmdBindIndexBuffer(cmdBuffer, m_indexBuffer.buffer, 0, VK_INDEX_TYPE_UINT32);
     vkCmdDrawIndexed(cmdBuffer, m_vertexCount, 1, 0, 0, 0);

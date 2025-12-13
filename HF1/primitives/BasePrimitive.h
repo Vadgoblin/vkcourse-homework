@@ -9,8 +9,9 @@
 #include "glm/fwd.hpp"
 #include "glm_config.h"
 
-#include <texture.h>
+#include <context.h>
 #include <vector>
+#include <string.h>
 
 
 class Context;
@@ -48,6 +49,21 @@ protected:
 
     uint32_t         m_vertexCount;
 
-
     VkDescriptorSet       m_modelSet      = VK_NULL_HANDLE;
+
+private:
+    template <typename T>
+    static BufferInfo UploadToGPU(const Context& context, const std::vector<T>& data, const VkBufferUsageFlagBits usageBits)
+    {
+        const uint32_t dataSize = data.size() * sizeof(T);
+
+        BufferInfo buffer_info = BufferInfo::Create(context.physicalDevice(), context.device(), dataSize,
+            usageBits | VK_BUFFER_USAGE_TRANSFER_DST_BIT);
+
+        void* dataPtr = buffer_info.Map(context.device());
+        memcpy(dataPtr, data.data(), dataSize);
+        buffer_info.Unmap(context.device());
+
+        return buffer_info;
+    }
 };

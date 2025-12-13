@@ -1,11 +1,8 @@
 #include "TextureManager.h"
-
-#include "textures/textures.h"
-
 #include <context.h>
 #include <filesystem>
 #include <string>
-#include <vector>
+
 
 namespace fs = std::filesystem;
 
