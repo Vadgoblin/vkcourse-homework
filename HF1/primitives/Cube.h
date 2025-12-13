@@ -3,5 +3,5 @@
 
 class Cube : public BasePrimitive {
 public:
-    Cube(const float size = 1.0f);
+    Cube(bool atlas = false);
 };

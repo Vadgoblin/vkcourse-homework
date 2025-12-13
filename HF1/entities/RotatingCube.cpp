@@ -14,8 +14,9 @@ void RotatingCube::draw(const VkCommandBuffer cmdBuffer, const glm::mat4& parent
 
 void RotatingCube::create(Context& context)
 {
-    Cube* cube = new Cube();
-    cube->create(context);
+    Cube* cube = new Cube(true);
+    cube->create(context, "grassblock_FIX");
+    cube->setScale(0.5f,0.5f,0.5f);
     m_objectGroup->addChild(cube);
 }
 
