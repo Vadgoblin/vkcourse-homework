@@ -41,7 +41,7 @@ VkResult BasePrimitive::create(Context& context)
     m_modelSet = context.descriptorPool().CreateSet(descSetLayout);
 
     DescriptorSetMgmt setMgmt(m_modelSet);
-    setMgmt.SetImage(0, texture->view(), texture->sampler());
+    setMgmt.SetImage(0, texture->view(), texture->sampler(),VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
     setMgmt.Update(context.device());
 
     return VK_SUCCESS;

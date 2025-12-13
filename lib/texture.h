@@ -7,13 +7,17 @@
 VkImageView Create2DImageView(
     const VkDevice  device,
     const VkFormat  format,
-    const VkImage   image);
+    const VkImage   image,
+    const uint32_t  mipmap_level_count = 1);
 
 
 struct BufferInfo;
 
 class Texture {
 public:
+    Texture(const Texture&) = delete;
+    Texture& operator=(const Texture&) = delete;
+
     static Texture *LoadFromFile(
         const VkPhysicalDevice  phyDevice,
         const VkDevice          device,
@@ -34,13 +38,12 @@ public:
         VkImageUsageFlags       usage);
 */
 
-    static Texture Create2D(
-        const VkPhysicalDevice  phyDevice,
-        const VkDevice          device,
-        const VkFormat          format,
-        VkExtent2D              extent,
-        VkImageUsageFlags       usage,
-        VkSampleCountFlagBits   msaaSamples = VK_SAMPLE_COUNT_1_BIT);
+    static Texture* Create2D(const VkPhysicalDevice phyDevice,
+                             const VkDevice         device,
+                             const VkFormat         format,
+                             VkExtent2D             extent,
+                             VkImageUsageFlags      usage,
+                             VkSampleCountFlagBits  msaaSamples = VK_SAMPLE_COUNT_1_BIT);
 
     VkImage image() const { return m_image; }
     VkImageView view() const { return m_view; }
@@ -52,7 +55,7 @@ public:
         const VkCommandPool cmdPool,
         const VkBuffer&     rawBuffer);
 
-    bool Create2DSampler(const VkDevice device);
+    bool Create2DSampler(VkDevice device, bool texture);
 
     void Destroy(const VkDevice device);
 
@@ -92,6 +95,7 @@ private:
     VkFormat m_format;
     uint32_t m_width;
     uint32_t m_height;
+    uint32_t m_mipLevels;
 
     VkImage m_image;
     VkDeviceMemory m_memory;

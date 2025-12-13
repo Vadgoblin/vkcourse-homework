@@ -54,7 +54,7 @@ Texture* TextureManager::GetTexture(std::string name)
 
 Texture* TextureManager::LoadTexture(const std::string& filePath)
 {
-    Texture *texture = Texture::LoadFromFile(m_context->physicalDevice(), m_context->device(), m_context->queue(), m_context->commandPool(), filePath, VK_FORMAT_R8G8B8A8_UNORM, VK_IMAGE_USAGE_SAMPLED_BIT| VK_IMAGE_USAGE_TRANSFER_DST_BIT);
+    Texture *texture = Texture::LoadFromFile(m_context->physicalDevice(), m_context->device(), m_context->queue(), m_context->commandPool(), filePath, VK_FORMAT_R8G8B8A8_UNORM, VK_IMAGE_USAGE_SAMPLED_BIT | VK_IMAGE_USAGE_TRANSFER_DST_BIT | VK_IMAGE_USAGE_TRANSFER_SRC_BIT);
     if (texture == nullptr) {
         printf("[ERROR] Was unable to create texture %s\n", filePath.c_str());
         exit(-1);

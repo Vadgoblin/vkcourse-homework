@@ -222,10 +222,10 @@ int main(int /*argc*/, char** /*argv*/)
 
     camera.CreateVK(context.device());
 
-    Texture depthTexture = Texture::Create2D(context.physicalDevice(), context.device(), VK_FORMAT_D32_SFLOAT,
+    Texture* depthTexture = Texture::Create2D(context.physicalDevice(), context.device(), VK_FORMAT_D32_SFLOAT,
                                              swapchain.surfaceExtent(), VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT, context.sampleCountFlagBits());
 
-    Texture msaaColorTexture;
+    Texture* msaaColorTexture;
     if (context.sampleCountFlagBits() > VK_SAMPLE_COUNT_1_BIT) {
         msaaColorTexture = Texture::Create2D(context.physicalDevice(), context.device(), swapchain.format(),
                                              swapchain.surfaceExtent(),
@@ -285,7 +285,7 @@ int main(int /*argc*/, char** /*argv*/)
             VkRenderingAttachmentInfoKHR colorAttachment = {
                 .sType              = VK_STRUCTURE_TYPE_RENDERING_ATTACHMENT_INFO_KHR,
                 .pNext              = nullptr,
-                .imageView          = msaaColorTexture.view(),
+                .imageView          = msaaColorTexture->view(),
                 .imageLayout        = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL,
                 .resolveMode        = VK_RESOLVE_MODE_AVERAGE_BIT,
                 .resolveImageView   = swapchainImage.view,
@@ -305,7 +305,7 @@ int main(int /*argc*/, char** /*argv*/)
             const VkRenderingAttachmentInfoKHR depthAttachment = {
                 .sType              = VK_STRUCTURE_TYPE_RENDERING_ATTACHMENT_INFO_KHR,
                 .pNext              = nullptr,
-                .imageView          = depthTexture.view(),
+                .imageView          = depthTexture->view(),
                 .imageLayout        = VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL,
                 .resolveMode        = VK_RESOLVE_MODE_NONE,
                 .resolveImageView   = VK_NULL_HANDLE,
@@ -365,8 +365,8 @@ int main(int /*argc*/, char** /*argv*/)
         vkDeviceWaitIdle(device);
     }
 
-    if (context.sampleCountFlagBits() > VK_SAMPLE_COUNT_1_BIT) msaaColorTexture.Destroy(context.device());
-    depthTexture.Destroy(context.device());
+    if (context.sampleCountFlagBits() > VK_SAMPLE_COUNT_1_BIT) msaaColorTexture->Destroy(context.device());
+    depthTexture->Destroy(context.device());
     imIntegration.Destroy(context);
 
     vkDestroyFence(device, imageFence, nullptr);
