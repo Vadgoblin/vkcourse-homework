@@ -48,6 +48,6 @@ target_link_libraries(hf1
 )
 
 add_shaders(hf1
-        shaders/shader.vert SPV_triangle_in_vert
-        shaders/shader.frag SPV_triangle_in_frag
+        shaders/shader.vert SPV_shader_in_vert
+        shaders/shader.frag SPV_shader_in_frag
 )

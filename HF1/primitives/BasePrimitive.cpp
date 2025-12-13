@@ -4,23 +4,22 @@
 #include <glm/gtx/quaternion.hpp>
 
 #include "../ModelPushConstant.h"
-#include "../textures/textures.h"
 #include "context.h"
 #include <texture.h>
 #include <vector>
 #include <vulkan/vulkan_core.h>
 
 namespace {
-#include "shaders/triangle_in.frag_include.h"
-#include "shaders/triangle_in.vert_include.h"
+#include "shaders/shader.frag_include.h"
+#include "shaders/shader.vert_include.h"
 }
 
 BasePrimitive::BasePrimitive()
 {
-     m_shaderVertData = SPV_triangle_in_vert;
-     m_shaderVertSize = sizeof(SPV_triangle_in_vert);
-     m_shaderFragData = SPV_triangle_in_frag;
-     m_shaderFragSize = sizeof(SPV_triangle_in_frag);
+     m_shaderVertData = SPV_shader_in_vert;
+     m_shaderVertSize = sizeof(SPV_shader_in_vert);
+     m_shaderFragData = SPV_shader_in_frag;
+     m_shaderFragSize = sizeof(SPV_shader_in_frag);
 }
 
 VkResult BasePrimitive::create(Context& context)

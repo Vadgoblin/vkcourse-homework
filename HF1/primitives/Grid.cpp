@@ -3,10 +3,6 @@
 #include "context.h"
 #include <vector>
 
-namespace {
-#include "shaders/grid.frag_include.h"
-#include "shaders/grid.vert_include.h"
-}
 
 
 void buildGrid(float width, float depth, int rows, int cols,
@@ -71,9 +67,4 @@ void buildGrid(float width, float depth, int rows, int cols,
 Grid::Grid(float width, float depth, int rows, int cols) : BasePrimitive()
 {
     buildGrid(width, depth, rows, cols,m_vertices, m_normals, m_texCoords, m_indices);
-
-    m_shaderVertData   = SPV_grid_vert;
-    m_shaderVertSize   = sizeof(SPV_grid_vert);
-    m_shaderFragData   = SPV_grid_frag;
-    m_shaderFragSize   = sizeof(SPV_grid_frag);
 }

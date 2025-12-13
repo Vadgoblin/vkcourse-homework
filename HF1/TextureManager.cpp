@@ -15,7 +15,6 @@ void TextureManager::Create(Context& context)
     if (!fs::exists(this->TEXTURE_DIRECTORY) || !fs::is_directory(this->TEXTURE_DIRECTORY)) {
         printf("Directory not found: %s \n", this->TEXTURE_DIRECTORY);
         exit(-1);
-        return;
     }
 
     for (const auto& entry : fs::directory_iterator(this->TEXTURE_DIRECTORY)) {
