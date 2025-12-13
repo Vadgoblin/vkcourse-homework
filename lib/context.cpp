@@ -122,6 +122,7 @@ VkDevice Context::CreateDevice(const std::vector<const char*>& extensions)
 
     VkPhysicalDeviceFeatures deviceFeatures{};
     deviceFeatures.fillModeNonSolid = VK_TRUE;
+    deviceFeatures.samplerAnisotropy = VK_TRUE;
 
     const VkDeviceCreateInfo createInfo = {.sType                   = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO,
                                            .pNext                   = &dynamicRendering,
