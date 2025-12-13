@@ -4,7 +4,7 @@
 #include "entities/OrbitingHelicopter.h"
 #include "entities/PistonWithBouncingBall.h"
 #include "entities/RotatingCube.h"
-#include "entities/RotatingTetrahedron.h"
+#include "entities/SpinningCirnoPrism.h"
 #include "primitives/BasePrimitive.h"
 #include "primitives/Cone.h"
 #include "primitives/Cube.h"
@@ -29,7 +29,7 @@ void setup(Context& context)
     rotatingCube->setPosition(3.0f, 2.0f, 0.0f);
     entities.push_back(rotatingCube);
 
-    RotatingTetrahedron* rotating_tetrahedron = new RotatingTetrahedron();
+    SpinningCirnoPrism* rotating_tetrahedron = new SpinningCirnoPrism();
     rotating_tetrahedron->create(context);
     rotating_tetrahedron->setPosition(-4.0f, 1.2f, 0.0f);
     entities.push_back(rotating_tetrahedron);
@@ -47,7 +47,7 @@ void setup(Context& context)
 void draw(const VkCommandBuffer cmd)
 {
     for (BaseEntity* object : entities) {
-        // object->tick();
+        object->tick();
         object->draw(cmd);
     }
     for (ObjectGroup* object : objectGroups) {

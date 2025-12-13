@@ -26,8 +26,8 @@ add_executable(hf1
         entities/RotatingCube.h
         primitives/Cone.cpp
         primitives/Cone.h
-        entities/RotatingTetrahedron.cpp
-        entities/RotatingTetrahedron.h
+        entities/SpinningCirnoPrism.cpp
+        entities/SpinningCirnoPrism.h
         entities/PistonWithBouncingBall.cpp
         entities/PistonWithBouncingBall.h
         entities/OrbitingHelicopter.cpp
@@ -37,6 +37,8 @@ add_executable(hf1
         PipelineWrapper.h
         TextureManager.cpp
         TextureManager.h
+        primitives/CirnoPrism.cpp
+        primitives/CirnoPrism.h
 )
 
 target_include_directories(hf1
