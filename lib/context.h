@@ -39,8 +39,8 @@ public:
     DescriptorPool&  descriptorPool() { return m_descriptorPool; }
     TextureManager&  texture_manager() { return *m_textureManager; }
 
-    void BuildPipeline(VkFormat swapchainFormat);
-    PipelineWrapper& pipeline() const { return *m_pipelineWrapper; }
+    void BuildPipelineWrapper(VkFormat swapchainFormat);
+    PipelineWrapper& pipelineWrapper() const { return *m_pipelineWrapper; }
 
 protected:
     bool FindQueueFamily(const VkPhysicalDevice phyDevice, const VkSurfaceKHR surface, uint32_t* outQueueFamilyIdx);

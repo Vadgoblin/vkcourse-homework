@@ -51,3 +51,15 @@ add_shaders(hf1
         shaders/shader.vert SPV_shader_in_vert
         shaders/shader.frag SPV_shader_in_frag
 )
+
+
+set(TEXTURE_SOURCE_DIR "${CMAKE_SOURCE_DIR}/HF1/textures")
+set(TEXTURE_DEST_DIR "${CMAKE_BINARY_DIR}/bin/HF1/textures")
+
+add_custom_command(
+        TARGET hf1 POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E copy_directory
+        ${TEXTURE_SOURCE_DIR}
+        ${TEXTURE_DEST_DIR}
+        COMMENT "Copying Textures to Binary Directory..."
+)

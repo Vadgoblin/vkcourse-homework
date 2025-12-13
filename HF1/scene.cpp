@@ -19,8 +19,8 @@ std::vector<BaseEntity*> entities;
 
 void setup(Context& context)
 {
-    Grid* grid = new Grid(1,1,3,2);
-    grid->create(context);
+    Grid* grid = new Grid(1,1,1,1);
+    grid->create(context, "grass2");
     grid->setScale(12.0f, 1.0f, 12.0f);
     primitives.push_back(grid);
 
@@ -47,7 +47,7 @@ void setup(Context& context)
 void draw(const VkCommandBuffer cmd)
 {
     for (BaseEntity* object : entities) {
-        object->tick();
+        // object->tick();
         object->draw(cmd);
     }
     for (ObjectGroup* object : objectGroups) {

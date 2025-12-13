@@ -233,7 +233,7 @@ int main(int /*argc*/, char** /*argv*/)
                                              context.sampleCountFlagBits());
     }
 
-    context.BuildPipeline(swapchain.format());
+    context.BuildPipelineWrapper(swapchain.format());
     context.CreateTextureManager();
 
     ObjectManager::setup(context);

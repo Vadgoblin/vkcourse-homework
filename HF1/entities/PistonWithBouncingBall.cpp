@@ -46,7 +46,7 @@ void PistonWithBouncingBall::create(Context& context)
 
     Sphere* ball = new Sphere(0.4f,25,25);
     ball->setPosition(0.0f, 1.4f,0.0f);
-    ball->create(context);
+    ball->create(context, "earth");
     m_ball->addChild(ball);
 }
 

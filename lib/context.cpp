@@ -238,7 +238,7 @@ void Context::SetSampleCountFlagBits()
     }
 }
 
-void Context::BuildPipeline(VkFormat swapchainFormat)
+void Context::BuildPipelineWrapper(VkFormat swapchainFormat)
 {
     m_pipelineWrapper = new PipelineWrapper(*this,m_device, swapchainFormat, m_SampleCountFlagBits);
 }

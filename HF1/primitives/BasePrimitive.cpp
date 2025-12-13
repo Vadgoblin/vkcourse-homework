@@ -22,11 +22,11 @@ BasePrimitive::BasePrimitive()
      m_shaderFragSize = sizeof(SPV_shader_in_frag);
 }
 
-VkResult BasePrimitive::create(Context& context)
+VkResult BasePrimitive::create(Context& context, const char* texture_name)
 {
-    m_pipeline = context.pipeline().pipeline();
-    m_pipelineLayout = context.pipeline().pipelineLayout();
-    m_constantOffset = context.pipeline().constantOffset();
+    m_pipeline = context.pipelineWrapper().pipeline();
+    m_pipelineLayout = context.pipelineWrapper().pipelineLayout();
+    m_constantOffset = context.pipelineWrapper().constantOffset();
     m_vertexCount = static_cast<uint32_t>(m_indices.size());
 
     m_vertexBuffer = UploadToGPU(context, m_vertices, VK_BUFFER_USAGE_VERTEX_BUFFER_BIT);
@@ -34,9 +34,9 @@ VkResult BasePrimitive::create(Context& context)
     m_indexBuffer = UploadToGPU(context, m_indices, VK_BUFFER_USAGE_INDEX_BUFFER_BIT);
 
 
-    Texture *texture = context.texture_manager().GetTexture("default");
+    Texture *texture = context.texture_manager().GetTexture(texture_name);
 
-    VkDescriptorSetLayout descSetLayout  = context.pipeline().descSetLayout();
+    VkDescriptorSetLayout descSetLayout  = context.pipelineWrapper().descSetLayout();
     m_modelSet = context.descriptorPool().CreateSet(descSetLayout);
 
     DescriptorSetMgmt setMgmt(m_modelSet);
