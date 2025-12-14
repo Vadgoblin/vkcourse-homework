@@ -236,6 +236,8 @@ void Context::SetSampleCountFlagBits()
     } else {
         m_SampleCountFlagBits = VK_SAMPLE_COUNT_1_BIT; // No MSAA
     }
+
+    m_SampleCountFlagBits = VK_SAMPLE_COUNT_1_BIT;
 }
 
 void Context::BuildPipelineWrapper(VkFormat swapchainFormat)

@@ -340,18 +340,39 @@ if (context.sampleCountFlagBits() != VK_SAMPLE_COUNT_1_BIT) {
 
             // Begin render commands
             const VkClearValue                 clearColor      = {{{0.0f, 0.0f, 0.0f, 1.0f}}};
+
+            // 1. Determine which view to use safely
+            VkImageView targetView = (context.sampleCountFlagBits() == VK_SAMPLE_COUNT_1_BIT)
+                                   ? swapchainImage.view
+                                   : msaaColorTexture->view();
+
+            // 2. Determine resolve settings safely
+            VkImageView resolveView = (context.sampleCountFlagBits() == VK_SAMPLE_COUNT_1_BIT)
+                                    ? VK_NULL_HANDLE
+                                    : swapchainImage.view;
+
+            VkResolveModeFlagBits resolveMode = (context.sampleCountFlagBits() == VK_SAMPLE_COUNT_1_BIT)
+                                              ? VK_RESOLVE_MODE_NONE
+                                              : VK_RESOLVE_MODE_AVERAGE_BIT;
+
+            VkImageLayout resolveLayout = (context.sampleCountFlagBits() == VK_SAMPLE_COUNT_1_BIT)
+                                        ? VK_IMAGE_LAYOUT_UNDEFINED
+                                        : VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
+
+            // 3. Now initialize the struct safely
             VkRenderingAttachmentInfoKHR colorAttachment = {
                 .sType              = VK_STRUCTURE_TYPE_RENDERING_ATTACHMENT_INFO_KHR,
                 .pNext              = nullptr,
-                .imageView          = msaaColorTexture->view(),
+                .imageView          = targetView,          // ✅ Safe now
                 .imageLayout        = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL,
-                .resolveMode        = VK_RESOLVE_MODE_AVERAGE_BIT,
-                .resolveImageView   = swapchainImage.view,
-                .resolveImageLayout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL,
+                .resolveMode        = resolveMode,         // ✅ Safe now
+                .resolveImageView   = resolveView,         // ✅ Safe now
+                .resolveImageLayout = resolveLayout,       // ✅ Safe now
                 .loadOp             = VK_ATTACHMENT_LOAD_OP_CLEAR,
                 .storeOp            = VK_ATTACHMENT_STORE_OP_STORE,
                 .clearValue         = clearColor,
             };
+
             if (context.sampleCountFlagBits() == VK_SAMPLE_COUNT_1_BIT) {
                 colorAttachment.imageView          = swapchainImage.view;
                 colorAttachment.resolveMode        = VK_RESOLVE_MODE_NONE;
