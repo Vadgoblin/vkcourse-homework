@@ -101,6 +101,10 @@ void GenerateCubeAtlas(std::vector<float>& vertices,
 
     // Helper to push a vertex
     auto pushVert = [&](float x, float y, float z, float nx, float ny, float nz, float u, float v) {
+        x /= 2.0f;
+        y /= 2.0f;
+        z /= 2.0f;
+
         vertices.push_back(x); vertices.push_back(y); vertices.push_back(z);
         normals.push_back(nx); normals.push_back(ny); normals.push_back(nz);
         texCoords.push_back(u); texCoords.push_back(v);
