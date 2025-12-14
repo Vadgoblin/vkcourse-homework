@@ -101,19 +101,13 @@ VkPipeline PipelineWrapper::CreateSimplePipeline(const VkDevice         device,
         },
     };
 
-    const VkVertexInputBindingDescription bindingInfo[2] = {
-        {
-            .binding   = 0,
-            .stride    = sizeof(float) * 3,
-            .inputRate = VK_VERTEX_INPUT_RATE_VERTEX,
-        },{
-            .binding   = 1,
-            .stride    = sizeof(float) * 2,
-            .inputRate = VK_VERTEX_INPUT_RATE_VERTEX,
-        }
+    VkVertexInputBindingDescription bindingDescriptions[3] = {
+        { 0, sizeof(glm::vec3), VK_VERTEX_INPUT_RATE_VERTEX }, // Binding 0: Position stride
+        { 1, sizeof(glm::vec2), VK_VERTEX_INPUT_RATE_VERTEX }, // Binding 1: UV stride
+        { 2, sizeof(glm::vec3), VK_VERTEX_INPUT_RATE_VERTEX }  // Binding 2: Normal stride (NEW)
     };
 
-    VkVertexInputAttributeDescription vertexAttributes[2] = {
+    VkVertexInputAttributeDescription vertexAttributes[3] = {
         { // position
             .location = 0,                          // layout location=0 in shader
             .binding  = 0,                          // binding position in Vulkan API
@@ -123,8 +117,14 @@ VkPipeline PipelineWrapper::CreateSimplePipeline(const VkDevice         device,
         { // uv
             .location = 1,                          // layout location=1 in shader
             .binding  = 1,                          // binding position in Vulkan API
-            .format   = VK_FORMAT_R32G32_SFLOAT, // use "vec2" values from the buffer
-            .offset   = 0,//sizeof(float) * 3,          // use buffer from the 3*float
+            .format   = VK_FORMAT_R32G32_SFLOAT,    // use "vec2" values from the buffer
+            .offset   = 0,                          // use buffer from the 3*float
+        },
+        { // normal
+            .location = 2,
+            .binding  = 2,
+            .format   = VK_FORMAT_R32G32B32_SFLOAT,
+            .offset   = 0,
         }
     };
 
@@ -132,9 +132,9 @@ VkPipeline PipelineWrapper::CreateSimplePipeline(const VkDevice         device,
         .sType                           = VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO,
         .pNext                           = 0,
         .flags                           = 0,
-        .vertexBindingDescriptionCount   = 2u,
-        .pVertexBindingDescriptions      = bindingInfo,
-        .vertexAttributeDescriptionCount = 2u,
+        .vertexBindingDescriptionCount   = 3u,
+        .pVertexBindingDescriptions      = bindingDescriptions,
+        .vertexAttributeDescriptionCount = 3u,
         .pVertexAttributeDescriptions    = vertexAttributes,
     };
 

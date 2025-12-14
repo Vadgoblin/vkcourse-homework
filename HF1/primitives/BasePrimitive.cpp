@@ -32,6 +32,7 @@ VkResult BasePrimitive::create(Context& context, const char* texture_name)
     m_vertexBuffer = UploadToGPU(context, m_vertices, VK_BUFFER_USAGE_VERTEX_BUFFER_BIT);
     m_texCoordBuffer = UploadToGPU(context, m_texCoords, VK_BUFFER_USAGE_VERTEX_BUFFER_BIT);
     m_indexBuffer = UploadToGPU(context, m_indices, VK_BUFFER_USAGE_INDEX_BUFFER_BIT);
+    m_normalBuffer = UploadToGPU(context, m_normals, VK_BUFFER_USAGE_VERTEX_BUFFER_BIT);
 
 
     Texture *texture = context.texture_manager().GetTexture(texture_name);
@@ -51,6 +52,7 @@ void BasePrimitive::destroy(const VkDevice device)
     m_vertexBuffer.Destroy(device);
     m_indexBuffer.Destroy(device);
     m_texCoordBuffer.Destroy(device);
+    m_normalBuffer.Destroy(device);
 }
 
 void BasePrimitive::draw(const VkCommandBuffer cmdBuffer, const glm::mat4& parentModel)
@@ -66,9 +68,9 @@ void BasePrimitive::draw(const VkCommandBuffer cmdBuffer, const glm::mat4& paren
     vkCmdBindDescriptorSets(cmdBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, m_pipelineLayout, 0, 1, &m_modelSet, 0,
                             nullptr);
 
-    VkBuffer     vertexBuffers[] = {m_vertexBuffer.buffer, m_texCoordBuffer.buffer};
-    VkDeviceSize offsets[]       = {0, 0};
-    vkCmdBindVertexBuffers(cmdBuffer, 0, 2, vertexBuffers, offsets);
+    VkBuffer     vertexBuffers[] = {m_vertexBuffer.buffer, m_texCoordBuffer.buffer, m_normalBuffer.buffer};
+    VkDeviceSize offsets[]       = {0, 0, 0};
+    vkCmdBindVertexBuffers(cmdBuffer, 0, 3, vertexBuffers, offsets);
 
     vkCmdBindIndexBuffer(cmdBuffer, m_indexBuffer.buffer, 0, VK_INDEX_TYPE_UINT32);
     vkCmdDrawIndexed(cmdBuffer, m_vertexCount, 1, 0, 0, 0);
