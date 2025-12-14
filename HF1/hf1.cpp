@@ -280,6 +280,64 @@ int main(int /*argc*/, char** /*argv*/)
 
             swapchain.CmdTransitionToRender(cmdBuffer, swapchainImage, queueFamilyIdx);
 
+
+
+            // ai generated fix for Validation Error that appeared after system update
+// --------------------------------------------------------------------------------------
+// [INSERT THIS BLOCK HERE]
+// --------------------------------------------------------------------------------------
+
+// 1. Transition Depth Texture
+// We discard the old content (UNDEFINED) and prepare it for writing (DEPTH_STENCIL_ATTACHMENT_OPTIMAL)
+VkImageMemoryBarrier depthBarrier{};
+depthBarrier.sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER;
+depthBarrier.oldLayout = VK_IMAGE_LAYOUT_UNDEFINED;
+depthBarrier.newLayout = VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL;
+depthBarrier.srcAccessMask = 0;
+depthBarrier.dstAccessMask = VK_ACCESS_DEPTH_STENCIL_ATTACHMENT_WRITE_BIT;
+// NOTE: Make sure to get the VkImage handle, not the view!
+depthBarrier.image = depthTexture->image();
+depthBarrier.subresourceRange.aspectMask = VK_IMAGE_ASPECT_DEPTH_BIT; // Add | VK_IMAGE_ASPECT_STENCIL_BIT if using stencil
+depthBarrier.subresourceRange.baseMipLevel = 0;
+depthBarrier.subresourceRange.levelCount = 1;
+depthBarrier.subresourceRange.baseArrayLayer = 0;
+depthBarrier.subresourceRange.layerCount = 1;
+
+// 2. Transition MSAA Color Texture (Only if MSAA is active)
+// If you are using MSAA, the render target is 'msaaColorTexture', not the swapchain directly.
+// It also needs to be transitioned from UNDEFINED to COLOR_ATTACHMENT_OPTIMAL.
+if (context.sampleCountFlagBits() != VK_SAMPLE_COUNT_1_BIT) {
+    VkImageMemoryBarrier msaaBarrier{};
+    msaaBarrier.sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER;
+    msaaBarrier.oldLayout = VK_IMAGE_LAYOUT_UNDEFINED;
+    msaaBarrier.newLayout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
+    msaaBarrier.srcAccessMask = 0;
+    msaaBarrier.dstAccessMask = VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT;
+    msaaBarrier.image = msaaColorTexture->image(); // Get the VkImage handle
+    msaaBarrier.subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
+    msaaBarrier.subresourceRange.baseMipLevel = 0;
+    msaaBarrier.subresourceRange.levelCount = 1;
+    msaaBarrier.subresourceRange.baseArrayLayer = 0;
+    msaaBarrier.subresourceRange.layerCount = 1;
+
+    // Batch the barriers together for performance
+    VkImageMemoryBarrier barriers[] = {depthBarrier, msaaBarrier};
+    vkCmdPipelineBarrier(cmdBuffer,
+        VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT,
+        VK_PIPELINE_STAGE_EARLY_FRAGMENT_TESTS_BIT | VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT,
+        0, 0, nullptr, 0, nullptr, 2, barriers);
+} else {
+    // Only issue the depth barrier
+    vkCmdPipelineBarrier(cmdBuffer,
+        VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT,
+        VK_PIPELINE_STAGE_EARLY_FRAGMENT_TESTS_BIT,
+        0, 0, nullptr, 0, nullptr, 1, &depthBarrier);
+}
+
+// --------------------------------------------------------------------------------------
+// [END INSERT]
+// --------------------------------------------------------------------------------------
+
             // Begin render commands
             const VkClearValue                 clearColor      = {{{0.0f, 0.0f, 0.0f, 1.0f}}};
             VkRenderingAttachmentInfoKHR colorAttachment = {
