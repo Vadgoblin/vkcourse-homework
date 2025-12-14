@@ -11,7 +11,7 @@ layout(set = 0, binding = 0) uniform sampler2D gridImage;
 // Hardcoded light for testing (White light at 10, 10, 10)
 // Later, pass this via Uniform Buffer!
 const vec3 lightPos = vec3(10.0, 10.0, 10.0);
-const vec3 lightColor = vec3(0.0, 1.0, 1.0);
+const vec3 lightColor = vec3(1.0, 1.0, 1.0);
 const float ambientStrength = 0.1;
 
 void main() {

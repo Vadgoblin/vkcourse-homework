@@ -29,10 +29,10 @@ void setup(Context& context)
     // rotatingCube->setPosition(3.0f, 2.0f, 0.0f);
     // entities.push_back(rotatingCube);
     //
-    // SpinningCirnoPrism* rotating_tetrahedron = new SpinningCirnoPrism();
-    // rotating_tetrahedron->create(context);
-    // rotating_tetrahedron->setPosition(-4.0f, 1.2f, 0.0f);
-    // entities.push_back(rotating_tetrahedron);
+    SpinningCirnoPrism* rotating_tetrahedron = new SpinningCirnoPrism();
+    rotating_tetrahedron->create(context);
+    rotating_tetrahedron->setPosition(-4.0f, 1.2f, 0.0f);
+    entities.push_back(rotating_tetrahedron);
     //
     // PistonWithBouncingBall* piston_with_bouncing_ball = new PistonWithBouncingBall();
     // piston_with_bouncing_ball->create(context);
