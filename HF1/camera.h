@@ -20,6 +20,7 @@ static float CurveInput(float value, float power = 2.0f) {
 class Camera {
 public:
     struct CameraPushConstant {
+        glm::vec4 position;
         glm::mat4 projection;
         glm::mat4 view;
     };
@@ -145,6 +146,7 @@ public:
 
     void PushConstants(VkCommandBuffer cmdBuffer) {
         CameraPushConstant cameraData = {
+            .position = glm::vec4(m_position, 0.0f),
             .projection = m_projection,
             .view       = m_view,
         };

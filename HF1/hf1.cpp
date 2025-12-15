@@ -254,6 +254,8 @@ int main(int /*argc*/, char** /*argv*/)
         .extent = swapchain.surfaceExtent(),
     };
 
+    // vkDestroyPipelineLayout(device, VK_NULL_HANDLE, nullptr);
+
     while (!glfwWindowShouldClose(window)) {
         glfwPollEvents();
         camera.Update();

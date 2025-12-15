@@ -20,28 +20,29 @@ std::vector<BaseEntity*> entities;
 void setup(Context& context)
 {
     Grid* grid = new Grid(1,1,1,1);
-    grid->create(context, "grass2");
+    // grid->create(context, "grass2");
+    grid->create(context, "white");
     grid->setScale(12.0f, 1.0f, 12.0f);
     primitives.push_back(grid);
 
-    // RotatingCube* rotatingCube = new RotatingCube();
-    // rotatingCube->create(context);
-    // rotatingCube->setPosition(3.0f, 2.0f, 0.0f);
-    // entities.push_back(rotatingCube);
-    //
+    RotatingCube* rotatingCube = new RotatingCube();
+    rotatingCube->create(context);
+    rotatingCube->setPosition(3.0f, 2.0f, 0.0f);
+    entities.push_back(rotatingCube);
+
     SpinningCirnoPrism* rotating_tetrahedron = new SpinningCirnoPrism();
     rotating_tetrahedron->create(context);
     rotating_tetrahedron->setPosition(-4.0f, 1.2f, 0.0f);
     entities.push_back(rotating_tetrahedron);
-    //
-    // PistonWithBouncingBall* piston_with_bouncing_ball = new PistonWithBouncingBall();
-    // piston_with_bouncing_ball->create(context);
-    // entities.push_back(piston_with_bouncing_ball);
-    //
-    // OrbitingHelicopter* orbiting_helicopter = new OrbitingHelicopter();
-    // orbiting_helicopter->create(context);
-    // orbiting_helicopter->setPosition(0.0f, 5.0f, 0.0f);
-    // entities.push_back(orbiting_helicopter);
+
+    PistonWithBouncingBall* piston_with_bouncing_ball = new PistonWithBouncingBall();
+    piston_with_bouncing_ball->create(context);
+    entities.push_back(piston_with_bouncing_ball);
+
+    OrbitingHelicopter* orbiting_helicopter = new OrbitingHelicopter();
+    orbiting_helicopter->create(context);
+    orbiting_helicopter->setPosition(0.0f, 5.0f, 0.0f);
+    entities.push_back(orbiting_helicopter);
 }
 
 void draw(const VkCommandBuffer cmd)

@@ -5,6 +5,7 @@ layout(location = 1) in vec2 in_uv;
 layout(location = 2) in vec3 in_normal;
 
 layout(push_constant) uniform PushConstants {
+    vec3 cameraPosition;
     mat4 projection;
     mat4 view;
     mat4 model;
@@ -13,10 +14,12 @@ layout(push_constant) uniform PushConstants {
 layout(location = 0) out vec2 out_uv;
 layout(location = 1) out vec3 out_normal;
 layout(location = 2) out vec3 out_fragPos;
+layout(location = 3) out vec3 camera_pos;
 
 void main() {
     gl_Position = constants.projection * constants.view * constants.model * vec4(in_position, 1.0f);
 
+    camera_pos = constants.cameraPosition;
     out_uv = in_uv;
 
     out_normal = mat3(transpose(inverse(constants.model))) * in_normal;
