@@ -8,6 +8,8 @@
 
 #define GLFW_INCLUDE_VULKAN
 #define GLFW_INCLUDE_NONE
+#include "LightManager.h"
+
 #include <vulkan/vulkan.h>
 
 #include "glm_config.h"
@@ -233,7 +235,11 @@ int main(int /*argc*/, char** /*argv*/)
                                              context.sampleCountFlagBits());
     }
 
+
     context.BuildPipelineWrapper(swapchain.format());
+
+    // LightManager lightManager = LightManager(context);
+
     context.CreateTextureManager();
 
     ObjectManager::setup(context);
@@ -253,8 +259,6 @@ int main(int /*argc*/, char** /*argv*/)
         .offset = {0, 0},
         .extent = swapchain.surfaceExtent(),
     };
-
-    // vkDestroyPipelineLayout(device, VK_NULL_HANDLE, nullptr);
 
     while (!glfwWindowShouldClose(window)) {
         glfwPollEvents();
@@ -413,6 +417,7 @@ if (context.sampleCountFlagBits() != VK_SAMPLE_COUNT_1_BIT) {
 
             camera.PushConstants(cmdBuffer);
 
+            // lightManager.BindDescriptorSets(cmdBuffer);
             ObjectManager::draw(cmdBuffer);
 
             // Render things

@@ -16,16 +16,20 @@ layout(set = 0, binding = 0) uniform sampler2D gridImage;
 layout(location = 0) out vec4 out_color;
 
 
-const float ambientStrength = 0.0;
+const float ambientStrength = 0.1;
 const float specularStrength = 0.5;
 const float specularShininess = 32.0;
+
+#define NUM_LIGHTS 3
 
 struct Light {
     vec3 position;
     vec3 color;
 };
 
-#define NUM_LIGHTS 3
+//layout(set = 0, binding = 1) uniform LightsUBO {
+//    Light lights[NUM_LIGHTS];
+//} ubo;
 
 const Light lights[NUM_LIGHTS] = Light[](
     Light(vec3(0.0, 10.0, 10.0), vec3(1.0, 0.0, 0.0)),

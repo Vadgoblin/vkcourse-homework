@@ -159,7 +159,7 @@ void DescriptorSetMgmt::Update(const VkDevice device)
 
         VkWriteDescriptorSet& writeInfo = writeInfos[idx];
 
-        writeInfo.dstBinding     = idx;
+        writeInfo.dstBinding     = idx + 1;
         writeInfo.descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
         writeInfo.pBufferInfo    = &info;
     }

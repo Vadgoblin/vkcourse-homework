@@ -39,6 +39,8 @@ add_executable(hf1
         TextureManager.h
         primitives/CirnoPrism.cpp
         primitives/CirnoPrism.h
+        LightManager.cpp
+        LightManager.h
 )
 
 target_include_directories(hf1

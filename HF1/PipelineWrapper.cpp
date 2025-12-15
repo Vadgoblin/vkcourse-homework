@@ -29,6 +29,13 @@ PipelineWrapper::PipelineWrapper(Context& context, const VkDevice device, const 
             .stageFlags         = VK_SHADER_STAGE_ALL,
             .pImmutableSamplers = nullptr,
         },
+        VkDescriptorSetLayoutBinding{
+        .binding            = 1,
+            .descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER,
+            .descriptorCount    = 1,
+            .stageFlags         = VK_SHADER_STAGE_ALL,
+            .pImmutableSamplers = nullptr,
+        }
     };
 
     m_descSetLayout = context.descriptorPool().CreateLayout(layoutBindings);

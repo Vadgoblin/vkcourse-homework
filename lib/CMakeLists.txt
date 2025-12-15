@@ -8,6 +8,7 @@ add_library(${NAME} STATIC
     swapchain.cpp
     imgui_integration.cpp
     wrappers.cpp
+        descriptors.cpp
 )
 
 target_include_directories(${NAME}
