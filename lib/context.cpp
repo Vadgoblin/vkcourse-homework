@@ -183,8 +183,8 @@ void Context::Destroy()
     m_textureManager->Destroy();
     delete m_textureManager;
 
-    m_pipelineWrapper->Destroy();
-    delete m_pipelineWrapper;
+    // m_pipelineWrapper->Destroy();
+    // delete m_pipelineWrapper;
 
     m_descriptorPool.Destroy();
     vkDestroyDevice(m_device, nullptr);
@@ -239,8 +239,8 @@ void Context::SetSampleCountFlagBits()
 
     // m_SampleCountFlagBits = VK_SAMPLE_COUNT_1_BIT;
 }
-
-void Context::BuildPipelineWrapper(VkFormat swapchainFormat)
-{
-    m_pipelineWrapper = new PipelineWrapper(*this,m_device, swapchainFormat, m_SampleCountFlagBits);
-}
+//
+// void Context::BuildPipelineWrapper(VkFormat swapchainFormat)
+// {
+//     m_pipelineWrapper = new PipelineWrapper(*this,m_device, swapchainFormat, m_SampleCountFlagBits);
+// }

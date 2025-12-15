@@ -38,18 +38,18 @@ LightManager::LightManager(Context& context)
     m_lights[0].position = glm::vec3(5,10,10);
     m_lights[0].color = glm::vec3(0.0, 0.0, 1.0);
 
-    m_pipelineLayout = context.pipelineWrapper().pipelineLayout();
-
-    BufferInfo lightInfo = BufferInfo::Create(context.physicalDevice(), context.device(), sizeof(m_lights), VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT);
-    lightInfo.Update(context.device(), &m_lights, sizeof(m_lights));
-
-
-    VkDescriptorSetLayout descSetLayout = context.pipelineWrapper().descSetLayout();
-    m_modelSet = context.descriptorPool().CreateSet(descSetLayout);
-
-    DescriptorSetMgmt setMgmt(m_modelSet);
-    setMgmt.SetBuffer(0,lightInfo.buffer);
-    setMgmt.Update(context.device());
+    // m_pipelineLayout = context.pipelineWrapper().pipelineLayout();
+    //
+    // BufferInfo lightInfo = BufferInfo::Create(context.physicalDevice(), context.device(), sizeof(m_lights), VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT);
+    // lightInfo.Update(context.device(), &m_lights, sizeof(m_lights));
+    //
+    //
+    // VkDescriptorSetLayout descSetLayout = context.pipelineWrapper().descSetLayout();
+    // m_modelSet = context.descriptorPool().CreateSet(descSetLayout);
+    //
+    // DescriptorSetMgmt setMgmt(m_modelSet);
+    // setMgmt.SetBuffer(0,lightInfo.buffer);
+    // setMgmt.Update(context.device());
 
     // auto device = context.device();
     // auto phyDevice = context.physicalDevice();

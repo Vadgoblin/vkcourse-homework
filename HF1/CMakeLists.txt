@@ -33,14 +33,15 @@ add_executable(hf1
         entities/OrbitingHelicopter.cpp
         entities/OrbitingHelicopter.h
         ModelPushConstant.h
-        PipelineWrapper.cpp
-        PipelineWrapper.h
         TextureManager.cpp
         TextureManager.h
         primitives/CirnoPrism.cpp
         primitives/CirnoPrism.h
         LightManager.cpp
         LightManager.h
+        LightningPass.cpp
+        LightningPass.h
+        shared_crap.h
 )
 
 target_include_directories(hf1

@@ -21,9 +21,14 @@
 #include "debug.h"
 #include "scene.h"
 
+#include "LightningPass.h"
 #include "imgui_integration.h"
 #include "swapchain.h"
 #include "wrappers.h"
+
+
+#include "shared_crap.h"
+VkDescriptorSetLayout descSetLayout;
 
 void KeyCallback(GLFWwindow* window, int key, int /*scancode*/, int /*action*/, int /*mods*/)
 {
@@ -235,8 +240,29 @@ int main(int /*argc*/, char** /*argv*/)
                                              context.sampleCountFlagBits());
     }
 
+    const std::vector<VkDescriptorSetLayoutBinding> layoutBindings = {
+        VkDescriptorSetLayoutBinding{
+            .binding            = 0,
+            .descriptorType     = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER,
+            .descriptorCount    = 1,
+            .stageFlags         = VK_SHADER_STAGE_ALL,
+            .pImmutableSamplers = nullptr,
+        },
+        VkDescriptorSetLayoutBinding{
+            .binding            = 1,
+            .descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER,
+            .descriptorCount    = 1,
+            .stageFlags         = VK_SHADER_STAGE_ALL,
+            .pImmutableSamplers = nullptr,
+        }
+    };
 
-    context.BuildPipelineWrapper(swapchain.format());
+    descSetLayout = context.descriptorPool().CreateLayout(layoutBindings);
+
+    LightningPass lightningPass = LightningPass(device,swapchain.format(),context.sampleCountFlagBits(),descSetLayout);
+    context.SetLightingPass(&lightningPass);
+
+    // context.BuildPipelineWrapper(swapchain.format());
 
     // LightManager lightManager = LightManager(context);
 
@@ -461,6 +487,7 @@ if (context.sampleCountFlagBits() != VK_SAMPLE_COUNT_1_BIT) {
     vkDestroyCommandPool(device, cmdPool, nullptr);
 
     camera.Destroy(device);
+    lightningPass.Destroy();
     ObjectManager::destroy(device);
     swapchain.Destroy();
     context.Destroy();

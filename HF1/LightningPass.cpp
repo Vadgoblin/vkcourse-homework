@@ -1,60 +1,17 @@
-#include "PipelineWrapper.h"
+#include "LightningPass.h"
 
-#include "ModelPushConstant.h"
 #include "camera.h"
+
+#include "glm_config.h"
+#include <vector>
+#include <vulkan/vulkan_core.h>
+
 #include "shaders/shader.frag_include.h"
 #include "shaders/shader.vert_include.h"
-
 #include <wrappers.h>
+#include "ModelPushConstant.h"
 
-#include <context.h>
-
-PipelineWrapper::PipelineWrapper(Context& context, const VkDevice device, const VkFormat colorFormat, const VkSampleCountFlagBits sampleCountFlagBits)
-{
-    m_vkDevice = device;
-
-    const uint32_t* m_shaderVertData = SPV_shader_in_vert;
-    size_t m_shaderVertSize = sizeof(SPV_shader_in_vert);
-    const uint32_t* m_shaderFragData = SPV_shader_in_frag;
-    size_t m_shaderFragSize = sizeof(SPV_shader_in_frag);
-
-    const VkShaderModule shaderVertex   = CreateShaderModule(device, m_shaderVertData, m_shaderVertSize);
-    const VkShaderModule shaderFragment = CreateShaderModule(device, m_shaderFragData, m_shaderFragSize);
-
-    const std::vector<VkDescriptorSetLayoutBinding> layoutBindings = {
-        VkDescriptorSetLayoutBinding{
-            .binding            = 0,
-            .descriptorType     = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER,
-            .descriptorCount    = 1,
-            .stageFlags         = VK_SHADER_STAGE_ALL,
-            .pImmutableSamplers = nullptr,
-        },
-        VkDescriptorSetLayoutBinding{
-        .binding            = 1,
-            .descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER,
-            .descriptorCount    = 1,
-            .stageFlags         = VK_SHADER_STAGE_ALL,
-            .pImmutableSamplers = nullptr,
-        }
-    };
-
-    m_descSetLayout = context.descriptorPool().CreateLayout(layoutBindings);
-
-    m_constantOffset = sizeof(Camera::CameraPushConstant);
-    m_pipelineLayout = CreatePipelineLayout(device, {m_descSetLayout},m_constantOffset + sizeof(ModelPushConstant));
-    m_pipeline       = CreateSimplePipeline(device, colorFormat, m_pipelineLayout, shaderVertex, shaderFragment, sampleCountFlagBits);
-
-    vkDestroyShaderModule(device, shaderVertex, nullptr);
-    vkDestroyShaderModule(device, shaderFragment, nullptr);
-}
-
-void PipelineWrapper::Destroy() const
-{
-    vkDestroyPipeline(m_vkDevice, m_pipeline, nullptr);
-    vkDestroyPipelineLayout(m_vkDevice, m_pipelineLayout, nullptr);
-}
-
-VkPipelineLayout PipelineWrapper::CreatePipelineLayout(const VkDevice device, const std::vector<VkDescriptorSetLayout>& layouts, uint32_t pushConstantSize)
+static VkPipelineLayout CreatePipelineLayout(const VkDevice device, const std::vector<VkDescriptorSetLayout>& layouts, uint32_t pushConstantSize)
 {
     const VkPushConstantRange pushConstantRange = {
         .stageFlags = VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT,
@@ -79,12 +36,13 @@ VkPipelineLayout PipelineWrapper::CreatePipelineLayout(const VkDevice device, co
     return layout;
 }
 
-VkPipeline PipelineWrapper::CreateSimplePipeline(const VkDevice         device,
-                                          const VkFormat         colorFormat,
-                                          const VkPipelineLayout pipelineLayout,
-                                          const VkShaderModule   shaderVertex,
-                                          const VkShaderModule   shaderFragment,
-                                          const VkSampleCountFlagBits vkSampleCountFlagBits)
+static VkPipeline CreatePipeline(const VkDevice         device,
+                                 const VkPipelineLayout pipelineLayout,
+                                 const VkFormat         colorFormat,
+                                 // const VkFormat         depthFormat,
+                                 const VkShaderModule   shaderVertex,
+                                 const VkShaderModule   shaderFragment,
+                                 const VkSampleCountFlagBits vkSampleCountFlagBits)
 {
     // shader stages
     const VkPipelineShaderStageCreateInfo shaders[] = {
@@ -108,24 +66,25 @@ VkPipeline PipelineWrapper::CreateSimplePipeline(const VkDevice         device,
         },
     };
 
+    // buffer binding
     VkVertexInputBindingDescription bindingDescriptions[3] = {
-        { 0, sizeof(glm::vec3), VK_VERTEX_INPUT_RATE_VERTEX }, // Binding 0: Position stride
-        { 1, sizeof(glm::vec2), VK_VERTEX_INPUT_RATE_VERTEX }, // Binding 1: UV stride
-        { 2, sizeof(glm::vec3), VK_VERTEX_INPUT_RATE_VERTEX }  // Binding 2: Normal stride (NEW)
+        { 0, sizeof(glm::vec3), VK_VERTEX_INPUT_RATE_VERTEX }, // Binding 0: Position
+        { 1, sizeof(glm::vec2), VK_VERTEX_INPUT_RATE_VERTEX }, // Binding 1: UV
+        { 2, sizeof(glm::vec3), VK_VERTEX_INPUT_RATE_VERTEX }  // Binding 2: Normal
     };
 
     VkVertexInputAttributeDescription vertexAttributes[3] = {
         { // position
-            .location = 0,                          // layout location=0 in shader
-            .binding  = 0,                          // binding position in Vulkan API
-            .format   = VK_FORMAT_R32G32B32_SFLOAT, // use "vec3" values from the buffer
-            .offset   = 0,                          // use buffer from the 0 byte
+            .location = 0,
+            .binding  = 0,
+            .format   = VK_FORMAT_R32G32B32_SFLOAT,
+            .offset   = 0,
         },
         { // uv
-            .location = 1,                          // layout location=1 in shader
-            .binding  = 1,                          // binding position in Vulkan API
-            .format   = VK_FORMAT_R32G32_SFLOAT,    // use "vec2" values from the buffer
-            .offset   = 0,                          // use buffer from the 3*float
+            .location = 1,
+            .binding  = 1,
+            .format   = VK_FORMAT_R32G32_SFLOAT,
+            .offset   = 0,
         },
         { // normal
             .location = 2,
@@ -299,4 +258,33 @@ VkPipeline PipelineWrapper::CreateSimplePipeline(const VkDevice         device,
     assert(result == VK_SUCCESS);
 
     return pipeline;
+}
+
+LightningPass::LightningPass(const VkDevice              device,
+                             const VkFormat              colorFormat,
+                             const VkSampleCountFlagBits sampleCountFlagBits,
+                             VkDescriptorSetLayout       descSetLayout)
+{
+    m_vkDevice = device;
+
+    const uint32_t* m_shaderVertData = SPV_shader_in_vert;
+    size_t          m_shaderVertSize = sizeof(SPV_shader_in_vert);
+    const uint32_t* m_shaderFragData = SPV_shader_in_frag;
+    size_t          m_shaderFragSize = sizeof(SPV_shader_in_frag);
+
+    const VkShaderModule shaderVertex   = CreateShaderModule(device, m_shaderVertData, m_shaderVertSize);
+    const VkShaderModule shaderFragment = CreateShaderModule(device, m_shaderFragData, m_shaderFragSize);
+
+    m_constantOffset = sizeof(Camera::CameraPushConstant);
+    m_pipelineLayout = CreatePipelineLayout(device, {descSetLayout}, m_constantOffset + sizeof(ModelPushConstant));
+    m_pipeline =
+        CreatePipeline(device, m_pipelineLayout, colorFormat, shaderVertex, shaderFragment, sampleCountFlagBits);
+
+    vkDestroyShaderModule(device, shaderVertex, nullptr);
+    vkDestroyShaderModule(device, shaderFragment, nullptr);
+}
+void LightningPass::Destroy() const
+{
+    vkDestroyPipeline(m_vkDevice, m_pipeline, nullptr);
+    vkDestroyPipelineLayout(m_vkDevice, m_pipelineLayout, nullptr);
 }

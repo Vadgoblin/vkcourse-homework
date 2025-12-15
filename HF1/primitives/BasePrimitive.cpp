@@ -1,5 +1,5 @@
 #include "BasePrimitive.h"
-
+#include "../shared_crap.h"
 #define GLM_ENABLE_EXPERIMENTAL
 #include <glm/gtx/quaternion.hpp>
 
@@ -24,9 +24,9 @@ BasePrimitive::BasePrimitive()
 
 VkResult BasePrimitive::create(Context& context, const char* texture_name)
 {
-    m_pipeline = context.pipelineWrapper().pipeline();
-    m_pipelineLayout = context.pipelineWrapper().pipelineLayout();
-    m_constantOffset = context.pipelineWrapper().constantOffset();
+    m_pipeline = context.lightning_pass().pipeline();
+    m_pipelineLayout = context.lightning_pass().pipelineLayout();
+    m_constantOffset = context.lightning_pass().constantOffset();
     m_vertexCount = static_cast<uint32_t>(m_indices.size());
 
     m_vertexBuffer = UploadToGPU(context, m_vertices, VK_BUFFER_USAGE_VERTEX_BUFFER_BIT);
@@ -37,7 +37,6 @@ VkResult BasePrimitive::create(Context& context, const char* texture_name)
 
     Texture *texture = context.texture_manager().GetTexture(texture_name);
 
-    VkDescriptorSetLayout descSetLayout  = context.pipelineWrapper().descSetLayout();
     m_modelSet = context.descriptorPool().CreateSet(descSetLayout);
 
     DescriptorSetMgmt setMgmt(m_modelSet);
