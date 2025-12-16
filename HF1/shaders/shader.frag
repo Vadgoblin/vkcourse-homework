@@ -37,7 +37,9 @@ layout(set = 1, binding = 0) uniform LightsUBO {
 //    Light(vec3(5.0, 10.0, -10.0), vec3(0.0, 0.0, 1.0))
 //);
 
-
+float constant  = 1.0;
+float linear    = 0.045;
+float quadratic = 0.0075;
 
 void main() {
     vec4 objectColor = texture(gridImage, in_uv);
@@ -52,6 +54,10 @@ void main() {
         vec3 pos = ubo.lights[i].position;
         vec3 col = ubo.lights[i].color;
 
+
+        float distance = length(pos - in_fragPos);
+        float attenuation = 1.0 / (constant + linear * distance + quadratic * (distance * distance));
+
         // Diffuse
         vec3 lightDir = normalize(pos - in_fragPos);
         float diff = max(dot(norm, lightDir), 0.0);
@@ -61,8 +67,8 @@ void main() {
         float spec = pow(max(dot(viewDir, reflectDir), 0.0), specularShininess);
 
         // Accumulate raw light values
-        totalDiffuse += diff * col;
-        totalSpecular += spec * col * specularStrength;
+        totalDiffuse += diff * col * attenuation;
+        totalSpecular += spec * col * specularStrength * attenuation;
     }
 
     // Combine results

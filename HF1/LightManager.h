@@ -17,14 +17,21 @@ public:
     explicit LightManager(Context& context);
 
     void BindDescriptorSets(VkCommandBuffer cmdBuffer, VkPipelineLayout pipelineLayout) const;
-    void Destroy(VkDevice device);
+    void Destroy();
+
+    void Tick(float amount);
 
     VkDescriptorSetLayout GetDescriptorSetLayout() const { return m_descSetLayout;}
 
 private:
+    void SetPosition();
+
     Light m_lights[NUM_LIGHTS]{};
+    VkDevice m_device;
     // VkPipelineLayout m_pipelineLayout = VK_NULL_HANDLE;
     VkDescriptorSetLayout m_descSetLayout;
     VkDescriptorSet       m_descSet;
     BufferInfo            m_lightInfo;
+
+    float   m_animationProgress = 60.0f;
 };

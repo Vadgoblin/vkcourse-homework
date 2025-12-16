@@ -33,6 +33,7 @@ ObjectManager::ObjectManager(Context& context, LightningPass& lightningPass)
     orbiting_helicopter->setPosition(0.0f, 5.0f, 0.0f);
     m_entities.push_back(orbiting_helicopter);
 }
+
 void ObjectManager::Draw(VkCommandBuffer cmd)
 {
     for (BaseEntity* object : m_entities) {
@@ -46,6 +47,7 @@ void ObjectManager::Draw(VkCommandBuffer cmd)
         object->draw(cmd);
     }
 }
+
 void ObjectManager::Destroy(const VkDevice device)
 {
     for (BaseEntity* object : m_entities) {

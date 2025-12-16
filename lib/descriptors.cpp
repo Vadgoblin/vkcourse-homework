@@ -137,7 +137,7 @@ void DescriptorSetMgmt::SetImage(uint32_t idx, VkImageView view, VkSampler sampl
 
 void DescriptorSetMgmt::Update(const VkDevice device)
 {
-   const  VkWriteDescriptorSet baseInfo = {
+    const  VkWriteDescriptorSet baseInfo = {
         .sType            = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET,
         .pNext            = nullptr,
         .dstSet           = m_set,
@@ -148,8 +148,7 @@ void DescriptorSetMgmt::Update(const VkDevice device)
         .pImageInfo       = nullptr,
         .pBufferInfo      = nullptr,
         .pTexelBufferView = nullptr,
-    };
-
+   };
     const uint32_t                    infoCount = (uint32_t)(m_bufferInfos.size() + m_imageInfos.size());
     std::vector<VkWriteDescriptorSet> writeInfos(infoCount, baseInfo);
 

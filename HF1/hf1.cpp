@@ -422,7 +422,8 @@ if (context.sampleCountFlagBits() != VK_SAMPLE_COUNT_1_BIT) {
             camera.PushConstants(cmdBuffer);
             lightManager.BindDescriptorSets(cmdBuffer,lightningPass.pipelineLayout());
 
-            // lightManager.BindDescriptorSets(cmdBuffer);
+            lightManager.Tick(1.4f);
+            
             objectManager.Draw(cmdBuffer);
 
             // Render things
@@ -467,7 +468,7 @@ if (context.sampleCountFlagBits() != VK_SAMPLE_COUNT_1_BIT) {
 
     camera.Destroy(device);
     lightningPass.Destroy();
-    lightManager.Destroy(device);
+    lightManager.Destroy();
     textureManager.Destroy();
     objectManager.Destroy(device);
     swapchain.Destroy();

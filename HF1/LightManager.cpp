@@ -4,16 +4,18 @@
 #include <context.h>
 
 
-LightManager::LightManager(Context& context)
+LightManager::LightManager(Context& context) : m_device(context.device())
 {
-    m_lights[0].position = glm::vec3(0,10,10);
-    m_lights[0].color = glm::vec3(1.0, 0.0, 0.0);
+    m_lights[0].position = glm::vec3(10000,-10000,10000);
+    m_lights[0].color = glm::vec3(1.5, 0.0, 0.0);
 
-    m_lights[1].position = glm::vec3(-5,10,-10);
-    m_lights[1].color = glm::vec3(0.0, 1.0, 0.0);
+    m_lights[1].position = glm::vec3(10000,-10000,10000);
+    m_lights[1].color = glm::vec3(0.0, 1.5, 0.0);
 
-    m_lights[2].position = glm::vec3(5,10,-10);
-    m_lights[2].color = glm::vec3(0.0, 0.0, 1.0);
+    m_lights[2].position = glm::vec3(10000,-10000,10000);
+    m_lights[2].color = glm::vec3(0.0, 0.0, 1.5);
+
+    // SetPosition();
 
     m_lightInfo = BufferInfo::Create(context.physicalDevice(), context.device(), sizeof(m_lights), VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT);
     m_lightInfo.Update(context.device(), &m_lights, sizeof(m_lights));
@@ -39,7 +41,44 @@ void LightManager::BindDescriptorSets(VkCommandBuffer cmdBuffer, VkPipelineLayou
     vkCmdBindDescriptorSets(cmdBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipelineLayout, 1, 1, &m_descSet, 0,nullptr);
 }
 
-void LightManager::Destroy(VkDevice device)
+void LightManager::Destroy()
 {
-    m_lightInfo.Destroy(device);
+    m_lightInfo.Destroy(m_device);
+}
+
+void LightManager::Tick(float amount)
+{
+    m_animationProgress += amount;
+    while (m_animationProgress >= 360.0f) m_animationProgress -= 360.0f;
+    SetPosition();
+}
+
+void LightManager::SetPosition()
+{
+    float s = 20.0f;
+    float angleDeg = m_animationProgress;
+    float angleRad = angleDeg * M_PI / 180.0f;
+
+    float h = s * std::sqrt(3.0f) / 2.0f;
+    float c = std::cos(angleRad);
+    float si = std::sin(angleRad);
+
+    glm::vec2 A(-s/2, -h/3);
+    glm::vec2 B( s/2, -h/3);
+    glm::vec2 C( 0.0f, 2*h/3);
+
+    A = { A.x * c - A.y * si,
+          A.x * si + A.y * c};
+
+    B = { B.x * c - B.y * si,
+          B.x * si + B.y * c};
+
+    C = { C.x * c - C.y * si,
+          C.x * si + C.y * c };
+
+    m_lights[0].position = glm::vec3(A.x, 5.0f, A.y);
+    m_lights[1].position = glm::vec3(B.x, 5.0f, B.y);
+    m_lights[2].position = glm::vec3(C.x, 5.0f, C.y);
+
+    m_lightInfo.Update(m_device, &m_lights, sizeof(m_lights));
 }
