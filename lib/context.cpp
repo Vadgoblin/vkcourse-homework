@@ -82,7 +82,6 @@ VkPhysicalDevice Context::SelectPhysicalDevice(const VkSurfaceKHR surface)
     for (const VkPhysicalDevice& phyDevice : devices) {
         if (FindQueueFamily(phyDevice, surface, &m_queueFamilyIdx)) {
             m_phyDevice = phyDevice;
-            SetSampleCountFlagBits();
             return m_phyDevice;
         }
     }
@@ -212,7 +211,7 @@ bool Context::FindQueueFamily(const VkPhysicalDevice phyDevice, const VkSurfaceK
     return false;
 }
 
-void Context::SetSampleCountFlagBits()
+VkSampleCountFlagBits Context::GetMaxSampleCountFlagBit()
 {
     VkPhysicalDeviceProperties properties;
     vkGetPhysicalDeviceProperties(m_phyDevice, &properties);
@@ -220,21 +219,14 @@ void Context::SetSampleCountFlagBits()
     const VkSampleCountFlags counts = properties.limits.framebufferColorSampleCounts &
                                 properties.limits.framebufferDepthSampleCounts;
 
-    // Find the highest supported count (e.g., 8x, 4x, 2x)
     if (counts & VK_SAMPLE_COUNT_8_BIT) {
-        m_SampleCountFlagBits = VK_SAMPLE_COUNT_8_BIT;
-    } else if (counts & VK_SAMPLE_COUNT_4_BIT) {
-        m_SampleCountFlagBits = VK_SAMPLE_COUNT_4_BIT;
-    } else if (counts & VK_SAMPLE_COUNT_2_BIT) {
-        m_SampleCountFlagBits = VK_SAMPLE_COUNT_2_BIT;
-    } else {
-        m_SampleCountFlagBits = VK_SAMPLE_COUNT_1_BIT; // No MSAA
+        return VK_SAMPLE_COUNT_8_BIT;
     }
-
-    // m_SampleCountFlagBits = VK_SAMPLE_COUNT_1_BIT;
+    if (counts & VK_SAMPLE_COUNT_4_BIT) {
+        return VK_SAMPLE_COUNT_4_BIT;
+    }
+    if (counts & VK_SAMPLE_COUNT_2_BIT) {
+       return VK_SAMPLE_COUNT_2_BIT;
+    }
+    return VK_SAMPLE_COUNT_1_BIT;
 }
-//
-// void Context::BuildPipelineWrapper(VkFormat swapchainFormat)
-// {
-//     m_pipelineWrapper = new PipelineWrapper(*this,m_device, swapchainFormat, m_SampleCountFlagBits);
-// }

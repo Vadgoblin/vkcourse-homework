@@ -22,12 +22,11 @@
 
 #include "LightningPass.h"
 #include "ObjectManager.h"
+#include "PostProcessPass.h"
 #include "imgui_integration.h"
+#include "primitives/BasePrimitive.h"
 #include "swapchain.h"
 #include "wrappers.h"
-
-#include "primitives/BasePrimitive.h"
-
 
 void KeyCallback(GLFWwindow* window, int key, int /*scancode*/, int /*action*/, int /*mods*/)
 {
@@ -104,7 +103,7 @@ void MouseCallback(GLFWwindow* window, double xposIn, double yposIn)
 
 void RenderImGui(IMGUIIntegration imIntegration, const Camera& camera)
 {
-    ImGuiIO& io = ImGui::GetIO();
+    ImGuiIO& io                = ImGui::GetIO();
     ImGui::GetIO().IniFilename = nullptr;
     imIntegration.NewFrame();
     ImGui::NewFrame();
@@ -115,14 +114,11 @@ void RenderImGui(IMGUIIntegration imIntegration, const Camera& camera)
     ImGui::SetNextWindowSize(ImVec2(358, 87), ImGuiCond_FirstUseEver);
     ImGui::Begin("Info");
     const glm::vec3& cameraPosition = camera.position();
-    ImGui::Text("Camera position x: %.3f y: %.3f z: %.3f", cameraPosition.x, cameraPosition.y,
-                cameraPosition.z);
+    ImGui::Text("Camera position x: %.3f y: %.3f z: %.3f", cameraPosition.x, cameraPosition.y, cameraPosition.z);
     const glm::vec3& targetPosition = camera.lookAtPosition();
-    ImGui::Text("Target position x: %.3f y: %.3f z: %.3f", targetPosition.x, targetPosition.y,
-                targetPosition.z);
+    ImGui::Text("Target position x: %.3f y: %.3f z: %.3f", targetPosition.x, targetPosition.y, targetPosition.z);
     ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / io.Framerate, io.Framerate);
     ImGui::End();
-
 
     ImGui::SetNextWindowPos(ImVec2(15, 115), ImGuiCond_FirstUseEver);
     ImGui::SetNextWindowSize(ImVec2(224, 209), ImGuiCond_FirstUseEver);
@@ -198,7 +194,6 @@ int main(int /*argc*/, char** /*argv*/)
     glfwSetKeyCallback(window, KeyCallback);
     glfwSetCursorPosCallback(window, MouseCallback);
 
-
     // We have the window, the instance, create a surface from the window to draw onto.
     // Create a Vulkan Surface using GLFW.
     // By using GLFW the current windowing system's surface is created (xcb, win32, etc..)
@@ -228,41 +223,24 @@ int main(int /*argc*/, char** /*argv*/)
 
     camera.CreateVK(context.device());
 
-    Texture* depthTexture = Texture::Create2D(context.physicalDevice(), context.device(), VK_FORMAT_D32_SFLOAT,
-                                             swapchain.surfaceExtent(), VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT, context.sampleCountFlagBits());
-
-    Texture* msaaColorTexture;
-    if (context.sampleCountFlagBits() > VK_SAMPLE_COUNT_1_BIT) {
-        msaaColorTexture = Texture::Create2D(context.physicalDevice(), context.device(), swapchain.format(),
-                                             swapchain.surfaceExtent(),
-                                             VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT | VK_IMAGE_USAGE_TRANSIENT_ATTACHMENT_BIT,
-                                             context.sampleCountFlagBits());
-    }
-
+    VkFormat              depthFormat = VK_FORMAT_D32_SFLOAT;
+    VkSampleCountFlagBits msaaLevel   = context.GetMaxSampleCountFlagBit();
+    // VkSampleCountFlagBits msaaLevel = VK_SAMPLE_COUNT_1_BIT;
 
     TextureManager textureManager(context);
-    LightManager lightManager(context);
+    LightManager   lightManager(context);
 
-    LightningPass lightningPass(context,textureManager, lightManager, swapchain.format());
+    LightningPass lightningPass(context, textureManager, lightManager, swapchain.format(), msaaLevel, depthFormat,
+                                swapchain.surfaceExtent());
 
     ObjectManager objectManager(context, lightningPass);
 
+    PostProcessPass postProcess(swapchain.format(), swapchain.surfaceExtent());
+    postProcess.Create(context);
 
-    glfwShowWindow(window);
+    postProcess.BindInputImage(context.device(), lightningPass.colorOutput());
 
-    const VkViewport viewport = {
-        .x        = 0,
-        .y        = 0,
-        .width    = (float)swapchain.surfaceExtent().width,
-        .height   = (float)swapchain.surfaceExtent().height,
-        .minDepth = 0.0f,
-        .maxDepth = 1.0f,
-    };
-
-    const VkRect2D scissor = {
-        .offset = {0, 0},
-        .extent = swapchain.surfaceExtent(),
-    };
+    // glfwShowWindow(window);
 
     while (!glfwWindowShouldClose(window)) {
         glfwPollEvents();
@@ -273,7 +251,9 @@ int main(int /*argc*/, char** /*argv*/)
 
         // Get new image to render to
         vkResetFences(device, 1, &imageFence);
+
         const Swapchain::Image& swapchainImage = swapchain.AquireNextImage(imageFence);
+
         vkWaitForFences(device, 1, &imageFence, VK_TRUE, UINT64_MAX);
 
         // Get command buffer based on swapchain image index
@@ -290,150 +270,102 @@ int main(int /*argc*/, char** /*argv*/)
 
             swapchain.CmdTransitionToRender(cmdBuffer, swapchainImage, queueFamilyIdx);
 
-
-
-            // ai generated fix for Validation Error that appeared after system update
-// --------------------------------------------------------------------------------------
-// [INSERT THIS BLOCK HERE]
-// --------------------------------------------------------------------------------------
-
-// 1. Transition Depth Texture
-// We discard the old content (UNDEFINED) and prepare it for writing (DEPTH_STENCIL_ATTACHMENT_OPTIMAL)
-VkImageMemoryBarrier depthBarrier{};
-depthBarrier.sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER;
-depthBarrier.oldLayout = VK_IMAGE_LAYOUT_UNDEFINED;
-depthBarrier.newLayout = VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL;
-depthBarrier.srcAccessMask = 0;
-depthBarrier.dstAccessMask = VK_ACCESS_DEPTH_STENCIL_ATTACHMENT_WRITE_BIT;
-// NOTE: Make sure to get the VkImage handle, not the view!
-depthBarrier.image = depthTexture->image();
-depthBarrier.subresourceRange.aspectMask = VK_IMAGE_ASPECT_DEPTH_BIT; // Add | VK_IMAGE_ASPECT_STENCIL_BIT if using stencil
-depthBarrier.subresourceRange.baseMipLevel = 0;
-depthBarrier.subresourceRange.levelCount = 1;
-depthBarrier.subresourceRange.baseArrayLayer = 0;
-depthBarrier.subresourceRange.layerCount = 1;
-
-// 2. Transition MSAA Color Texture (Only if MSAA is active)
-// If you are using MSAA, the render target is 'msaaColorTexture', not the swapchain directly.
-// It also needs to be transitioned from UNDEFINED to COLOR_ATTACHMENT_OPTIMAL.
-if (context.sampleCountFlagBits() != VK_SAMPLE_COUNT_1_BIT) {
-    VkImageMemoryBarrier msaaBarrier{};
-    msaaBarrier.sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER;
-    msaaBarrier.oldLayout = VK_IMAGE_LAYOUT_UNDEFINED;
-    msaaBarrier.newLayout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
-    msaaBarrier.srcAccessMask = 0;
-    msaaBarrier.dstAccessMask = VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT;
-    msaaBarrier.image = msaaColorTexture->image(); // Get the VkImage handle
-    msaaBarrier.subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
-    msaaBarrier.subresourceRange.baseMipLevel = 0;
-    msaaBarrier.subresourceRange.levelCount = 1;
-    msaaBarrier.subresourceRange.baseArrayLayer = 0;
-    msaaBarrier.subresourceRange.layerCount = 1;
-
-    // Batch the barriers together for performance
-    VkImageMemoryBarrier barriers[] = {depthBarrier, msaaBarrier};
-    vkCmdPipelineBarrier(cmdBuffer,
-        VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT,
-        VK_PIPELINE_STAGE_EARLY_FRAGMENT_TESTS_BIT | VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT,
-        0, 0, nullptr, 0, nullptr, 2, barriers);
-} else {
-    // Only issue the depth barrier
-    vkCmdPipelineBarrier(cmdBuffer,
-        VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT,
-        VK_PIPELINE_STAGE_EARLY_FRAGMENT_TESTS_BIT,
-        0, 0, nullptr, 0, nullptr, 1, &depthBarrier);
-}
-
-// --------------------------------------------------------------------------------------
-// [END INSERT]
-// --------------------------------------------------------------------------------------
-
-            // Begin render commands
-            const VkClearValue                 clearColor      = {{{0.0f, 0.0f, 0.0f, 1.0f}}};
-
-            // 1. Determine which view to use safely
-            VkImageView targetView = (context.sampleCountFlagBits() == VK_SAMPLE_COUNT_1_BIT)
-                                   ? swapchainImage.view
-                                   : msaaColorTexture->view();
-
-            // 2. Determine resolve settings safely
-            VkImageView resolveView = (context.sampleCountFlagBits() == VK_SAMPLE_COUNT_1_BIT)
-                                    ? VK_NULL_HANDLE
-                                    : swapchainImage.view;
-
-            VkResolveModeFlagBits resolveMode = (context.sampleCountFlagBits() == VK_SAMPLE_COUNT_1_BIT)
-                                              ? VK_RESOLVE_MODE_NONE
-                                              : VK_RESOLVE_MODE_AVERAGE_BIT;
-
-            VkImageLayout resolveLayout = (context.sampleCountFlagBits() == VK_SAMPLE_COUNT_1_BIT)
-                                        ? VK_IMAGE_LAYOUT_UNDEFINED
-                                        : VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
-
-            // 3. Now initialize the struct safely
-            VkRenderingAttachmentInfoKHR colorAttachment = {
-                .sType              = VK_STRUCTURE_TYPE_RENDERING_ATTACHMENT_INFO_KHR,
-                .pNext              = nullptr,
-                .imageView          = targetView,          // ✅ Safe now
-                .imageLayout        = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL,
-                .resolveMode        = resolveMode,         // ✅ Safe now
-                .resolveImageView   = resolveView,         // ✅ Safe now
-                .resolveImageLayout = resolveLayout,       // ✅ Safe now
-                .loadOp             = VK_ATTACHMENT_LOAD_OP_CLEAR,
-                .storeOp            = VK_ATTACHMENT_STORE_OP_STORE,
-                .clearValue         = clearColor,
-            };
-
-            if (context.sampleCountFlagBits() == VK_SAMPLE_COUNT_1_BIT) {
-                colorAttachment.imageView          = swapchainImage.view;
-                colorAttachment.resolveMode        = VK_RESOLVE_MODE_NONE;
-                colorAttachment.resolveImageView   = VK_NULL_HANDLE;
-                colorAttachment.resolveImageLayout = VK_IMAGE_LAYOUT_UNDEFINED;
-            }
-
-            const VkClearDepthStencilValue     depthClear      = {1.0f, 0u};
-            const VkRenderingAttachmentInfoKHR depthAttachment = {
-                .sType              = VK_STRUCTURE_TYPE_RENDERING_ATTACHMENT_INFO_KHR,
-                .pNext              = nullptr,
-                .imageView          = depthTexture->view(),
-                .imageLayout        = VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL,
-                .resolveMode        = VK_RESOLVE_MODE_NONE,
-                .resolveImageView   = VK_NULL_HANDLE,
-                .resolveImageLayout = VK_IMAGE_LAYOUT_UNDEFINED,
-                .loadOp             = VK_ATTACHMENT_LOAD_OP_CLEAR,
-                .storeOp            = VK_ATTACHMENT_STORE_OP_STORE,
-                .clearValue         = {.depthStencil = depthClear},
-            };
-            const VkRenderingInfoKHR renderInfo = {
-                .sType                = VK_STRUCTURE_TYPE_RENDERING_INFO_KHR,
-                .pNext                = nullptr,
-                .flags                = 0,
-                .renderArea           = {.offset = {0, 0}, .extent = {(uint32_t)windowWidth, (uint32_t)windowHeight}},
-                .layerCount           = 1,
-                .viewMask             = 0,
-                .colorAttachmentCount = 1,
-                .pColorAttachments    = &colorAttachment,
-                .pDepthAttachment     = &depthAttachment,
-                .pStencilAttachment   = nullptr};
-            vkCmdBeginRendering(cmdBuffer, &renderInfo);
-
-            vkCmdSetViewport(cmdBuffer, 0, 1, &viewport);
-            vkCmdSetScissor(cmdBuffer, 0, 1, &scissor);
-
-            camera.PushConstants(cmdBuffer);
-            lightManager.BindDescriptorSets(cmdBuffer,lightningPass.pipelineLayout());
+            lightningPass.BeginPass(cmdBuffer);
 
             lightManager.Tick(1.4f);
-            
+            lightManager.BindDescriptorSets(cmdBuffer, lightningPass.pipelineLayout());
+
+            camera.PushConstants(cmdBuffer);
             objectManager.Draw(cmdBuffer);
 
             // Render things
+            lightningPass.EndPass(cmdBuffer);
+
+            {
+                VkImageMemoryBarrier2 swapchainBarrier = {
+                    .sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER_2,
+                    .pNext = nullptr,
+                    .srcStageMask =
+                        VK_PIPELINE_STAGE_2_TOP_OF_PIPE_BIT, // Or COLOR_ATTACHMENT_OUTPUT_BIT if coming from prev frame
+                    .srcAccessMask       = VK_ACCESS_2_NONE,
+                    .dstStageMask        = VK_PIPELINE_STAGE_2_COLOR_ATTACHMENT_OUTPUT_BIT,
+                    .dstAccessMask       = VK_ACCESS_2_COLOR_ATTACHMENT_WRITE_BIT,
+                    .oldLayout           = VK_IMAGE_LAYOUT_UNDEFINED,
+                    .newLayout           = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL, // <--- MATCH YOUR RENDER PASS
+                    .srcQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED,
+                    .dstQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED,
+                    .image               = swapchainImage.image,
+                    .subresourceRange =
+                        {
+                            .aspectMask     = VK_IMAGE_ASPECT_COLOR_BIT,
+                            .baseMipLevel   = 0,
+                            .levelCount     = 1,
+                            .baseArrayLayer = 0,
+                            .layerCount     = 1,
+                        },
+                };
+
+                VkImageMemoryBarrier2 barriers[] = {swapchainBarrier};
+
+                const VkDependencyInfo dependencyInfo = {
+                    .sType                    = VK_STRUCTURE_TYPE_DEPENDENCY_INFO,
+                    .pNext                    = nullptr,
+                    .dependencyFlags          = 0,
+                    .memoryBarrierCount       = 0,
+                    .pMemoryBarriers          = nullptr,
+                    .bufferMemoryBarrierCount = 0,
+                    .pBufferMemoryBarriers    = nullptr,
+                    .imageMemoryBarrierCount  = 1,
+                    .pImageMemoryBarriers     = barriers,
+
+                };
+
+                vkCmdPipelineBarrier2(cmdBuffer, &dependencyInfo);
+            }
+
+            postProcess.BeginPass(cmdBuffer, swapchainImage.view);
+            postProcess.Draw(cmdBuffer);
             imIntegration.Draw(cmdBuffer);
+            postProcess.EndPass(cmdBuffer);
 
-            // End render commands
-            vkCmdEndRendering(cmdBuffer);
+            {
+                const VkImageMemoryBarrier2 renderEndBarrier = {
+                    .sType               = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER_2,
+                    .pNext               = nullptr,
+                    .srcStageMask        = VK_PIPELINE_STAGE_2_COLOR_ATTACHMENT_OUTPUT_BIT,
+                    .srcAccessMask       = VK_ACCESS_2_COLOR_ATTACHMENT_WRITE_BIT,
+                    .dstStageMask        = VK_PIPELINE_STAGE_2_BOTTOM_OF_PIPE_BIT,
+                    .dstAccessMask       = VK_ACCESS_2_NONE,
+                    .oldLayout           = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL,
+                    .newLayout           = VK_IMAGE_LAYOUT_PRESENT_SRC_KHR,
+                    .srcQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED,
+                    .dstQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED,
+                    .image               = swapchainImage.image,
+                    .subresourceRange =
+                        {
+                            .aspectMask     = VK_IMAGE_ASPECT_COLOR_BIT,
+                            .baseMipLevel   = 0,
+                            .levelCount     = 1,
+                            .baseArrayLayer = 0,
+                            .layerCount     = 1,
+                        },
+                };
 
-            // Finish up recording
-            swapchain.CmdTransitionToPresent(cmdBuffer, swapchainImage, queueFamilyIdx);
+                const VkDependencyInfo endDependency = {
+                    .sType                    = VK_STRUCTURE_TYPE_DEPENDENCY_INFO,
+                    .pNext                    = nullptr,
+                    .dependencyFlags          = 0,
+                    .memoryBarrierCount       = 0,
+                    .pMemoryBarriers          = nullptr,
+                    .bufferMemoryBarrierCount = 0,
+                    .pBufferMemoryBarriers    = nullptr,
+                    .imageMemoryBarrierCount  = 1,
+                    .pImageMemoryBarriers     = &renderEndBarrier,
+                };
+
+                vkCmdPipelineBarrier2(cmdBuffer, &endDependency);
+            }
+
             vkEndCommandBuffer(cmdBuffer);
         }
 
@@ -457,8 +389,6 @@ if (context.sampleCountFlagBits() != VK_SAMPLE_COUNT_1_BIT) {
         vkDeviceWaitIdle(device);
     }
 
-    if (context.sampleCountFlagBits() > VK_SAMPLE_COUNT_1_BIT) msaaColorTexture->Destroy(context.device());
-    depthTexture->Destroy(context.device());
     imIntegration.Destroy(context);
 
     vkDestroyFence(device, imageFence, nullptr);
@@ -467,6 +397,7 @@ if (context.sampleCountFlagBits() != VK_SAMPLE_COUNT_1_BIT) {
     vkDestroyCommandPool(device, cmdPool, nullptr);
 
     camera.Destroy(device);
+    postProcess.Destroy(context);
     lightningPass.Destroy();
     lightManager.Destroy();
     textureManager.Destroy();

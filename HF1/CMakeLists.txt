@@ -40,6 +40,8 @@ add_executable(hf1
         LightningPass.h
         ObjectManager.cpp
         ObjectManager.h
+        PostProcessPass.cpp
+        PostProcessPass.h
 )
 
 target_include_directories(hf1
@@ -51,8 +53,10 @@ target_link_libraries(hf1
 )
 
 add_shaders(hf1
-        shaders/shader.vert SPV_shader_in_vert
-        shaders/shader.frag SPV_shader_in_frag
+        shaders/lightning_pass.vert SPV_shader_in_vert
+        shaders/lightning_pass.frag SPV_shader_in_frag
+        shaders/post_process.vert SPV_post_process_vert
+        shaders/post_process.frag SPV_post_process_frag
 )
 
 
