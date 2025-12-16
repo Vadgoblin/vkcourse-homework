@@ -32,7 +32,6 @@ add_executable(hf1
         entities/PistonWithBouncingBall.h
         entities/OrbitingHelicopter.cpp
         entities/OrbitingHelicopter.h
-        ModelPushConstant.h
         TextureManager.cpp
         TextureManager.h
         primitives/CirnoPrism.cpp

@@ -31,6 +31,9 @@ public:
 
         return context.descriptorPool().CreateLayout({descsetlaybind});
     }
+    struct ModelPushConstant {
+        glm::mat4 model;
+    };
 
     BasePrimitive(){}
     ~BasePrimitive() override = default;

@@ -6,7 +6,6 @@
 #include <vector>
 #include <vulkan/vulkan_core.h>
 
-#include "ModelPushConstant.h"
 #include "primitives/BasePrimitive.h"
 #include "shaders/shader.frag_include.h"
 #include "shaders/shader.vert_include.h"
@@ -280,7 +279,7 @@ LightningPass::LightningPass(Context &context,
     auto textureSetLayout = context.textureManager().DescriptorSetLayout();
 
     m_constantOffset = sizeof(Camera::CameraPushConstant);
-    m_pipelineLayout = CreatePipelineLayout(device, {textureSetLayout, m_vertexDataDescSetLayout}, m_constantOffset + sizeof(ModelPushConstant));
+    m_pipelineLayout = CreatePipelineLayout(device, {textureSetLayout, m_vertexDataDescSetLayout}, m_constantOffset + sizeof(BasePrimitive::ModelPushConstant));
     m_pipeline = CreatePipeline(device, m_pipelineLayout, colorFormat, sampleCountFlagBits);
 }
 void LightningPass::Destroy() const

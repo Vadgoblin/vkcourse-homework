@@ -2,7 +2,6 @@
 #define GLM_ENABLE_EXPERIMENTAL
 #include <glm/gtx/quaternion.hpp>
 
-#include "../ModelPushConstant.h"
 #include "context.h"
 #include <texture.h>
 #include <vector>
