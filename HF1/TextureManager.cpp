@@ -10,16 +10,6 @@ const char* TEXTURE_DIRECTORY = "./HF1/textures/";
 
 void TextureManager::CreateDsetLayout()
 {
-    // const std::vector<VkDescriptorSetLayoutBinding> layoutBindings = {
-    //     VkDescriptorSetLayoutBinding{
-    //         .binding            = 0,
-    //         .descriptorType     = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER,
-    //         .descriptorCount    = 1,
-    //         .stageFlags         = VK_SHADER_STAGE_ALL,
-    //         .pImmutableSamplers = nullptr,
-    //     },
-    // };
-
     auto descSetLayoutBinding = VkDescriptorSetLayoutBinding{
         .binding            = 0,
         .descriptorType     = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER,
