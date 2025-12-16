@@ -1,5 +1,6 @@
 #pragma once
 // #include "TextureManager.h"
+#include "LightManager.h"
 #include "glm_config.h"
 #include <vulkan/vulkan_core.h>
 
@@ -12,6 +13,7 @@ class LightningPass {
 public:
     LightningPass(Context &context,
                   TextureManager &textureManager,
+                  LightManager &lightManager,
                   VkFormat colorFormat);
 
     void Destroy() const;
@@ -27,5 +29,7 @@ private:
     VkPipeline            m_pipeline;
     glm::uint32_t         m_modelPushConstantOffset;
     VkDescriptorSetLayout m_vertexDataDescSetLayout;
+
     TextureManager& m_textureManager;
+    LightManager&    m_lightManager;
 };

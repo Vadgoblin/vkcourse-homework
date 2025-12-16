@@ -27,15 +27,15 @@ struct Light {
     vec3 color;
 };
 
-//layout(set = 0, binding = 1) uniform LightsUBO {
-//    Light lights[NUM_LIGHTS];
-//} ubo;
+layout(set = 1, binding = 0) uniform LightsUBO {
+    Light lights[NUM_LIGHTS];
+} ubo;
 
-const Light lights[NUM_LIGHTS] = Light[](
-    Light(vec3(0.0, 10.0, 10.0), vec3(1.0, 0.0, 0.0)),
-    Light(vec3(-5.0, 10.0, -10.0), vec3(0.0, 1.0, 0.0)),
-    Light(vec3(5.0, 10.0, -10.0), vec3(0.0, 0.0, 1.0))
-);
+//const Light lights[NUM_LIGHTS] = Light[](
+//    Light(vec3(0.0, 10.0, 10.0), vec3(1.0, 0.0, 0.0)),
+//    Light(vec3(-5.0, 10.0, -10.0), vec3(0.0, 1.0, 0.0)),
+//    Light(vec3(5.0, 10.0, -10.0), vec3(0.0, 0.0, 1.0))
+//);
 
 
 
@@ -49,8 +49,8 @@ void main() {
     vec3 totalSpecular = vec3(0.0);
 
     for (int i = 0; i < NUM_LIGHTS; i++){
-        vec3 pos = lights[i].position;
-        vec3 col = lights[i].color;
+        vec3 pos = ubo.lights[i].position;
+        vec3 col = ubo.lights[i].color;
 
         // Diffuse
         vec3 lightDir = normalize(pos - in_fragPos);

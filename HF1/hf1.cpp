@@ -241,8 +241,9 @@ int main(int /*argc*/, char** /*argv*/)
 
 
     TextureManager textureManager(context);
+    LightManager lightManager(context);
 
-    LightningPass lightningPass(context,textureManager, swapchain.format());
+    LightningPass lightningPass(context,textureManager, lightManager, swapchain.format());
 
     ObjectManager objectManager(context, lightningPass);
 
@@ -419,6 +420,7 @@ if (context.sampleCountFlagBits() != VK_SAMPLE_COUNT_1_BIT) {
             vkCmdSetScissor(cmdBuffer, 0, 1, &scissor);
 
             camera.PushConstants(cmdBuffer);
+            lightManager.BindDescriptorSets(cmdBuffer,lightningPass.pipelineLayout());
 
             // lightManager.BindDescriptorSets(cmdBuffer);
             objectManager.Draw(cmdBuffer);
@@ -465,6 +467,7 @@ if (context.sampleCountFlagBits() != VK_SAMPLE_COUNT_1_BIT) {
 
     camera.Destroy(device);
     lightningPass.Destroy();
+    lightManager.Destroy(device);
     textureManager.Destroy();
     objectManager.Destroy(device);
     swapchain.Destroy();

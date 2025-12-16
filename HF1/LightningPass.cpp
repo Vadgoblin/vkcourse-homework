@@ -272,14 +272,17 @@ static VkPipeline CreatePipeline(const VkDevice         device,
 
 LightningPass::LightningPass(Context &context,
                              TextureManager &textureManager,
+                             LightManager &lightManager,
                              const VkFormat colorFormat):
                              m_vkDevice(context.device()),
-                             m_textureManager(textureManager)
+                             m_textureManager(textureManager),
+                             m_lightManager(lightManager)
 {
     const auto vertexDataDescSetLayout   = BasePrimitive::CreateVertexDataDescSetLayout(context);
-    const auto textureDescSetLayout          = textureManager.DescriptorSetLayout();
+    const auto textureDescSetLayout      = textureManager.DescriptorSetLayout();
+    const auto lightDescSetLayout        = lightManager.GetDescriptorSetLayout();
 
-    const std::vector<VkDescriptorSetLayout> layouts = {textureDescSetLayout, vertexDataDescSetLayout};
+    const std::vector<VkDescriptorSetLayout> layouts = {textureDescSetLayout, vertexDataDescSetLayout, lightDescSetLayout};
     const u_int32_t pushConstantSize = sizeof(Camera::CameraPushConstant) + sizeof(BasePrimitive::ModelPushConstant);
 
     m_modelPushConstantOffset = sizeof(Camera::CameraPushConstant);

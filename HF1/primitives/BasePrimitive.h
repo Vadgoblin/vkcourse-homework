@@ -20,7 +20,7 @@ class BasePrimitive : public ITransformable, public IDrawable{
 public:
     static VkDescriptorSetLayout CreateVertexDataDescSetLayout(Context& context)
     {
-        VkDescriptorSetLayoutBinding descsetlaybind =
+        VkDescriptorSetLayoutBinding descSetLayoutBinding =
             VkDescriptorSetLayoutBinding{
                 .binding            = 0,
                 .descriptorType     = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER,
@@ -29,8 +29,9 @@ public:
                 .pImmutableSamplers = nullptr,
         };
 
-        return context.descriptorPool().CreateLayout({descsetlaybind});
+        return context.descriptorPool().CreateLayout({descSetLayoutBinding});
     }
+
     struct ModelPushConstant {
         glm::mat4 model;
     };
