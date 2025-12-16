@@ -9,8 +9,6 @@ add_executable(hf1
         primitives/Cylinder.h
         primitives/Grid.cpp
         primitives/Grid.h
-        scene.cpp
-        scene.h
         debug.h
         debug.cpp
         primitives/Sphere.cpp
@@ -40,6 +38,8 @@ add_executable(hf1
         LightManager.h
         LightningPass.cpp
         LightningPass.h
+        ObjectManager.cpp
+        ObjectManager.h
 )
 
 target_include_directories(hf1

@@ -19,9 +19,9 @@
 #include "camera.h"
 #include "context.h"
 #include "debug.h"
-#include "scene.h"
 
 #include "LightningPass.h"
+#include "ObjectManager.h"
 #include "imgui_integration.h"
 #include "swapchain.h"
 #include "wrappers.h"
@@ -240,14 +240,13 @@ int main(int /*argc*/, char** /*argv*/)
     }
 
 
-    TextureManager textureManager = TextureManager(context);
-    context.SetTextureManager(&textureManager);
+    TextureManager textureManager(context);
 
-    LightningPass lightningPass = LightningPass(context, device,swapchain.format(),context.sampleCountFlagBits());
+    LightningPass lightningPass(context,textureManager, swapchain.format());
     context.SetLightingPass(&lightningPass);
 
+    ObjectManager objectManager(context);
 
-    ObjectManager::setup(context);
 
     glfwShowWindow(window);
 
@@ -423,7 +422,7 @@ if (context.sampleCountFlagBits() != VK_SAMPLE_COUNT_1_BIT) {
             camera.PushConstants(cmdBuffer);
 
             // lightManager.BindDescriptorSets(cmdBuffer);
-            ObjectManager::draw(cmdBuffer);
+            objectManager.Draw(cmdBuffer);
 
             // Render things
             imIntegration.Draw(cmdBuffer);
@@ -468,7 +467,7 @@ if (context.sampleCountFlagBits() != VK_SAMPLE_COUNT_1_BIT) {
     camera.Destroy(device);
     lightningPass.Destroy();
     textureManager.Destroy();
-    ObjectManager::destroy(device);
+    objectManager.Destroy(device);
     swapchain.Destroy();
     context.Destroy();
 

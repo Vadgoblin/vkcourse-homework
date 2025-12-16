@@ -7,10 +7,6 @@
 #include <vector>
 #include <vulkan/vulkan_core.h>
 
-namespace {
-#include "shaders/shader.frag_include.h"
-#include "shaders/shader.vert_include.h"
-}
 
 VkResult BasePrimitive::create(Context& context, const char* texture_name)
 {
@@ -25,9 +21,9 @@ VkResult BasePrimitive::create(Context& context, const char* texture_name)
     m_normalBuffer = UploadToGPU(context, m_normals, VK_BUFFER_USAGE_VERTEX_BUFFER_BIT);
 
 
-    Texture *texture = context.textureManager().GetTexture(texture_name);
+    Texture *texture = context.lightningPass().textureManager().GetTexture(texture_name);
 
-    m_modelSet = context.descriptorPool().CreateSet(context.textureManager().DescriptorSetLayout());
+    m_modelSet = context.descriptorPool().CreateSet(context.lightningPass().textureManager().DescriptorSetLayout());
 
     DescriptorSetMgmt setMgmt(m_modelSet);
     setMgmt.SetImage(0, texture->view(), texture->sampler(),VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);

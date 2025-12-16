@@ -10,6 +10,7 @@
 #include "shaders/shader.frag_include.h"
 #include "shaders/shader.vert_include.h"
 #include <wrappers.h>
+#include "TextureManager.h"
 
 static VkPipelineLayout CreatePipelineLayout(const VkDevice device, const std::vector<VkDescriptorSetLayout>& layouts, uint32_t pushConstantSize)
 {
@@ -270,20 +271,21 @@ static VkPipeline CreatePipeline(const VkDevice         device,
 }
 
 LightningPass::LightningPass(Context &context,
-                             const VkDevice              device,
-                             const VkFormat              colorFormat,
-                             const VkSampleCountFlagBits sampleCountFlagBits):m_vkDevice(device)
+                             TextureManager &textureManager,
+                             const VkFormat colorFormat):
+                             m_vkDevice(context.device()),
+                             m_textureManager(textureManager)
 {
     const auto vertexDataDescSetLayout   = BasePrimitive::CreateVertexDataDescSetLayout(context);
-    const auto textureSetLayout          = context.textureManager().DescriptorSetLayout();
+    const auto textureDescSetLayout          = textureManager.DescriptorSetLayout();
 
-    const std::vector<VkDescriptorSetLayout> layouts = {textureSetLayout, vertexDataDescSetLayout};
+    const std::vector<VkDescriptorSetLayout> layouts = {textureDescSetLayout, vertexDataDescSetLayout};
     const u_int32_t pushConstantSize = sizeof(Camera::CameraPushConstant) + sizeof(BasePrimitive::ModelPushConstant);
 
     m_modelPushConstantOffset = sizeof(Camera::CameraPushConstant);
     m_vertexDataDescSetLayout = vertexDataDescSetLayout;
-    m_pipelineLayout = CreatePipelineLayout(device, layouts, pushConstantSize);
-    m_pipeline = CreatePipeline(device, m_pipelineLayout, colorFormat, sampleCountFlagBits);
+    m_pipelineLayout = CreatePipelineLayout(m_vkDevice, layouts, pushConstantSize);
+    m_pipeline = CreatePipeline(m_vkDevice, m_pipelineLayout, colorFormat, context.sampleCountFlagBits());
 }
 void LightningPass::Destroy() const
 {

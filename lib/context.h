@@ -24,7 +24,6 @@ public:
     VkPhysicalDevice SelectPhysicalDevice(const VkSurfaceKHR surface);
     VkDevice         CreateDevice(const std::vector<const char*>& extensions);
     VkCommandPool    CreateCommandPool();
-    void             SetTextureManager(TextureManager* texture_manager){m_textureManager = texture_manager;}
     void             SetLightingPass(LightningPass* lightningPass){m_lightningPass = lightningPass;}
 
     void             Destroy();
@@ -37,7 +36,6 @@ public:
     VkSampleCountFlagBits sampleCountFlagBits() const {return m_SampleCountFlagBits;};
     VkCommandPool    commandPool() const { return m_commandPool; }
     DescriptorPool&  descriptorPool() { return m_descriptorPool; }
-    TextureManager&  textureManager() { return *m_textureManager; }
     LightningPass&   lightningPass() { return *m_lightningPass; }
 
 protected:
@@ -59,6 +57,5 @@ protected:
     VkCommandPool    m_commandPool    = VK_NULL_HANDLE;
     DescriptorPool   m_descriptorPool = {};
 
-    TextureManager*  m_textureManager;
     LightningPass*   m_lightningPass;
 };
