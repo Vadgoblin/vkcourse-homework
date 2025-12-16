@@ -241,32 +241,36 @@ int main(int /*argc*/, char** /*argv*/)
     }
 
     const std::vector<VkDescriptorSetLayoutBinding> layoutBindings = {
+        // VkDescriptorSetLayoutBinding{
+        //     .binding            = 0,
+        //     .descriptorType     = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER,
+        //     .descriptorCount    = 1,
+        //     .stageFlags         = VK_SHADER_STAGE_ALL,
+        //     .pImmutableSamplers = nullptr,
+        // },
         VkDescriptorSetLayoutBinding{
             .binding            = 0,
-            .descriptorType     = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER,
-            .descriptorCount    = 1,
-            .stageFlags         = VK_SHADER_STAGE_ALL,
-            .pImmutableSamplers = nullptr,
-        },
-        VkDescriptorSetLayoutBinding{
-            .binding            = 1,
-            .descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER,
+            .descriptorType     = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER,
             .descriptorCount    = 1,
             .stageFlags         = VK_SHADER_STAGE_ALL,
             .pImmutableSamplers = nullptr,
         }
     };
 
+
+
     descSetLayout = context.descriptorPool().CreateLayout(layoutBindings);
 
-    LightningPass lightningPass = LightningPass(device,swapchain.format(),context.sampleCountFlagBits(),descSetLayout);
+    TextureManager textureManager = TextureManager(context);
+    context.SetTextureManager(&textureManager);
+    auto texturedsetlayout = textureManager.DescriptorSetLayout();
+
+    LightningPass lightningPass = LightningPass(device,swapchain.format(),context.sampleCountFlagBits(),{texturedsetlayout,descSetLayout});
     context.SetLightingPass(&lightningPass);
 
-    // context.BuildPipelineWrapper(swapchain.format());
 
     // LightManager lightManager = LightManager(context);
 
-    context.CreateTextureManager();
 
     ObjectManager::setup(context);
 
@@ -488,6 +492,7 @@ if (context.sampleCountFlagBits() != VK_SAMPLE_COUNT_1_BIT) {
 
     camera.Destroy(device);
     lightningPass.Destroy();
+    textureManager.Destroy();
     ObjectManager::destroy(device);
     swapchain.Destroy();
     context.Destroy();

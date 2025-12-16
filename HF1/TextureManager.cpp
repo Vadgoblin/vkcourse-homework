@@ -6,18 +6,40 @@
 
 namespace fs = std::filesystem;
 
-void TextureManager::Create(Context& context)
+const char* TEXTURE_DIRECTORY = "./HF1/textures/";
+
+void TextureManager::CreateDsetLayout()
 {
-    this->m_context = &context;
+    // const std::vector<VkDescriptorSetLayoutBinding> layoutBindings = {
+    //     VkDescriptorSetLayoutBinding{
+    //         .binding            = 0,
+    //         .descriptorType     = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER,
+    //         .descriptorCount    = 1,
+    //         .stageFlags         = VK_SHADER_STAGE_ALL,
+    //         .pImmutableSamplers = nullptr,
+    //     },
+    // };
 
-    printf("Loading textures from : %s \n", this->TEXTURE_DIRECTORY);
+    auto descSetLayoutBinding = VkDescriptorSetLayoutBinding{
+        .binding            = 0,
+        .descriptorType     = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER,
+        .descriptorCount    = 1,
+        .stageFlags         = VK_SHADER_STAGE_ALL,
+        .pImmutableSamplers = nullptr,
+    };
 
-    if (!fs::exists(this->TEXTURE_DIRECTORY) || !fs::is_directory(this->TEXTURE_DIRECTORY)) {
-        printf("Directory not found: %s \n", this->TEXTURE_DIRECTORY);
+    m_descSetLayout = m_context->descriptorPool().CreateLayout({descSetLayoutBinding});
+}
+void TextureManager::LoadTextures()
+{
+    printf("Loading textures from : %s \n", TEXTURE_DIRECTORY);
+
+    if (!fs::exists(TEXTURE_DIRECTORY) || !fs::is_directory(TEXTURE_DIRECTORY)) {
+        printf("Directory not found: %s \n", TEXTURE_DIRECTORY);
         exit(-1);
     }
 
-    for (const auto& entry : fs::directory_iterator(this->TEXTURE_DIRECTORY)) {
+    for (const auto& entry : fs::directory_iterator(TEXTURE_DIRECTORY)) {
         if (entry.is_regular_file()) {
             std::string extension = entry.path().extension().string();
 
@@ -28,23 +50,32 @@ void TextureManager::Create(Context& context)
                 printf("Loading texture : %s \n", filePath.c_str());
                 Texture* texture = LoadTexture(filePath);
 
-                m_textures->insert({nameOnly, texture});
+                m_textures.insert({nameOnly, texture});
             }
         }
     }
 }
 
+TextureManager::TextureManager(Context& context)
+{
+    m_textures = std::unordered_map<std::string, Texture*>();
+    m_context = &context;
+
+    CreateDsetLayout();
+    LoadTextures();
+}
+
 void TextureManager::Destroy()
 {
-    for (auto it = m_textures->begin(); it != m_textures->end(); it++) {
+    for (auto it = m_textures.begin(); it != m_textures.end(); it++) {
         it->second->Destroy(m_context->device());
     }
 }
 
 Texture* TextureManager::GetTexture(std::string name)
 {
-    auto it = m_textures->find(name);
-    if (it == m_textures->end()) {
+    auto it = m_textures.find(name);
+    if (it == m_textures.end()) {
         printf("Texture not found: %s \n", name.c_str());
         exit(-1);
     }

@@ -25,7 +25,7 @@ public:
     VkDevice         CreateDevice(const std::vector<const char*>& extensions);
     DescriptorPool   CreateDescriptorPool(const std::unordered_map<VkDescriptorType, uint32_t>& countPerType, uint32_t maxSets);
     VkCommandPool    CreateCommandPool();
-    TextureManager*  CreateTextureManager();
+    void             SetTextureManager(TextureManager* texture_manager){m_textureManager = texture_manager;}
     void             SetLightingPass(LightningPass* lightningPass){m_lightningPass = lightningPass;}
 
     void             Destroy();
@@ -38,8 +38,8 @@ public:
     VkSampleCountFlagBits sampleCountFlagBits() const {return m_SampleCountFlagBits;};
     VkCommandPool    commandPool() const { return m_commandPool; }
     DescriptorPool&  descriptorPool() { return m_descriptorPool; }
-    TextureManager&  texture_manager() { return *m_textureManager; }
-    LightningPass&   lightning_pass() { return *m_lightningPass; }
+    TextureManager&  textureManager() { return *m_textureManager; }
+    LightningPass&   lightningPass() { return *m_lightningPass; }
 
     // void BuildPipelineWrapper(VkFormat swapchainFormat);
     // PipelineWrapper& pipelineWrapper() const { return *m_pipelineWrapper; }

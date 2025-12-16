@@ -6,16 +6,19 @@ class Context;
 
 class TextureManager {
 public:
-    TextureManager(){m_textures = new std::unordered_map<std::string, Texture*>();};
+    TextureManager(Context& context);
 
     void Create(Context &context);
     void Destroy();
     Texture* GetTexture(std::string name);
+    VkDescriptorSetLayout& DescriptorSetLayout(){return m_descSetLayout;};
 
 private:
+    void CreateDsetLayout();
+    void LoadTextures();
     Texture *LoadTexture(const std::string &filePath);
 
-    const char* TEXTURE_DIRECTORY = "./HF1/textures/";
     Context *m_context;
-    std::unordered_map<std::string, Texture*> *m_textures;
+    VkDescriptorSetLayout m_descSetLayout;
+    std::unordered_map<std::string, Texture*> m_textures;
 };

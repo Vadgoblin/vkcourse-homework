@@ -24,9 +24,9 @@ BasePrimitive::BasePrimitive()
 
 VkResult BasePrimitive::create(Context& context, const char* texture_name)
 {
-    m_pipeline = context.lightning_pass().pipeline();
-    m_pipelineLayout = context.lightning_pass().pipelineLayout();
-    m_constantOffset = context.lightning_pass().constantOffset();
+    m_pipeline = context.lightningPass().pipeline();
+    m_pipelineLayout = context.lightningPass().pipelineLayout();
+    m_constantOffset = context.lightningPass().constantOffset();
     m_vertexCount = static_cast<uint32_t>(m_indices.size());
 
     m_vertexBuffer = UploadToGPU(context, m_vertices, VK_BUFFER_USAGE_VERTEX_BUFFER_BIT);
@@ -35,9 +35,9 @@ VkResult BasePrimitive::create(Context& context, const char* texture_name)
     m_normalBuffer = UploadToGPU(context, m_normals, VK_BUFFER_USAGE_VERTEX_BUFFER_BIT);
 
 
-    Texture *texture = context.texture_manager().GetTexture(texture_name);
+    Texture *texture = context.textureManager().GetTexture(texture_name);
 
-    m_modelSet = context.descriptorPool().CreateSet(descSetLayout);
+    m_modelSet = context.descriptorPool().CreateSet(context.textureManager().DescriptorSetLayout());
 
     DescriptorSetMgmt setMgmt(m_modelSet);
     setMgmt.SetImage(0, texture->view(), texture->sampler(),VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);

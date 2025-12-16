@@ -23,7 +23,7 @@ static VkPipelineLayout CreatePipelineLayout(const VkDevice device, const std::v
         .sType                  = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO,
         .pNext                  = nullptr,
         .flags                  = 0,
-        .setLayoutCount         =  (uint32_t)layouts.size(),
+        .setLayoutCount         = (uint32_t)layouts.size(),
         .pSetLayouts            = layouts.data(),
         .pushConstantRangeCount = (pushConstantSize > 0) ? 1u : 0u,
         .pPushConstantRanges    = &pushConstantRange,
@@ -263,7 +263,7 @@ static VkPipeline CreatePipeline(const VkDevice         device,
 LightningPass::LightningPass(const VkDevice              device,
                              const VkFormat              colorFormat,
                              const VkSampleCountFlagBits sampleCountFlagBits,
-                             VkDescriptorSetLayout       descSetLayout)
+                             const std::vector<VkDescriptorSetLayout>& descSetLayouts)
 {
     m_vkDevice = device;
 
@@ -276,9 +276,8 @@ LightningPass::LightningPass(const VkDevice              device,
     const VkShaderModule shaderFragment = CreateShaderModule(device, m_shaderFragData, m_shaderFragSize);
 
     m_constantOffset = sizeof(Camera::CameraPushConstant);
-    m_pipelineLayout = CreatePipelineLayout(device, {descSetLayout}, m_constantOffset + sizeof(ModelPushConstant));
-    m_pipeline =
-        CreatePipeline(device, m_pipelineLayout, colorFormat, shaderVertex, shaderFragment, sampleCountFlagBits);
+    m_pipelineLayout = CreatePipelineLayout(device, descSetLayouts, m_constantOffset + sizeof(ModelPushConstant));
+    m_pipeline = CreatePipeline(device, m_pipelineLayout, colorFormat, shaderVertex, shaderFragment, sampleCountFlagBits);
 
     vkDestroyShaderModule(device, shaderVertex, nullptr);
     vkDestroyShaderModule(device, shaderFragment, nullptr);

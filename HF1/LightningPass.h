@@ -1,13 +1,15 @@
 #pragma once
-#include <vulkan/vulkan_core.h>
 #include "glm_config.h"
+#include <vulkan/vulkan_core.h>
+
+#include <vector>
 
 class LightningPass {
 public:
     LightningPass(VkDevice device,
                   VkFormat colorFormat,
                   VkSampleCountFlagBits sampleCountFlagBits,
-                  VkDescriptorSetLayout descSetLayout);
+                  const std::vector<VkDescriptorSetLayout>& descSetLayouts);
     void Destroy() const;
 
     VkPipelineLayout pipelineLayout() const { return m_pipelineLayout; }

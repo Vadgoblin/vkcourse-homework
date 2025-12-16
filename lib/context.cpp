@@ -171,17 +171,17 @@ VkCommandPool Context::CreateCommandPool()
 
     return m_commandPool;
 }
-TextureManager* Context::CreateTextureManager()
-{
-    this->m_textureManager = new TextureManager();
-    this->m_textureManager->Create(*this);
-    return this->m_textureManager;
-}
+// TextureManager* Context::CreateTextureManager()
+// {
+//     this->m_textureManager = new TextureManager();
+//     this->m_textureManager->Create(*this);
+//     return this->m_textureManager;
+// }
 
 void Context::Destroy()
 {
-    m_textureManager->Destroy();
-    delete m_textureManager;
+    // m_textureManager->Destroy();
+    // delete m_textureManager;
 
     // m_pipelineWrapper->Destroy();
     // delete m_pipelineWrapper;
