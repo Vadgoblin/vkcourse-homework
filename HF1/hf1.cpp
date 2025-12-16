@@ -243,9 +243,8 @@ int main(int /*argc*/, char** /*argv*/)
     TextureManager textureManager(context);
 
     LightningPass lightningPass(context,textureManager, swapchain.format());
-    context.SetLightingPass(&lightningPass);
 
-    ObjectManager objectManager(context);
+    ObjectManager objectManager(context, lightningPass);
 
 
     glfwShowWindow(window);

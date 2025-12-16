@@ -12,10 +12,10 @@ void RotatingCube::draw(const VkCommandBuffer cmdBuffer, const glm::mat4& parent
     m_objectGroup->draw(cmdBuffer, parentModel * getModelMatrix());
 }
 
-void RotatingCube::create(Context& context)
+void RotatingCube::create(Context& context, LightningPass& lightningPass)
 {
     Cube* cube = new Cube(true);
-    cube->create(context, "grassblock_FIX");
+    cube->create(context,lightningPass, "grassblock_FIX");
     cube->setScale(0.5f,0.5f,0.5f);
     m_objectGroup->addChild(cube);
 }

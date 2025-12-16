@@ -24,29 +24,29 @@ void PistonWithBouncingBall::draw(const VkCommandBuffer cmdBuffer, const glm::ma
     m_ball->draw(cmdBuffer, parentModel * getModelMatrix());
 }
 
-void PistonWithBouncingBall::create(Context& context)
+void PistonWithBouncingBall::create(Context& context, LightningPass& lightningPass)
 {
     Cube* pistonBase = new Cube(true);
     pistonBase->setPosition(0.0f, 0.45f,0.0f);
     pistonBase->setScale(1.0f,0.9f,1.0f);
-    pistonBase->create(context, "piston_body");
+    pistonBase->create(context, lightningPass, "piston_body");
     m_pistonBase->addChild(pistonBase);
 
     Cube* pistonRod = new Cube(true);
     pistonRod->setPosition(0.0f, 0.5f,0.0f);
     pistonRod->setScale(0.2f,0.95f,0.2f);
-    pistonRod->create(context, "piston_head");
+    pistonRod->create(context, lightningPass,"piston_head");
     m_pistonMovingPart->addChild(pistonRod);
 
     Cube* pistonHead = new Cube(true);
     pistonHead->setPosition(0.0f, 0.95f,0.0f);
     pistonHead->setScale(1.0f,0.1f,1.0f);
-    pistonHead->create(context, "piston_head");
+    pistonHead->create(context, lightningPass,"piston_head");
     m_pistonMovingPart->addChild(pistonHead);
 
     Sphere* ball = new Sphere(0.4f,25,25);
     ball->setPosition(0.0f, 1.4f,0.0f);
-    ball->create(context, "earth");
+    ball->create(context, lightningPass,"earth");
     m_ball->addChild(ball);
 }
 

@@ -24,7 +24,6 @@ public:
     VkPhysicalDevice SelectPhysicalDevice(const VkSurfaceKHR surface);
     VkDevice         CreateDevice(const std::vector<const char*>& extensions);
     VkCommandPool    CreateCommandPool();
-    void             SetLightingPass(LightningPass* lightningPass){m_lightningPass = lightningPass;}
 
     void             Destroy();
 
@@ -36,7 +35,6 @@ public:
     VkSampleCountFlagBits sampleCountFlagBits() const {return m_SampleCountFlagBits;};
     VkCommandPool    commandPool() const { return m_commandPool; }
     DescriptorPool&  descriptorPool() { return m_descriptorPool; }
-    LightningPass&   lightningPass() { return *m_lightningPass; }
 
 protected:
     DescriptorPool   CreateDescriptorPool(const std::unordered_map<VkDescriptorType, uint32_t>& countPerType, uint32_t maxSets);
@@ -56,6 +54,4 @@ protected:
 
     VkCommandPool    m_commandPool    = VK_NULL_HANDLE;
     DescriptorPool   m_descriptorPool = {};
-
-    LightningPass*   m_lightningPass;
 };

@@ -18,10 +18,10 @@ void SpinningCirnoPrism::draw(const VkCommandBuffer cmdBuffer, const glm::mat4& 
     m_objectGroup->draw(cmdBuffer, parentModel * getModelMatrix());
 }
 
-void SpinningCirnoPrism::create(Context& context)
+void SpinningCirnoPrism::create(Context& context, LightningPass& lightningPass)
 {
     CirnoPrism* cirnoPrism = new CirnoPrism();
-    cirnoPrism->create(context, "Cirno Prism");
+    cirnoPrism->create(context, lightningPass,"Cirno Prism");
     m_objectGroup->addChild(cirnoPrism);
 }
 

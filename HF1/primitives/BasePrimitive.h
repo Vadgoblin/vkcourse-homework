@@ -38,7 +38,7 @@ public:
     BasePrimitive(){}
     ~BasePrimitive() override = default;
 
-    VkResult create(Context& context, const char* texture_name = "default");
+    VkResult create(Context& context, LightningPass& lightningPass, const char* texture_name = "default");
     void     destroy(VkDevice device);
     void     draw(VkCommandBuffer cmdBuffer, const glm::mat4& parentModel = glm::mat4(1.0f)) override;
 
