@@ -277,10 +277,10 @@ LightningPass::LightningPass(Context &context,
 {
     m_vkDevice = device;
     m_vertexDataDescSetLayout = BasePrimitive::CreateVertexDataDescSetLayout(context);
-    auto texturedsetlayout = context.textureManager().DescriptorSetLayout();
+    auto textureSetLayout = context.textureManager().DescriptorSetLayout();
 
     m_constantOffset = sizeof(Camera::CameraPushConstant);
-    m_pipelineLayout = CreatePipelineLayout(device, {texturedsetlayout, m_vertexDataDescSetLayout}, m_constantOffset + sizeof(ModelPushConstant));
+    m_pipelineLayout = CreatePipelineLayout(device, {textureSetLayout, m_vertexDataDescSetLayout}, m_constantOffset + sizeof(ModelPushConstant));
     m_pipeline = CreatePipeline(device, m_pipelineLayout, colorFormat, sampleCountFlagBits);
 }
 void LightningPass::Destroy() const
