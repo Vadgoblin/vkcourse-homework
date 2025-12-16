@@ -23,9 +23,9 @@ static VkPipelineLayout CreatePipelineLayout(const VkDevice device, const std::v
         .sType                  = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO,
         .pNext                  = nullptr,
         .flags                  = 0,
-        .setLayoutCount         = (uint32_t)layouts.size(),
+        .setLayoutCount         = static_cast<uint32_t>(layouts.size()),
         .pSetLayouts            = layouts.data(),
-        .pushConstantRangeCount = (pushConstantSize > 0) ? 1u : 0u,
+        .pushConstantRangeCount = 1u,
         .pPushConstantRanges    = &pushConstantRange,
     };
 
@@ -272,14 +272,17 @@ static VkPipeline CreatePipeline(const VkDevice         device,
 LightningPass::LightningPass(Context &context,
                              const VkDevice              device,
                              const VkFormat              colorFormat,
-                             const VkSampleCountFlagBits sampleCountFlagBits)
+                             const VkSampleCountFlagBits sampleCountFlagBits):m_vkDevice(device)
 {
-    m_vkDevice = device;
-    m_vertexDataDescSetLayout = BasePrimitive::CreateVertexDataDescSetLayout(context);
-    auto textureSetLayout = context.textureManager().DescriptorSetLayout();
+    const auto vertexDataDescSetLayout   = BasePrimitive::CreateVertexDataDescSetLayout(context);
+    const auto textureSetLayout          = context.textureManager().DescriptorSetLayout();
+
+    const std::vector<VkDescriptorSetLayout> layouts = {textureSetLayout, vertexDataDescSetLayout};
+    const u_int32_t pushConstantSize = sizeof(Camera::CameraPushConstant) + sizeof(BasePrimitive::ModelPushConstant);
 
     m_constantOffset = sizeof(Camera::CameraPushConstant);
-    m_pipelineLayout = CreatePipelineLayout(device, {textureSetLayout, m_vertexDataDescSetLayout}, m_constantOffset + sizeof(BasePrimitive::ModelPushConstant));
+    m_vertexDataDescSetLayout = vertexDataDescSetLayout;
+    m_pipelineLayout = CreatePipelineLayout(device, layouts, pushConstantSize);
     m_pipeline = CreatePipeline(device, m_pipelineLayout, colorFormat, sampleCountFlagBits);
 }
 void LightningPass::Destroy() const

@@ -23,7 +23,6 @@ public:
     VkInstance       CreateInstance(const std::vector<const char*>& layers, const std::vector<const char*>& extensions);
     VkPhysicalDevice SelectPhysicalDevice(const VkSurfaceKHR surface);
     VkDevice         CreateDevice(const std::vector<const char*>& extensions);
-    DescriptorPool   CreateDescriptorPool(const std::unordered_map<VkDescriptorType, uint32_t>& countPerType, uint32_t maxSets);
     VkCommandPool    CreateCommandPool();
     void             SetTextureManager(TextureManager* texture_manager){m_textureManager = texture_manager;}
     void             SetLightingPass(LightningPass* lightningPass){m_lightningPass = lightningPass;}
@@ -41,10 +40,8 @@ public:
     TextureManager&  textureManager() { return *m_textureManager; }
     LightningPass&   lightningPass() { return *m_lightningPass; }
 
-    // void BuildPipelineWrapper(VkFormat swapchainFormat);
-    // PipelineWrapper& pipelineWrapper() const { return *m_pipelineWrapper; }
-
 protected:
+    DescriptorPool   CreateDescriptorPool(const std::unordered_map<VkDescriptorType, uint32_t>& countPerType, uint32_t maxSets);
     bool FindQueueFamily(const VkPhysicalDevice phyDevice, const VkSurfaceKHR surface, uint32_t* outQueueFamilyIdx);
     void SetSampleCountFlagBits();
 
@@ -58,7 +55,6 @@ protected:
     VkQueue          m_queue          = VK_NULL_HANDLE;
     VkSampleCountFlagBits m_SampleCountFlagBits = static_cast<VkSampleCountFlagBits>(0);
 
-    // PipelineWrapper* m_pipelineWrapper = nullptr;
 
     VkCommandPool    m_commandPool    = VK_NULL_HANDLE;
     DescriptorPool   m_descriptorPool = {};
