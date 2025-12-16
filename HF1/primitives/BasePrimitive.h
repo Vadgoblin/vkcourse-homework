@@ -32,7 +32,7 @@ public:
         return context.descriptorPool().CreateLayout({descsetlaybind});
     }
 
-    BasePrimitive();
+    BasePrimitive(){}
     ~BasePrimitive() override = default;
 
     VkResult create(Context& context, const char* texture_name = "default");
@@ -44,11 +44,6 @@ protected:
     VkPipelineLayout m_pipelineLayout = VK_NULL_HANDLE;
     VkPipeline       m_pipeline       = VK_NULL_HANDLE;
     uint32_t         m_constantOffset = 0;
-
-    const uint32_t* m_shaderVertData = nullptr;
-    size_t          m_shaderVertSize = 0;
-    const uint32_t* m_shaderFragData = nullptr;
-    size_t          m_shaderFragSize = 0;
 
     BufferInfo       m_vertexBuffer   = {};
     BufferInfo       m_indexBuffer    = {};

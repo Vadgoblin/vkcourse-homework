@@ -13,14 +13,6 @@ namespace {
 #include "shaders/shader.vert_include.h"
 }
 
-BasePrimitive::BasePrimitive()
-{
-     m_shaderVertData = SPV_shader_in_vert;
-     m_shaderVertSize = sizeof(SPV_shader_in_vert);
-     m_shaderFragData = SPV_shader_in_frag;
-     m_shaderFragSize = sizeof(SPV_shader_in_frag);
-}
-
 VkResult BasePrimitive::create(Context& context, const char* texture_name)
 {
     m_pipeline = context.lightningPass().pipeline();
