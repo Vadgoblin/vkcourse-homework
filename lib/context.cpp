@@ -180,12 +180,6 @@ VkCommandPool Context::CreateCommandPool()
 
 void Context::Destroy()
 {
-    // m_textureManager->Destroy();
-    // delete m_textureManager;
-
-    // m_pipelineWrapper->Destroy();
-    // delete m_pipelineWrapper;
-
     m_descriptorPool.Destroy();
     vkDestroyDevice(m_device, nullptr);
     vkDestroyInstance(m_instance, nullptr);

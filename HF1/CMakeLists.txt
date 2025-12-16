@@ -41,7 +41,6 @@ add_executable(hf1
         LightManager.h
         LightningPass.cpp
         LightningPass.h
-        shared_crap.h
 )
 
 target_include_directories(hf1

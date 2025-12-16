@@ -1,5 +1,4 @@
 #include "BasePrimitive.h"
-#include "../shared_crap.h"
 #define GLM_ENABLE_EXPERIMENTAL
 #include <glm/gtx/quaternion.hpp>
 

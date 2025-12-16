@@ -26,9 +26,8 @@
 #include "swapchain.h"
 #include "wrappers.h"
 
+#include "primitives/BasePrimitive.h"
 
-#include "shared_crap.h"
-VkDescriptorSetLayout descSetLayout;
 
 void KeyCallback(GLFWwindow* window, int key, int /*scancode*/, int /*action*/, int /*mods*/)
 {
@@ -240,36 +239,12 @@ int main(int /*argc*/, char** /*argv*/)
                                              context.sampleCountFlagBits());
     }
 
-    const std::vector<VkDescriptorSetLayoutBinding> layoutBindings = {
-        // VkDescriptorSetLayoutBinding{
-        //     .binding            = 0,
-        //     .descriptorType     = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER,
-        //     .descriptorCount    = 1,
-        //     .stageFlags         = VK_SHADER_STAGE_ALL,
-        //     .pImmutableSamplers = nullptr,
-        // },
-        VkDescriptorSetLayoutBinding{
-            .binding            = 0,
-            .descriptorType     = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER,
-            .descriptorCount    = 1,
-            .stageFlags         = VK_SHADER_STAGE_ALL,
-            .pImmutableSamplers = nullptr,
-        }
-    };
-
-
-
-    descSetLayout = context.descriptorPool().CreateLayout(layoutBindings);
 
     TextureManager textureManager = TextureManager(context);
     context.SetTextureManager(&textureManager);
-    auto texturedsetlayout = textureManager.DescriptorSetLayout();
 
-    LightningPass lightningPass = LightningPass(device,swapchain.format(),context.sampleCountFlagBits(),{texturedsetlayout,descSetLayout});
+    LightningPass lightningPass = LightningPass(context, device,swapchain.format(),context.sampleCountFlagBits());
     context.SetLightingPass(&lightningPass);
-
-
-    // LightManager lightManager = LightManager(context);
 
 
     ObjectManager::setup(context);

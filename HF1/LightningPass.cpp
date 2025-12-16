@@ -6,10 +6,11 @@
 #include <vector>
 #include <vulkan/vulkan_core.h>
 
+#include "ModelPushConstant.h"
+#include "primitives/BasePrimitive.h"
 #include "shaders/shader.frag_include.h"
 #include "shaders/shader.vert_include.h"
 #include <wrappers.h>
-#include "ModelPushConstant.h"
 
 static VkPipelineLayout CreatePipelineLayout(const VkDevice device, const std::vector<VkDescriptorSetLayout>& layouts, uint32_t pushConstantSize)
 {
@@ -40,10 +41,16 @@ static VkPipeline CreatePipeline(const VkDevice         device,
                                  const VkPipelineLayout pipelineLayout,
                                  const VkFormat         colorFormat,
                                  // const VkFormat         depthFormat,
-                                 const VkShaderModule   shaderVertex,
-                                 const VkShaderModule   shaderFragment,
                                  const VkSampleCountFlagBits vkSampleCountFlagBits)
 {
+    const uint32_t* m_shaderVertData = SPV_shader_in_vert;
+    size_t          m_shaderVertSize = sizeof(SPV_shader_in_vert);
+    const uint32_t* m_shaderFragData = SPV_shader_in_frag;
+    size_t          m_shaderFragSize = sizeof(SPV_shader_in_frag);
+
+    const VkShaderModule shaderVertex   = CreateShaderModule(device, m_shaderVertData, m_shaderVertSize);
+    const VkShaderModule shaderFragment = CreateShaderModule(device, m_shaderFragData, m_shaderFragSize);
+
     // shader stages
     const VkPipelineShaderStageCreateInfo shaders[] = {
         {
@@ -257,30 +264,24 @@ static VkPipeline CreatePipeline(const VkDevice         device,
     VkResult   result   = vkCreateGraphicsPipelines(device, VK_NULL_HANDLE, 1, &pipelineCreateInfo, nullptr, &pipeline);
     assert(result == VK_SUCCESS);
 
+    vkDestroyShaderModule(device, shaderVertex, nullptr);
+    vkDestroyShaderModule(device, shaderFragment, nullptr);
+
     return pipeline;
 }
 
-LightningPass::LightningPass(const VkDevice              device,
+LightningPass::LightningPass(Context &context,
+                             const VkDevice              device,
                              const VkFormat              colorFormat,
-                             const VkSampleCountFlagBits sampleCountFlagBits,
-                             const std::vector<VkDescriptorSetLayout>& descSetLayouts)
+                             const VkSampleCountFlagBits sampleCountFlagBits)
 {
     m_vkDevice = device;
-
-    const uint32_t* m_shaderVertData = SPV_shader_in_vert;
-    size_t          m_shaderVertSize = sizeof(SPV_shader_in_vert);
-    const uint32_t* m_shaderFragData = SPV_shader_in_frag;
-    size_t          m_shaderFragSize = sizeof(SPV_shader_in_frag);
-
-    const VkShaderModule shaderVertex   = CreateShaderModule(device, m_shaderVertData, m_shaderVertSize);
-    const VkShaderModule shaderFragment = CreateShaderModule(device, m_shaderFragData, m_shaderFragSize);
+    m_vertexDataDescSetLayout = BasePrimitive::CreateVertexDataDescSetLayout(context);
+    auto texturedsetlayout = context.textureManager().DescriptorSetLayout();
 
     m_constantOffset = sizeof(Camera::CameraPushConstant);
-    m_pipelineLayout = CreatePipelineLayout(device, descSetLayouts, m_constantOffset + sizeof(ModelPushConstant));
-    m_pipeline = CreatePipeline(device, m_pipelineLayout, colorFormat, shaderVertex, shaderFragment, sampleCountFlagBits);
-
-    vkDestroyShaderModule(device, shaderVertex, nullptr);
-    vkDestroyShaderModule(device, shaderFragment, nullptr);
+    m_pipelineLayout = CreatePipelineLayout(device, {texturedsetlayout, m_vertexDataDescSetLayout}, m_constantOffset + sizeof(ModelPushConstant));
+    m_pipeline = CreatePipeline(device, m_pipelineLayout, colorFormat, sampleCountFlagBits);
 }
 void LightningPass::Destroy() const
 {

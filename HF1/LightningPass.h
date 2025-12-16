@@ -4,12 +4,12 @@
 
 #include <vector>
 
+class Context;
 class LightningPass {
 public:
-    LightningPass(VkDevice device,
+    LightningPass(Context &context,VkDevice device,
                   VkFormat colorFormat,
-                  VkSampleCountFlagBits sampleCountFlagBits,
-                  const std::vector<VkDescriptorSetLayout>& descSetLayouts);
+                  VkSampleCountFlagBits sampleCountFlagBits);
     void Destroy() const;
 
     VkPipelineLayout pipelineLayout() const { return m_pipelineLayout; }
@@ -17,9 +17,9 @@ public:
     uint32_t         constantOffset() const { return m_constantOffset; }
 
 private:
-    VkDevice    m_vkDevice;
-    VkPipelineLayout  m_pipelineLayout;
-    VkPipeline        m_pipeline;
-    glm::uint32_t     m_constantOffset = 0;
-    VkDescriptorSetLayout m_descSetLayout = VK_NULL_HANDLE;
+    VkDevice              m_vkDevice;
+    VkPipelineLayout      m_pipelineLayout;
+    VkPipeline            m_pipeline;
+    glm::uint32_t         m_constantOffset;
+    VkDescriptorSetLayout m_vertexDataDescSetLayout;
 };

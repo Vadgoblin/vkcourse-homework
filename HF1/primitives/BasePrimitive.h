@@ -16,8 +16,21 @@
 
 class Context;
 
-class BasePrimitive  : public ITransformable, public IDrawable{
+class BasePrimitive : public ITransformable, public IDrawable{
 public:
+    static VkDescriptorSetLayout CreateVertexDataDescSetLayout(Context& context)
+    {
+        VkDescriptorSetLayoutBinding descsetlaybind =
+            VkDescriptorSetLayoutBinding{
+                .binding            = 0,
+                .descriptorType     = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER,
+                .descriptorCount    = 1,
+                .stageFlags         = VK_SHADER_STAGE_ALL,
+                .pImmutableSamplers = nullptr,
+        };
+
+        return context.descriptorPool().CreateLayout({descsetlaybind});
+    }
 
     BasePrimitive();
     ~BasePrimitive() override = default;
@@ -25,7 +38,6 @@ public:
     VkResult create(Context& context, const char* texture_name = "default");
     void     destroy(VkDevice device);
     void     draw(VkCommandBuffer cmdBuffer, const glm::mat4& parentModel = glm::mat4(1.0f)) override;
-
 
 
 protected:
