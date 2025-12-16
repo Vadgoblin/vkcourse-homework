@@ -280,7 +280,7 @@ LightningPass::LightningPass(Context &context,
     const std::vector<VkDescriptorSetLayout> layouts = {textureSetLayout, vertexDataDescSetLayout};
     const u_int32_t pushConstantSize = sizeof(Camera::CameraPushConstant) + sizeof(BasePrimitive::ModelPushConstant);
 
-    m_constantOffset = sizeof(Camera::CameraPushConstant);
+    m_modelPushConstantOffset = sizeof(Camera::CameraPushConstant);
     m_vertexDataDescSetLayout = vertexDataDescSetLayout;
     m_pipelineLayout = CreatePipelineLayout(device, layouts, pushConstantSize);
     m_pipeline = CreatePipeline(device, m_pipelineLayout, colorFormat, sampleCountFlagBits);

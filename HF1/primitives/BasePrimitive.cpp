@@ -16,7 +16,7 @@ VkResult BasePrimitive::create(Context& context, const char* texture_name)
 {
     m_pipeline = context.lightningPass().pipeline();
     m_pipelineLayout = context.lightningPass().pipelineLayout();
-    m_constantOffset = context.lightningPass().constantOffset();
+    m_constantOffset = context.lightningPass().modelPushConstantOffset();
     m_vertexCount = static_cast<uint32_t>(m_indices.size());
 
     m_vertexBuffer = UploadToGPU(context, m_vertices, VK_BUFFER_USAGE_VERTEX_BUFFER_BIT);

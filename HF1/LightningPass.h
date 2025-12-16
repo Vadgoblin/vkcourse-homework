@@ -14,12 +14,12 @@ public:
 
     VkPipelineLayout pipelineLayout() const { return m_pipelineLayout; }
     VkPipeline       pipeline() const { return m_pipeline; }
-    uint32_t         constantOffset() const { return m_constantOffset; }
+    uint32_t         modelPushConstantOffset() const { return m_modelPushConstantOffset; }
 
 private:
     VkDevice              m_vkDevice;
     VkPipelineLayout      m_pipelineLayout;
     VkPipeline            m_pipeline;
-    glm::uint32_t         m_constantOffset;
+    glm::uint32_t         m_modelPushConstantOffset;
     VkDescriptorSetLayout m_vertexDataDescSetLayout;
 };
