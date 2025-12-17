@@ -231,7 +231,8 @@ int main(int /*argc*/, char** /*argv*/)
     TextureManager textureManager(context);
     LightManager   lightManager(context);
 
-    ShadowPass shadowPass(context, lightManager,depthFormat,{1024,1024});
+    uint32_t shadowResolution = 2 * 1024;
+    ShadowPass shadowPass(context, lightManager,depthFormat,{shadowResolution,shadowResolution});
 
     LightningPass lightningPass(context, textureManager, lightManager, shadowPass,swapchain.format(), msaaLevel, depthFormat,
                                 swapchain.surfaceExtent());

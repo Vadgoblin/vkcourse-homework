@@ -6,18 +6,20 @@
 
 LightManager::LightManager(Context& context) : m_device(context.device())
 {
+    float lightFov = 40;
+
     m_lights[0].position = glm::vec3(10000,-10000,10000);
     m_lights[0].color = glm::vec3(1.5, 0.0, 0.0);
-    m_lights[0].projection = glm::perspective(glm::radians(90.0f), 1.0f, 0.1f, 100.0f);
+    m_lights[0].projection = glm::perspective(glm::radians(lightFov), 1.0f, 0.1f, 100.0f);
 
 
     m_lights[1].position = glm::vec3(10000,-10000,10000);
     m_lights[1].color = glm::vec3(0.0, 1.5, 0.0);
-    m_lights[1].projection = glm::perspective(glm::radians(90.0f), 1.0f, 0.1f, 100.0f);
+    m_lights[1].projection = glm::perspective(glm::radians(lightFov), 1.0f, 0.1f, 100.0f);
 
     m_lights[2].position = glm::vec3(10000,-10000,10000);
     m_lights[2].color = glm::vec3(0.0, 0.0, 1.5);
-    m_lights[2].projection = glm::perspective(glm::radians(90.0f), 1.0f, 0.1f, 100.0f);
+    m_lights[2].projection = glm::perspective(glm::radians(lightFov), 1.0f, 0.1f, 100.0f);
 
 
 

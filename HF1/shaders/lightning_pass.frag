@@ -44,6 +44,13 @@ float SimpleShadow(vec4 fragPosLightSpace, int lightIndex) {
     // transform x-y to [0,1] range
     projCoords.xy = projCoords.xy * 0.5 + 0.5;
 
+    // Check if current fragment is outside the shadow map bounds
+    // If x, y, or z are outside [0, 1], force shadow to 0.0 (lit)
+    if(projCoords.z > 1.0 || projCoords.x < 0.0 || projCoords.x > 1.0 || projCoords.y < 0.0 || projCoords.y > 1.0)
+    {
+        return 0.0;
+    }
+
     // get closest depth value from light's perspective (using [0,1] range fragPosLight as coords)
     float closestDepth = texture(shadowMap[lightIndex], projCoords.xy).r;
 
