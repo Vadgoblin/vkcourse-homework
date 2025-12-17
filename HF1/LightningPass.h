@@ -4,6 +4,7 @@
 #include "texture.h"
 #include <vulkan/vulkan_core.h>
 
+class ShadowPass;
 class Context;
 class TextureManager;
 
@@ -12,6 +13,7 @@ public:
     LightningPass(Context&              context,
                   TextureManager&       textureManager,
                   LightManager&         lightManager,
+                  ShadowPass&           shadowPass,
                   VkFormat              colorFormat,
                   VkSampleCountFlagBits msaaLevel,
                   VkFormat              depthFormat,
@@ -37,7 +39,7 @@ private:
     VkPipelineLayout      m_pipelineLayout;
     VkPipeline            m_pipeline;
     glm::uint32_t         m_modelPushConstantOffset;
-    VkDescriptorSetLayout m_vertexDataDescSetLayout;
+    // VkDescriptorSetLayout m_vertexDataDescSetLayout;
 
     VkFormat              m_colorFormat;
     VkFormat              m_depthFormat;
@@ -51,4 +53,5 @@ private:
 
     TextureManager& m_textureManager;
     LightManager&   m_lightManager;
+    ShadowPass&     m_shadowPass;
 };

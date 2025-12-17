@@ -2,17 +2,24 @@
 #define GLM_ENABLE_EXPERIMENTAL
 #include <glm/gtx/quaternion.hpp>
 
+#include "../ShadowPass.h"
 #include "context.h"
+
 #include <texture.h>
 #include <vector>
 #include <vulkan/vulkan_core.h>
 
 
-VkResult BasePrimitive::create(Context& context,LightningPass& lightningPass, const char* texture_name)
+VkResult BasePrimitive::create(Context& context,LightningPass& lightningPass, ShadowPass& shadowPass,  const char* texture_name)
 {
-    m_pipeline = lightningPass.pipeline();
-    m_pipelineLayout = lightningPass.pipelineLayout();
-    m_constantOffset = lightningPass.modelPushConstantOffset();
+    m_lightningPassPipeline = lightningPass.pipeline();
+    m_lightningPassPipelineLayout = lightningPass.pipelineLayout();
+    m_lightningPassConstantOffset = lightningPass.modelPushConstantOffset();
+
+    m_shadowPassPipeline = shadowPass.pipeline();
+    m_shadowPassPipelineLayout = shadowPass.pipelineLayout();
+    m_shadowPassConstantOffset = shadowPass.modelPushConstantOffset();
+
     m_vertexCount = static_cast<uint32_t>(m_indices.size());
 
     m_vertexBuffer = UploadToGPU(context, m_vertices, VK_BUFFER_USAGE_VERTEX_BUFFER_BIT);
@@ -23,7 +30,7 @@ VkResult BasePrimitive::create(Context& context,LightningPass& lightningPass, co
 
     Texture *texture = lightningPass.textureManager().GetTexture(texture_name);
 
-    m_modelSet = context.descriptorPool().CreateSet(lightningPass.textureManager().DescriptorSetLayout());
+    m_modelSet = context.descriptorPool().CreateSet(lightningPass.textureManager().DescriptorSetLayout());// !
 
     DescriptorSetMgmt setMgmt(m_modelSet);
     setMgmt.SetImage(0, texture->view(), texture->sampler(),VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
@@ -40,23 +47,39 @@ void BasePrimitive::destroy(const VkDevice device)
     m_normalBuffer.Destroy(device);
 }
 
-void BasePrimitive::draw(const VkCommandBuffer cmdBuffer, const glm::mat4& parentModel)
+void BasePrimitive::draw(const VkCommandBuffer cmdBuffer,bool lightningPass, const glm::mat4& parentModel)
 {
     const ModelPushConstant modelData = {
         .model = parentModel * getModelMatrix(),
     };
 
-    vkCmdBindPipeline(cmdBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, m_pipeline);
-    vkCmdPushConstants(cmdBuffer, m_pipelineLayout, VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT, m_constantOffset,
-                       sizeof(ModelPushConstant), &modelData);
+    if (lightningPass) {
+        vkCmdBindPipeline(cmdBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, m_lightningPassPipeline);
+        vkCmdPushConstants(cmdBuffer, m_lightningPassPipelineLayout, VK_SHADER_STAGE_ALL, m_lightningPassConstantOffset,
+                           sizeof(ModelPushConstant), &modelData);
 
-    vkCmdBindDescriptorSets(cmdBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, m_pipelineLayout, 0, 1, &m_modelSet, 0,
-                            nullptr);
+        vkCmdBindDescriptorSets(cmdBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, m_lightningPassPipelineLayout, 0, 1, &m_modelSet, 0,
+                                nullptr);
 
-    VkBuffer     vertexBuffers[] = {m_vertexBuffer.buffer, m_texCoordBuffer.buffer, m_normalBuffer.buffer};
-    VkDeviceSize offsets[]       = {0, 0, 0};
-    vkCmdBindVertexBuffers(cmdBuffer, 0, 3, vertexBuffers, offsets);
+        VkBuffer     vertexBuffers[] = {m_vertexBuffer.buffer, m_texCoordBuffer.buffer, m_normalBuffer.buffer};
+        VkDeviceSize offsets[]       = {0, 0, 0};
+        vkCmdBindVertexBuffers(cmdBuffer, 0, 3, vertexBuffers, offsets);
 
-    vkCmdBindIndexBuffer(cmdBuffer, m_indexBuffer.buffer, 0, VK_INDEX_TYPE_UINT32);
-    vkCmdDrawIndexed(cmdBuffer, m_vertexCount, 1, 0, 0, 0);
+        vkCmdBindIndexBuffer(cmdBuffer, m_indexBuffer.buffer, 0, VK_INDEX_TYPE_UINT32);
+        vkCmdDrawIndexed(cmdBuffer, m_vertexCount, 1, 0, 0, 0);
+    }
+    else {
+        vkCmdBindPipeline(cmdBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, m_shadowPassPipeline);
+        vkCmdPushConstants(cmdBuffer, m_shadowPassPipelineLayout, VK_SHADER_STAGE_ALL, m_shadowPassConstantOffset,
+                           sizeof(ModelPushConstant), &modelData);
+
+        // vkCmdBindDescriptorSets(cmdBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, m_shadowPassPipelineLayout, 0, 1, &m_modelSet, 0,
+        //                             nullptr);
+        VkBuffer     vertexBuffers[] = {m_vertexBuffer.buffer, m_texCoordBuffer.buffer, m_normalBuffer.buffer};
+        VkDeviceSize offsets[]       = {0, 0, 0};
+        vkCmdBindVertexBuffers(cmdBuffer, 0, 1, vertexBuffers, offsets);
+
+        vkCmdBindIndexBuffer(cmdBuffer, m_indexBuffer.buffer, 0, VK_INDEX_TYPE_UINT32);
+        vkCmdDrawIndexed(cmdBuffer, m_vertexCount, 1, 0, 0, 0);
+    }
 }

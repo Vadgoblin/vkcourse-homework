@@ -8,14 +8,18 @@ LightManager::LightManager(Context& context) : m_device(context.device())
 {
     m_lights[0].position = glm::vec3(10000,-10000,10000);
     m_lights[0].color = glm::vec3(1.5, 0.0, 0.0);
+    m_lights[0].projection = glm::perspective(glm::radians(90.0f), 1.0f, 0.1f, 100.0f);
+
 
     m_lights[1].position = glm::vec3(10000,-10000,10000);
     m_lights[1].color = glm::vec3(0.0, 1.5, 0.0);
+    m_lights[1].projection = glm::perspective(glm::radians(90.0f), 1.0f, 0.1f, 100.0f);
 
     m_lights[2].position = glm::vec3(10000,-10000,10000);
     m_lights[2].color = glm::vec3(0.0, 0.0, 1.5);
+    m_lights[2].projection = glm::perspective(glm::radians(90.0f), 1.0f, 0.1f, 100.0f);
 
-    // SetPosition();
+
 
     m_lightInfo = BufferInfo::Create(context.physicalDevice(), context.device(), sizeof(m_lights), VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT);
     m_lightInfo.Update(context.device(), &m_lights, sizeof(m_lights));
@@ -76,9 +80,16 @@ void LightManager::SetPosition()
     C = { C.x * c - C.y * si,
           C.x * si + C.y * c };
 
-    m_lights[0].position = glm::vec3(A.x, 5.0f, A.y);
-    m_lights[1].position = glm::vec3(B.x, 5.0f, B.y);
-    m_lights[2].position = glm::vec3(C.x, 5.0f, C.y);
+    m_lights[0].position = glm::vec3(A.x, 10.0f, A.y);
+    m_lights[1].position = glm::vec3(B.x, 10.0f, B.y);
+    m_lights[2].position = glm::vec3(C.x, 10.0f, C.y);
+
+    for (auto & m_light : m_lights) {
+        m_light.view = glm::lookAt(
+            glm::vec3(m_light.position),
+            glm::vec3(0.0f),
+            glm::vec3(0.0f, -1.0f, 0.0f));
+    }
 
     m_lightInfo.Update(m_device, &m_lights, sizeof(m_lights));
 }

@@ -23,6 +23,7 @@
 #include "LightningPass.h"
 #include "ObjectManager.h"
 #include "PostProcessPass.h"
+#include "ShadowPass.h"
 #include "imgui_integration.h"
 #include "primitives/BasePrimitive.h"
 #include "swapchain.h"
@@ -230,10 +231,12 @@ int main(int /*argc*/, char** /*argv*/)
     TextureManager textureManager(context);
     LightManager   lightManager(context);
 
-    LightningPass lightningPass(context, textureManager, lightManager, swapchain.format(), msaaLevel, depthFormat,
+    ShadowPass shadowPass(context, lightManager,depthFormat,{1024,1024});
+
+    LightningPass lightningPass(context, textureManager, lightManager, shadowPass,swapchain.format(), msaaLevel, depthFormat,
                                 swapchain.surfaceExtent());
 
-    ObjectManager objectManager(context, lightningPass);
+    ObjectManager objectManager(context, lightningPass, shadowPass);
 
     PostProcessPass postProcess(swapchain.format(), swapchain.surfaceExtent());
     postProcess.Create(context);
@@ -246,6 +249,10 @@ int main(int /*argc*/, char** /*argv*/)
         glfwPollEvents();
         camera.Update();
         HandleJoystick(&camera);
+
+        objectManager.Tick();
+        // lightManager.Tick(1.4f);
+        lightManager.Tick(0.0f);
 
         RenderImGui(imIntegration, camera);
 
@@ -270,13 +277,19 @@ int main(int /*argc*/, char** /*argv*/)
 
             swapchain.CmdTransitionToRender(cmdBuffer, swapchainImage, queueFamilyIdx);
 
+            shadowPass.DoPass(cmdBuffer,
+                [&](VkCommandBuffer cmd) {
+                    objectManager.Draw(cmd,false);
+                }
+            );
+
             lightningPass.BeginPass(cmdBuffer);
 
-            lightManager.Tick(1.4f);
             lightManager.BindDescriptorSets(cmdBuffer, lightningPass.pipelineLayout());
+            shadowPass.BindDescriptorSets(cmdBuffer, lightningPass.pipelineLayout());
 
             camera.PushConstants(cmdBuffer);
-            objectManager.Draw(cmdBuffer);
+            objectManager.Draw(cmdBuffer,true);
 
             // Render things
             lightningPass.EndPass(cmdBuffer);
@@ -399,6 +412,7 @@ int main(int /*argc*/, char** /*argv*/)
     camera.Destroy(device);
     postProcess.Destroy(context);
     lightningPass.Destroy();
+    shadowPass.Destroy(device);
     lightManager.Destroy();
     textureManager.Destroy();
     objectManager.Destroy(device);

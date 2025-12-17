@@ -7,15 +7,15 @@ RotatingCube::RotatingCube()
     m_objectGroup = new ObjectGroup();
 }
 
-void RotatingCube::draw(const VkCommandBuffer cmdBuffer, const glm::mat4& parentModel)
+void RotatingCube::draw(const VkCommandBuffer cmdBuffer, bool lightingPass, const glm::mat4& parentModel)
 {
-    m_objectGroup->draw(cmdBuffer, parentModel * getModelMatrix());
+    m_objectGroup->draw(cmdBuffer,lightingPass, parentModel * getModelMatrix());
 }
 
-void RotatingCube::create(Context& context, LightningPass& lightningPass)
+void RotatingCube::create(Context& context, LightningPass& lightningPass, ShadowPass& shadowPass)
 {
     Cube* cube = new Cube(true);
-    cube->create(context,lightningPass, "grassblock_FIX");
+    cube->create(context,lightningPass, shadowPass, "grassblock_FIX");
     cube->setScale(0.5f,0.5f,0.5f);
     m_objectGroup->addChild(cube);
 }

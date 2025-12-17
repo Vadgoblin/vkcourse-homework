@@ -6,47 +6,54 @@
 #include "entities/SpinningCirnoPrism.h"
 #include "primitives/Grid.h"
 
-ObjectManager::ObjectManager(Context& context, LightningPass& lightningPass)
+ObjectManager::ObjectManager(Context& context, LightningPass& lightningPass, ShadowPass& shadowPass)
 {
     Grid* grid = new Grid(1, 1, 1, 1);
     // grid->create(context, "grass2");
-    grid->create(context, lightningPass,"white");
+    grid->create(context, lightningPass,shadowPass,"white");
     grid->setScale(12.0f, 1.0f, 12.0f);
     m_primitives.push_back(grid);
 
     RotatingCube* rotatingCube = new RotatingCube();
-    rotatingCube->create(context, lightningPass);
+    rotatingCube->create(context, lightningPass,shadowPass);
     rotatingCube->setPosition(3.0f, 2.0f, 0.0f);
     m_entities.push_back(rotatingCube);
 
     SpinningCirnoPrism* rotating_tetrahedron = new SpinningCirnoPrism();
-    rotating_tetrahedron->create(context, lightningPass);
+    rotating_tetrahedron->create(context, lightningPass,shadowPass);
     rotating_tetrahedron->setPosition(-4.0f, 1.2f, 0.0f);
     m_entities.push_back(rotating_tetrahedron);
 
     PistonWithBouncingBall* piston_with_bouncing_ball = new PistonWithBouncingBall();
-    piston_with_bouncing_ball->create(context, lightningPass);
+    piston_with_bouncing_ball->create(context, lightningPass,shadowPass);
     m_entities.push_back(piston_with_bouncing_ball);
 
     OrbitingHelicopter* orbiting_helicopter = new OrbitingHelicopter();
-    orbiting_helicopter->create(context, lightningPass);
+    orbiting_helicopter->create(context, lightningPass,shadowPass);
     orbiting_helicopter->setPosition(0.0f, 5.0f, 0.0f);
     m_entities.push_back(orbiting_helicopter);
 }
 
-void ObjectManager::Draw(VkCommandBuffer cmd)
+void ObjectManager::Draw(VkCommandBuffer cmd, bool lightPass)
+{
+    for (BaseEntity* object : m_entities) {
+        object->draw(cmd,lightPass);
+    }
+    for (ObjectGroup* object : m_objectGroups) {
+        object->draw(cmd,lightPass);
+    }
+    for (BasePrimitive* object : m_primitives) {
+        object->draw(cmd,lightPass);
+    }
+}
+
+void ObjectManager::Tick()
 {
     for (BaseEntity* object : m_entities) {
         object->tick();
-        object->draw(cmd);
-    }
-    for (ObjectGroup* object : m_objectGroups) {
-        object->draw(cmd);
-    }
-    for (BasePrimitive* object : m_primitives) {
-        object->draw(cmd);
     }
 }
+
 
 void ObjectManager::Destroy(const VkDevice device)
 {

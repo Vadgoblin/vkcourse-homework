@@ -6,8 +6,8 @@ class PistonWithBouncingBall : public BaseEntity {
 public:
     PistonWithBouncingBall();
     ~PistonWithBouncingBall() override;
-    void draw(VkCommandBuffer cmdBuffer, const glm::mat4& parentModel = glm::mat4(1.0f)) override;
-    void create(Context& context, LightningPass& lightningPass) override;
+    void draw(VkCommandBuffer cmdBuffer, bool lightingPass, const glm::mat4& parentModel = glm::mat4(1.0f)) override;
+    void create(Context& context, LightningPass& lightningPass, ShadowPass& shadowPass) override;
     void destroy(VkDevice device) override;
     void tick() override;
 

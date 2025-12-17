@@ -18,9 +18,9 @@ OrbitingHelicopter::~OrbitingHelicopter()
     delete m_helicopterOrbiting;
 }
 
-void OrbitingHelicopter::draw(VkCommandBuffer cmdBuffer, const glm::mat4& parentModel)
+void OrbitingHelicopter::draw(VkCommandBuffer cmdBuffer, bool lightingPass, const glm::mat4& parentModel)
 {
-    m_helicopterOrbiting->draw(cmdBuffer, parentModel * getModelMatrix());
+    m_helicopterOrbiting->draw(cmdBuffer,lightingPass, parentModel * getModelMatrix());
 }
 
 void OrbitingHelicopter::destroy(VkDevice device)
@@ -34,26 +34,26 @@ void OrbitingHelicopter::destroy(VkDevice device)
     m_helicopterOrbiting->destroyChildren(device);
 }
 
-void OrbitingHelicopter::create(Context& context, LightningPass& lightningPass)
+void OrbitingHelicopter::create(Context& context, LightningPass& lightningPass, ShadowPass& shadowPass)
 {
     Cube* helicopterCabin = new Cube();
-    helicopterCabin->create(context, lightningPass);
+    helicopterCabin->create(context, lightningPass,shadowPass);
     m_helicopterBody->addChild(helicopterCabin);
 
     Cube* helicopterTail = new Cube();
-    helicopterTail->create(context, lightningPass);
+    helicopterTail->create(context, lightningPass,shadowPass);
     helicopterTail->setScale(3.0f, 0.5f, 0.5f);
     helicopterTail->setPosition(-2.0f,0.0f,0.0f);
     m_helicopterBody->addChild(helicopterTail);
 
     Cube* helicopterRotor1 = new Cube();
-    helicopterRotor1->create(context, lightningPass);
+    helicopterRotor1->create(context, lightningPass,shadowPass);
     helicopterRotor1->setScale(4.0f, 0.25f, 0.5f);
     helicopterRotor1->setPosition(0.0f, 0.5f + (0.25f / 2.0f), 0.0f);
     m_helicopterRotor1->addChild(helicopterRotor1);
 
     Cube* helicopterRotor2 = new Cube();
-    helicopterRotor2->create(context,lightningPass);
+    helicopterRotor2->create(context,lightningPass,shadowPass);
     helicopterRotor2->setScale(0.25f, 1.0f, 0.125f);
     m_helicopterRotor2->addChild(helicopterRotor2);
     m_helicopterRotor2Moved->addChild(m_helicopterRotor2);

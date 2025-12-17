@@ -5,6 +5,6 @@
 
 class IDrawable {
 public:
-    virtual void draw(VkCommandBuffer cmdBuffer, const glm::mat4& parentModel = glm::mat4(1.0f)) = 0;
+    virtual void draw(VkCommandBuffer cmdBuffer, bool lightningPass, const glm::mat4& parentModel = glm::mat4(1.0f)) = 0;
     virtual ~IDrawable() = default;
 };

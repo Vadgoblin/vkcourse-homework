@@ -17,36 +17,36 @@ PistonWithBouncingBall::~PistonWithBouncingBall()
     delete m_ball;
 }
 
-void PistonWithBouncingBall::draw(const VkCommandBuffer cmdBuffer, const glm::mat4& parentModel)
+void PistonWithBouncingBall::draw(const VkCommandBuffer cmdBuffer,bool lightingPass, const glm::mat4& parentModel)
 {
-    m_pistonBase->draw(cmdBuffer, parentModel * getModelMatrix());
-    m_pistonMovingPart->draw(cmdBuffer, parentModel * getModelMatrix());
-    m_ball->draw(cmdBuffer, parentModel * getModelMatrix());
+    m_pistonBase->draw(cmdBuffer,lightingPass, parentModel * getModelMatrix());
+    m_pistonMovingPart->draw(cmdBuffer,lightingPass, parentModel * getModelMatrix());
+    m_ball->draw(cmdBuffer,lightingPass, parentModel * getModelMatrix());
 }
 
-void PistonWithBouncingBall::create(Context& context, LightningPass& lightningPass)
+void PistonWithBouncingBall::create(Context& context, LightningPass& lightningPass, ShadowPass& shadowPass)
 {
     Cube* pistonBase = new Cube(true);
     pistonBase->setPosition(0.0f, 0.45f,0.0f);
     pistonBase->setScale(1.0f,0.9f,1.0f);
-    pistonBase->create(context, lightningPass, "piston_body");
+    pistonBase->create(context, lightningPass,shadowPass, "piston_body");
     m_pistonBase->addChild(pistonBase);
 
     Cube* pistonRod = new Cube(true);
     pistonRod->setPosition(0.0f, 0.5f,0.0f);
     pistonRod->setScale(0.2f,0.95f,0.2f);
-    pistonRod->create(context, lightningPass,"piston_head");
+    pistonRod->create(context, lightningPass,shadowPass,"piston_head");
     m_pistonMovingPart->addChild(pistonRod);
 
     Cube* pistonHead = new Cube(true);
     pistonHead->setPosition(0.0f, 0.95f,0.0f);
     pistonHead->setScale(1.0f,0.1f,1.0f);
-    pistonHead->create(context, lightningPass,"piston_head");
+    pistonHead->create(context, lightningPass,shadowPass,"piston_head");
     m_pistonMovingPart->addChild(pistonHead);
 
     Sphere* ball = new Sphere(0.4f,25,25);
     ball->setPosition(0.0f, 1.4f,0.0f);
-    ball->create(context, lightningPass,"earth");
+    ball->create(context, lightningPass,shadowPass,"earth");
     m_ball->addChild(ball);
 }
 

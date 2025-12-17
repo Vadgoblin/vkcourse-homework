@@ -1,5 +1,6 @@
 #include "LightningPass.h"
 
+#include "ShadowPass.h"
 #include "camera.h"
 
 #include "glm_config.h"
@@ -17,7 +18,7 @@ static VkPipelineLayout CreatePipelineLayout(const VkDevice                     
                                              uint32_t                                  pushConstantSize)
 {
     const VkPushConstantRange pushConstantRange = {
-        .stageFlags = VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT,
+        .stageFlags = VK_SHADER_STAGE_ALL,
         .offset     = 0,
         .size       = pushConstantSize,
     };
@@ -276,6 +277,7 @@ static VkPipeline CreatePipeline(const VkDevice         device,
 LightningPass::LightningPass(Context&                    context,
                              TextureManager&             textureManager,
                              LightManager&               lightManager,
+                             ShadowPass&                 shadowPass,
                              const VkFormat              colorFormat,
                              const VkSampleCountFlagBits msaaLevel,
                              const VkFormat              depthFormat,
@@ -288,17 +290,19 @@ LightningPass::LightningPass(Context&                    context,
     , m_sampleCountFlagBits(msaaLevel)
     , m_textureManager(textureManager)
     , m_lightManager(lightManager)
+    , m_shadowPass(shadowPass)
 {
-    const auto vertexDataDescSetLayout = BasePrimitive::CreateVertexDataDescSetLayout(context);
+    // const auto vertexDataDescSetLayout = BasePrimitive::CreateVertexDataDescSetLayout(context);
     const auto textureDescSetLayout    = textureManager.DescriptorSetLayout();
     const auto lightDescSetLayout      = lightManager.GetDescriptorSetLayout();
+    const auto shadowMapDescSetLayout  = shadowPass.ShadowMapDescSetLayout();
 
-    const std::vector<VkDescriptorSetLayout> layouts = {textureDescSetLayout, vertexDataDescSetLayout,
-                                                        lightDescSetLayout};
+    // vertexDataDescSetLayout,
+    const std::vector<VkDescriptorSetLayout> layouts = {textureDescSetLayout,
+                                                        lightDescSetLayout, shadowMapDescSetLayout};
     const u_int32_t pushConstantSize = sizeof(Camera::CameraPushConstant) + sizeof(BasePrimitive::ModelPushConstant);
 
     m_modelPushConstantOffset = sizeof(Camera::CameraPushConstant);
-    m_vertexDataDescSetLayout = vertexDataDescSetLayout;
     m_pipelineLayout          = CreatePipelineLayout(m_device, layouts, pushConstantSize);
     m_pipeline                = CreatePipeline(m_device, m_pipelineLayout, colorFormat, m_sampleCountFlagBits);
 

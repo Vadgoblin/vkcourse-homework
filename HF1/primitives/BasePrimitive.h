@@ -10,10 +10,10 @@
 #include "glm_config.h"
 
 #include <context.h>
-#include <vector>
 #include <string.h>
+#include <vector>
 
-
+class ShadowPass;
 class Context;
 
 class BasePrimitive : public ITransformable, public IDrawable{
@@ -39,15 +39,19 @@ public:
     BasePrimitive(){}
     ~BasePrimitive() override = default;
 
-    VkResult create(Context& context, LightningPass& lightningPass, const char* texture_name = "default");
+    VkResult create(Context& context, LightningPass& lightningPass, ShadowPass& shadowPass, const char* texture_name = "default");
     void     destroy(VkDevice device);
-    void     draw(VkCommandBuffer cmdBuffer, const glm::mat4& parentModel = glm::mat4(1.0f)) override;
+    void     draw(VkCommandBuffer cmdBuffer,bool lightningPass, const glm::mat4& parentModel = glm::mat4(1.0f)) override;
 
 
 protected:
-    VkPipelineLayout m_pipelineLayout = VK_NULL_HANDLE;
-    VkPipeline       m_pipeline       = VK_NULL_HANDLE;
-    uint32_t         m_constantOffset = 0;
+    VkPipelineLayout m_lightningPassPipelineLayout;
+    VkPipeline       m_lightningPassPipeline;
+    uint32_t         m_lightningPassConstantOffset;
+
+    VkPipelineLayout m_shadowPassPipelineLayout;
+    VkPipeline       m_shadowPassPipeline;
+    uint32_t         m_shadowPassConstantOffset;
 
     BufferInfo       m_vertexBuffer   = {};
     BufferInfo       m_indexBuffer    = {};
@@ -61,7 +65,7 @@ protected:
 
     uint32_t         m_vertexCount;
 
-    VkDescriptorSet       m_modelSet      = VK_NULL_HANDLE;
+    VkDescriptorSet       m_modelSet;
 
 private:
     template <typename T>

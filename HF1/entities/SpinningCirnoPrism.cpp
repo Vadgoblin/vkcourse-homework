@@ -13,15 +13,15 @@ SpinningCirnoPrism::~SpinningCirnoPrism()
     delete m_objectGroup;
 }
 
-void SpinningCirnoPrism::draw(const VkCommandBuffer cmdBuffer, const glm::mat4& parentModel)
+void SpinningCirnoPrism::draw(const VkCommandBuffer cmdBuffer, bool lightingPass, const glm::mat4& parentModel)
 {
-    m_objectGroup->draw(cmdBuffer, parentModel * getModelMatrix());
+    m_objectGroup->draw(cmdBuffer, lightingPass, parentModel * getModelMatrix());
 }
 
-void SpinningCirnoPrism::create(Context& context, LightningPass& lightningPass)
+void SpinningCirnoPrism::create(Context& context, LightningPass& lightningPass, ShadowPass& shadowPass)
 {
     CirnoPrism* cirnoPrism = new CirnoPrism();
-    cirnoPrism->create(context, lightningPass,"Cirno Prism");
+    cirnoPrism->create(context, lightningPass, shadowPass, "Cirno Prism");
     m_objectGroup->addChild(cirnoPrism);
 }
 
@@ -34,5 +34,5 @@ void SpinningCirnoPrism::tick()
 {
     m_time += 4.0f;
 
-    m_objectGroup->setRotation(0.0f,m_time * m_speed,0.0f);
+    m_objectGroup->setRotation(0.0f, m_time * m_speed, 0.0f);
 }

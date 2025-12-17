@@ -7,9 +7,10 @@
 
 class ObjectManager {
 public:
-    explicit ObjectManager(Context& context, LightningPass& lightningPass);
+    explicit ObjectManager(Context& context, LightningPass& lightningPass, ShadowPass& shadowPass);
 
-    void Draw(VkCommandBuffer cmd);
+    void Draw(VkCommandBuffer cmd, bool lightPass);
+    void Tick();
     void Destroy(VkDevice device);
 
 private:
