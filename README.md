@@ -6,9 +6,9 @@ $ cmake -Bbuild -H. -DCMAKE_BUILD_TYPE=Debug
 $ make -C build/ -j4
 ```
 
-To run `01_window`:
+To run:
 ```sh
-$ ./build/bin/01_window
+$ ./build/bin/hf1
 ```
 
 # Required packages
