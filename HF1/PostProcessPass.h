@@ -8,7 +8,7 @@
 class PostProcessPass {
 public:
     struct PostProcessOptions {
-        uint32_t mode = 0;
+        uint32_t mode = 4;
     } options;
 
     PostProcessPass(VkFormat colorFormat, VkExtent2D extent);

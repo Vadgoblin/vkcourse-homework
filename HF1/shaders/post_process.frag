@@ -10,13 +10,9 @@ layout(push_constant) uniform PushConstants {
     uint mode;
 } constants;
 
-#if 0
-void main() {
-    vec4 pixel = texture(samplerColor, in_uv);
-
-    out_color = vec4(pixel.rgb, 1.0f);
+float rand(vec2 co){
+    return fract(sin(dot(co, vec2(12.9898, 78.233))) * 43758.5453);
 }
-#endif
 
 vec4 doLaplace() {
     vec4 result = vec4(0.0f);
@@ -63,6 +59,26 @@ vec4 doSepia() {
     return mix(pixel, sepia, 0.20f);
 }
 
+vec3 doMyShit(){
+    vec4 pixel = texture(samplerColor, in_uv);
+    vec3 color = pixel.rgb;
+
+    float dist = distance(in_uv, vec2(0.5));
+    float vignette = 1.0 - smoothstep(0.0, 0.6, dist);
+    vignette;
+
+    float gray = dot(color, vec3(0.299, 0.587, 0.114));
+    vec3 bw = vec3(gray);
+
+    vec3 out_color = vignette * pixel.rgb + (1-vignette) * bw;
+    if(pixel.r + pixel.g + pixel.g < 0.001) {
+        float r = rand(in_uv * 1);
+        out_color += vec3(r,r,r)*0.05;
+    }
+
+    return out_color;
+}
+
 void main() {
     vec4 result = vec4(1.0);
 
@@ -84,6 +100,9 @@ void main() {
         break;
         case 3:
         result = doSepia();
+        break;
+        case 4:
+        result = vec4(doMyShit().rgb,1.0f);
         break;
     }
 
