@@ -64,7 +64,7 @@ vec3 doMyShit(){
 
     if(pixel.r + pixel.g + pixel.g < 0.001) {
         float r = rand(in_uv * 1);
-        pixel += vec4(r,r,r,1.0f)*0.1;
+        pixel += vec4(r,r,r,1.0f)*0.075;
     }
 
     return pixel.rgb;
