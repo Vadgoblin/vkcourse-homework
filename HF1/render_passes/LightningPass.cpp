@@ -1,7 +1,7 @@
 #include "LightningPass.h"
 
-#include "ShadowPass.h"
 #include "../camera.h"
+#include "ShadowPass.h"
 
 #include "glm_config.h"
 #include <vector>
@@ -266,13 +266,13 @@ LightningPass::LightningPass(Context&                    context,
     , m_shadowPass(shadowPass)
 {
     // const auto vertexDataDescSetLayout = BasePrimitive::CreateVertexDataDescSetLayout(context);
-    const auto textureDescSetLayout    = textureManager.DescriptorSetLayout();
-    const auto lightDescSetLayout      = lightManager.GetDescriptorSetLayout();
-    const auto shadowMapDescSetLayout  = shadowPass.ShadowMapDescSetLayout();
+    const auto textureDescSetLayout   = textureManager.DescriptorSetLayout();
+    const auto lightDescSetLayout     = lightManager.GetDescriptorSetLayout();
+    const auto shadowMapDescSetLayout = shadowPass.ShadowMapDescSetLayout();
 
     // vertexDataDescSetLayout,
-    const std::vector<VkDescriptorSetLayout> layouts = {textureDescSetLayout,
-                                                        lightDescSetLayout, shadowMapDescSetLayout};
+    const std::vector<VkDescriptorSetLayout> layouts = {textureDescSetLayout, lightDescSetLayout,
+                                                        shadowMapDescSetLayout};
     const u_int32_t pushConstantSize = sizeof(Camera::CameraPushConstant) + sizeof(BasePrimitive::ModelPushConstant);
 
     m_modelPushConstantOffset = sizeof(Camera::CameraPushConstant);
@@ -352,18 +352,16 @@ void LightningPass::BeginPass(const VkCommandBuffer cmdBuffer)
         .clearValue = {.depthStencil = depthClear},
     };
 
-    const VkRenderingInfoKHR renderInfo = {
-        .sType                = VK_STRUCTURE_TYPE_RENDERING_INFO_KHR,
-        .pNext                = nullptr,
-        .flags                = 0,
-        .renderArea           = {.offset = {0, 0}, .extent = {m_extent}},
-        .layerCount           = 1,
-        .viewMask             = 0,
-        .colorAttachmentCount = 1,
-        .pColorAttachments    = &colorAttachment,
-        .pDepthAttachment     = &depthAttachment,
-        .pStencilAttachment   = nullptr
-    };
+    const VkRenderingInfoKHR renderInfo = {.sType                = VK_STRUCTURE_TYPE_RENDERING_INFO_KHR,
+                                           .pNext                = nullptr,
+                                           .flags                = 0,
+                                           .renderArea           = {.offset = {0, 0}, .extent = {m_extent}},
+                                           .layerCount           = 1,
+                                           .viewMask             = 0,
+                                           .colorAttachmentCount = 1,
+                                           .pColorAttachments    = &colorAttachment,
+                                           .pDepthAttachment     = &depthAttachment,
+                                           .pStencilAttachment   = nullptr};
     vkCmdBeginRendering(cmdBuffer, &renderInfo);
 
     const VkViewport viewport = {
@@ -417,7 +415,6 @@ void LightningPass::TransitionForRender(const VkCommandBuffer cmdBuffer) const
                                               .image               = m_depthOutputMsaa->image(),
                                               .subresourceRange    = {VK_IMAGE_ASPECT_DEPTH_BIT, 0, 1, 0, 1}};
 
-
     VkImageMemoryBarrier2 resolveBarrier = {.sType               = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER_2,
                                             .pNext               = nullptr,
                                             .srcStageMask        = VK_PIPELINE_STAGE_2_TOP_OF_PIPE_BIT,
@@ -441,9 +438,8 @@ void LightningPass::TransitionForRender(const VkCommandBuffer cmdBuffer) const
                                           .newLayout           = VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL,
                                           .srcQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED,
                                           .dstQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED,
-                                          .image = m_depthOutput->image(),
-                                          .subresourceRange = {VK_IMAGE_ASPECT_DEPTH_BIT, 0, 1, 0, 1}};
-
+                                          .image               = m_depthOutput->image(),
+                                          .subresourceRange    = {VK_IMAGE_ASPECT_DEPTH_BIT, 0, 1, 0, 1}};
 
     VkImageMemoryBarrier2 barriers[] = {msaaBarrier, depthMsaaBarrier, resolveBarrier, depthBarrier};
 
@@ -462,18 +458,18 @@ void LightningPass::TransitionForRender(const VkCommandBuffer cmdBuffer) const
 
 void LightningPass::TransitionForRead(const VkCommandBuffer cmdBuffer) const
 {
-    const VkImageMemoryBarrier2 colorBarrier = {.sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER_2,
-                                                .pNext = nullptr,
-                                                .srcStageMask  = VK_PIPELINE_STAGE_2_COLOR_ATTACHMENT_OUTPUT_BIT,
-                                                .srcAccessMask = VK_ACCESS_2_COLOR_ATTACHMENT_WRITE_BIT,
-                                                .dstStageMask  = VK_PIPELINE_STAGE_2_FRAGMENT_SHADER_BIT,
-                                                .dstAccessMask = VK_ACCESS_2_SHADER_READ_BIT,
+    const VkImageMemoryBarrier2 colorBarrier = {.sType               = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER_2,
+                                                .pNext               = nullptr,
+                                                .srcStageMask        = VK_PIPELINE_STAGE_2_COLOR_ATTACHMENT_OUTPUT_BIT,
+                                                .srcAccessMask       = VK_ACCESS_2_COLOR_ATTACHMENT_WRITE_BIT,
+                                                .dstStageMask        = VK_PIPELINE_STAGE_2_FRAGMENT_SHADER_BIT,
+                                                .dstAccessMask       = VK_ACCESS_2_SHADER_READ_BIT,
                                                 .oldLayout           = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL,
                                                 .newLayout           = VK_IMAGE_LAYOUT_GENERAL,
                                                 .srcQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED,
                                                 .dstQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED,
-                                                .image            = m_colorOutput->image(),
-                                                .subresourceRange = {VK_IMAGE_ASPECT_COLOR_BIT, 0, 1, 0, 1}};
+                                                .image               = m_colorOutput->image(),
+                                                .subresourceRange    = {VK_IMAGE_ASPECT_COLOR_BIT, 0, 1, 0, 1}};
 
     const VkDependencyInfo depInfo = {
         .sType                    = VK_STRUCTURE_TYPE_DEPENDENCY_INFO,

@@ -34,12 +34,11 @@ private:
     void TransitionForRender(VkCommandBuffer cmdBuffer) const;
     void TransitionForRead(VkCommandBuffer cmdBuffer) const;
 
-    VkDevice              m_device;
-    VkPhysicalDevice      m_phyDevice;
-    VkPipelineLayout      m_pipelineLayout;
-    VkPipeline            m_pipeline;
-    glm::uint32_t         m_modelPushConstantOffset;
-    // VkDescriptorSetLayout m_vertexDataDescSetLayout;
+    VkDevice         m_device;
+    VkPhysicalDevice m_phyDevice;
+    VkPipelineLayout m_pipelineLayout;
+    VkPipeline       m_pipeline;
+    glm::uint32_t    m_modelPushConstantOffset;
 
     VkFormat              m_colorFormat;
     VkFormat              m_depthFormat;
