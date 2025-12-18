@@ -196,33 +196,6 @@ static VkPipeline CreatePipeline(const VkDevice         device,
     return pipeline;
 }
 
-static VkPipelineLayout CreatePipelineLayout(const VkDevice                            device,
-                                             const std::vector<VkDescriptorSetLayout>& layouts,
-                                             uint32_t                                  pushConstantSize)
-{
-    const VkPushConstantRange pushConstantRange = {
-        .stageFlags = VK_SHADER_STAGE_ALL,
-        .offset     = 0,
-        .size       = pushConstantSize,
-    };
-
-    const VkPipelineLayoutCreateInfo pipelineLayoutCreateInfo = {
-        .sType                  = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO,
-        .pNext                  = nullptr,
-        .flags                  = 0,
-        .setLayoutCount         = (uint32_t)layouts.size(),
-        .pSetLayouts            = layouts.data(),
-        .pushConstantRangeCount = (pushConstantSize > 0) ? 1u : 0u,
-        .pPushConstantRanges    = &pushConstantRange,
-    };
-
-    VkPipelineLayout layout = VK_NULL_HANDLE;
-    VkResult         result = vkCreatePipelineLayout(device, &pipelineLayoutCreateInfo, nullptr, &layout);
-    assert(result == VK_SUCCESS);
-
-    return layout;
-}
-
 PostProcessPass::PostProcessPass(VkFormat colorFormat, VkExtent2D extent)
     : m_colorFormat(colorFormat)
     , m_extent(extent)
