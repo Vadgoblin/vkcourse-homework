@@ -24,10 +24,13 @@
 #include <imgui.h>
 #include <vulkan/vulkan.h>
 
+bool             showInfo        = true;
+constexpr double press_timeout = 0.5;
+double last_press_time = 0;
+
 void KeyCallback(GLFWwindow* window, int key, int /*scancode*/, int /*action*/, int /*mods*/)
 {
     Camera* camera = reinterpret_cast<Camera*>(glfwGetWindowUserPointer(window));
-
     switch (key) {
     case GLFW_KEY_ESCAPE: {
         glfwSetWindowShouldClose(window, GLFW_TRUE);
@@ -50,6 +53,14 @@ void KeyCallback(GLFWwindow* window, int key, int /*scancode*/, int /*action*/, 
         break;
     case GLFW_KEY_E:
         camera->Up();
+        break;
+
+    case GLFW_KEY_H:
+        double press_time = glfwGetTime();
+        if (press_time - last_press_time <= press_timeout)return;
+
+        last_press_time = press_time;
+        showInfo = !showInfo;
         break;
     }
 }
@@ -103,45 +114,49 @@ void RenderImGui(IMGUIIntegration imIntegration, const Camera& camera)
     ImGui::GetIO().IniFilename = nullptr;
     imIntegration.NewFrame();
     ImGui::NewFrame();
+    if (showInfo) {
+        ImGui::SetNextWindowPos(ImVec2(15, 20), ImGuiCond_FirstUseEver);
+        ImGui::SetNextWindowSize(ImVec2(358, 97), ImGuiCond_FirstUseEver);
+        ImGui::Begin("Info");
+        const glm::vec3& cameraPosition = camera.position();
+        ImGui::Text("Camera position x: %.3f y: %.3f z: %.3f", cameraPosition.x, cameraPosition.y, cameraPosition.z);
+        const glm::vec3& targetPosition = camera.lookAtPosition();
+        ImGui::Text("Target position x: %.3f y: %.3f z: %.3f", targetPosition.x, targetPosition.y, targetPosition.z);
+        ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / io.Framerate, io.Framerate);
+        ImGui::Text("Press the key h to hide/show infos");
+        ImGui::End();
 
-    // ImGui::ShowDemoWindow();
+        ImGui::SetNextWindowPos(ImVec2(15, 125), ImGuiCond_FirstUseEver);
+        ImGui::SetNextWindowSize(ImVec2(224, 209), ImGuiCond_FirstUseEver);
+        ImGui::Begin("Controls:");
+        ImGui::Text("Movement control:");
+        ImGui::Text("w - forward");
+        ImGui::Text("d - backward");
+        ImGui::Text("a - left");
+        ImGui::Text("d - right");
+        ImGui::Text("q - down");
+        ImGui::Text("e - up");
+        ImGui::Text(" ");
+        ImGui::Text("Camera control:");
+        ImGui::Text("mouse left click");
+        ImGui::End();
 
-    ImGui::SetNextWindowPos(ImVec2(15, 20), ImGuiCond_FirstUseEver);
-    ImGui::SetNextWindowSize(ImVec2(358, 87), ImGuiCond_FirstUseEver);
-    ImGui::Begin("Info");
-    const glm::vec3& cameraPosition = camera.position();
-    ImGui::Text("Camera position x: %.3f y: %.3f z: %.3f", cameraPosition.x, cameraPosition.y, cameraPosition.z);
-    const glm::vec3& targetPosition = camera.lookAtPosition();
-    ImGui::Text("Target position x: %.3f y: %.3f z: %.3f", targetPosition.x, targetPosition.y, targetPosition.z);
-    ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / io.Framerate, io.Framerate);
-    ImGui::End();
+        ImGui::SetNextWindowPos(ImVec2(15, 34
 
-    ImGui::SetNextWindowPos(ImVec2(15, 115), ImGuiCond_FirstUseEver);
-    ImGui::SetNextWindowSize(ImVec2(224, 209), ImGuiCond_FirstUseEver);
-    ImGui::Begin("Controls:");
-    ImGui::Text("Movement control:");
-    ImGui::Text("w - forward");
-    ImGui::Text("d - backward");
-    ImGui::Text("a - left");
-    ImGui::Text("d - right");
-    ImGui::Text("q - down");
-    ImGui::Text("e - up");
-    ImGui::Text(" ");
-    ImGui::Text("Camera control:");
-    ImGui::Text("mouse left click");
-    ImGui::End();
 
-    ImGui::SetNextWindowPos(ImVec2(15, 332), ImGuiCond_FirstUseEver);
-    ImGui::SetNextWindowSize(ImVec2(187, 158), ImGuiCond_FirstUseEver);
-    ImGui::Begin("Controls (controller):");
-    ImGui::Text("Movement control:");
-    ImGui::Text("Left Stick");
-    ImGui::Text("Left Trigger - down");
-    ImGui::Text("Right Trigger - up");
-    ImGui::Text(" ");
-    ImGui::Text("Camera control:");
-    ImGui::Text("Right Strick");
-    ImGui::End();
+
+        2), ImGuiCond_FirstUseEver);
+        ImGui::SetNextWindowSize(ImVec2(187, 158), ImGuiCond_FirstUseEver);
+        ImGui::Begin("Controls (controller):");
+        ImGui::Text("Movement control:");
+        ImGui::Text("Left Stick");
+        ImGui::Text("Left Trigger - down");
+        ImGui::Text("Right Trigger - up");
+        ImGui::Text(" ");
+        ImGui::Text("Camera control:");
+        ImGui::Text("Right Strick");
+        ImGui::End();
+    }
 
     ImGui::Render();
 }
