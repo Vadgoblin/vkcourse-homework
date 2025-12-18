@@ -2,6 +2,8 @@
 
 #include "wrappers.h"
 
+#include <cassert>
+
 namespace {
 #include "shaders/post_process.frag_include.h"
 #include "shaders/post_process.vert_include.h"

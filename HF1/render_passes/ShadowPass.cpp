@@ -1,6 +1,6 @@
 #include "ShadowPass.h"
 #include "context.h"
-#include "primitives/BasePrimitive.h"
+#include "../primitives/BasePrimitive.h"
 #include "wrappers.h"
 
 namespace {

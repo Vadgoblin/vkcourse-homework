@@ -1,7 +1,7 @@
 #pragma once
-#include "containers/ObjectGroup.h"
-#include "entities/BaseEntity.h"
-#include "primitives/BasePrimitive.h"
+#include "../containers/ObjectGroup.h"
+#include "../entities/BaseEntity.h"
+#include "../primitives/BasePrimitive.h"
 
 #include <context.h>
 

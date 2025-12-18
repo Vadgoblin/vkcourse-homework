@@ -1,10 +1,10 @@
 #include "ObjectManager.h"
 
-#include "entities/OrbitingHelicopter.h"
-#include "entities/PistonWithBouncingBall.h"
-#include "entities/RotatingCube.h"
-#include "entities/SpinningCirnoPrism.h"
-#include "primitives/Grid.h"
+#include "../entities/OrbitingHelicopter.h"
+#include "../entities/PistonWithBouncingBall.h"
+#include "../entities/RotatingCube.h"
+#include "../entities/SpinningCirnoPrism.h"
+#include "../primitives/Grid.h"
 
 ObjectManager::ObjectManager(Context& context, LightningPass& lightningPass, ShadowPass& shadowPass)
 {

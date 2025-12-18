@@ -1,7 +1,5 @@
 #pragma once
 
-#include "../HF1/LightningPass.h"
-#include "../HF1/TextureManager.h"
 
 #include <descriptors.h>
 #include <string>

@@ -2,13 +2,14 @@
 #define GLM_ENABLE_EXPERIMENTAL
 #include <glm/gtx/quaternion.hpp>
 
-#include "../ShadowPass.h"
+#include "../render_passes/ShadowPass.h"
+#include "../managers/TextureManager.h"
 #include "context.h"
 
 #include <texture.h>
 #include <vector>
 #include <vulkan/vulkan_core.h>
-
+#include "../render_passes/LightningPass.h"
 
 VkResult BasePrimitive::create(Context& context,LightningPass& lightningPass, ShadowPass& shadowPass,  const char* texture_name)
 {

@@ -1,9 +1,9 @@
 #pragma once
-#include "../ShadowPass.h"
+#include "../render_passes/ShadowPass.h"
+#include "../render_passes/LightningPass.h"
 #include "../primitives/IDrawable.h"
 #include "../primitives/ITransformable.h"
 
-#include <context.h>
 
 class BaseEntity : public IDrawable, public ITransformable {
 public:

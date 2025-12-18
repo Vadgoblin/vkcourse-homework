@@ -1,5 +1,5 @@
 #pragma once
-#include "LightManager.h"
+#include "../managers/LightManager.h"
 #include "glm_config.h"
 #include "texture.h"
 #include <vulkan/vulkan_core.h>

@@ -30,20 +30,20 @@ add_executable(hf1
         entities/PistonWithBouncingBall.h
         entities/OrbitingHelicopter.cpp
         entities/OrbitingHelicopter.h
-        TextureManager.cpp
-        TextureManager.h
+        managers/TextureManager.cpp
+        managers/TextureManager.h
         primitives/CirnoPrism.cpp
         primitives/CirnoPrism.h
-        LightManager.cpp
-        LightManager.h
-        LightningPass.cpp
-        LightningPass.h
-        ObjectManager.cpp
-        ObjectManager.h
-        PostProcessPass.cpp
-        PostProcessPass.h
-        ShadowPass.cpp
-        ShadowPass.h
+        managers/LightManager.cpp
+        managers/LightManager.h
+        render_passes/LightningPass.cpp
+        render_passes/LightningPass.h
+        managers/ObjectManager.cpp
+        managers/ObjectManager.h
+        render_passes/PostProcessPass.cpp
+        render_passes/PostProcessPass.h
+        render_passes/ShadowPass.cpp
+        render_passes/ShadowPass.h
 )
 
 target_include_directories(hf1

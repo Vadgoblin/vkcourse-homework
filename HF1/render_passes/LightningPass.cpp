@@ -1,14 +1,14 @@
 #include "LightningPass.h"
 
 #include "ShadowPass.h"
-#include "camera.h"
+#include "../camera.h"
 
 #include "glm_config.h"
 #include <vector>
 #include <vulkan/vulkan_core.h>
 
-#include "TextureManager.h"
-#include "primitives/BasePrimitive.h"
+#include "../managers/TextureManager.h"
+#include "../primitives/BasePrimitive.h"
 #include "shaders/lightning_pass.frag_include.h"
 #include "shaders/lightning_pass.vert_include.h"
 #include <wrappers.h>

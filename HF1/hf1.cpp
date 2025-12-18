@@ -1,33 +1,28 @@
-#include "glm/ext/matrix_transform.hpp"
-#include "glm/ext/vector_float3.hpp"
-#include "texture.h"
 #include <cstdio>
 #include <stdexcept>
 #include <vector>
-#include <vulkan/vulkan_core.h>
 
 #define GLFW_INCLUDE_VULKAN
 #define GLFW_INCLUDE_NONE
-#include "LightManager.h"
-
-#include <vulkan/vulkan.h>
-
-#include "glm_config.h"
-#include <GLFW/glfw3.h>
-#include <imgui.h>
+#include <vulkan/vulkan_core.h>
 
 #include "camera.h"
 #include "context.h"
 #include "debug.h"
-
-#include "LightningPass.h"
-#include "ObjectManager.h"
-#include "PostProcessPass.h"
-#include "ShadowPass.h"
+#include "glm_config.h"
 #include "imgui_integration.h"
+#include "managers/LightManager.h"
+#include "managers/ObjectManager.h"
+#include "managers/TextureManager.h"
 #include "primitives/BasePrimitive.h"
+#include "render_passes/LightningPass.h"
+#include "render_passes/PostProcessPass.h"
+#include "render_passes/ShadowPass.h"
 #include "swapchain.h"
 #include "wrappers.h"
+#include <GLFW/glfw3.h>
+#include <imgui.h>
+#include <vulkan/vulkan.h>
 
 void KeyCallback(GLFWwindow* window, int key, int /*scancode*/, int /*action*/, int /*mods*/)
 {
@@ -231,11 +226,11 @@ int main(int /*argc*/, char** /*argv*/)
     TextureManager textureManager(context);
     LightManager   lightManager(context);
 
-    uint32_t shadowResolution = 2 * 1024;
-    ShadowPass shadowPass(context, lightManager,depthFormat,{shadowResolution,shadowResolution});
+    uint32_t   shadowResolution = 2 * 1024;
+    ShadowPass shadowPass(context, lightManager, depthFormat, {shadowResolution, shadowResolution});
 
-    LightningPass lightningPass(context, textureManager, lightManager, shadowPass,swapchain.format(), msaaLevel, depthFormat,
-                                swapchain.surfaceExtent());
+    LightningPass lightningPass(context, textureManager, lightManager, shadowPass, swapchain.format(), msaaLevel,
+                                depthFormat, swapchain.surfaceExtent());
 
     ObjectManager objectManager(context, lightningPass, shadowPass);
 
@@ -278,11 +273,7 @@ int main(int /*argc*/, char** /*argv*/)
 
             swapchain.CmdTransitionToRender(cmdBuffer, swapchainImage, queueFamilyIdx);
 
-            shadowPass.DoPass(cmdBuffer,
-                [&](VkCommandBuffer cmd) {
-                    objectManager.Draw(cmd,false);
-                }
-            );
+            shadowPass.DoPass(cmdBuffer, [&](VkCommandBuffer cmd) { objectManager.Draw(cmd, false); });
 
             lightningPass.BeginPass(cmdBuffer);
 
@@ -290,7 +281,7 @@ int main(int /*argc*/, char** /*argv*/)
             shadowPass.BindDescriptorSets(cmdBuffer, lightningPass.pipelineLayout());
 
             camera.PushConstants(cmdBuffer);
-            objectManager.Draw(cmdBuffer,true);
+            objectManager.Draw(cmdBuffer, true);
 
             // Render things
             lightningPass.EndPass(cmdBuffer);
