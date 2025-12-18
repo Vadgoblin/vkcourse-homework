@@ -22,6 +22,7 @@ public:
         }
         TransitionForRead(cmdBuffer);
     }
+
     void Destroy(VkDevice device) const;
 
     VkExtent2D Extent() const { return m_extent; }

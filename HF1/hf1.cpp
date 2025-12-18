@@ -275,28 +275,25 @@ int main(int /*argc*/, char** /*argv*/)
 
             shadowPass.DoPass(cmdBuffer, [&](VkCommandBuffer cmd) { objectManager.Draw(cmd, false); });
 
-            lightningPass.BeginPass(cmdBuffer);
+            lightningPass.DoPass(cmdBuffer, [&](VkCommandBuffer cmd) {
+                lightManager.BindDescriptorSets(cmd, lightningPass.pipelineLayout());
+                shadowPass.BindDescriptorSets(cmd, lightningPass.pipelineLayout());
 
-            lightManager.BindDescriptorSets(cmdBuffer, lightningPass.pipelineLayout());
-            shadowPass.BindDescriptorSets(cmdBuffer, lightningPass.pipelineLayout());
+                camera.PushConstants(cmdBuffer);
+                objectManager.Draw(cmdBuffer, true);
+            });
 
-            camera.PushConstants(cmdBuffer);
-            objectManager.Draw(cmdBuffer, true);
-
-            // Render things
-            lightningPass.EndPass(cmdBuffer);
 
             {
                 VkImageMemoryBarrier2 swapchainBarrier = {
-                    .sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER_2,
-                    .pNext = nullptr,
-                    .srcStageMask =
-                        VK_PIPELINE_STAGE_2_TOP_OF_PIPE_BIT, // Or COLOR_ATTACHMENT_OUTPUT_BIT if coming from prev frame
+                    .sType               = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER_2,
+                    .pNext               = nullptr,
+                    .srcStageMask        = VK_PIPELINE_STAGE_2_TOP_OF_PIPE_BIT,
                     .srcAccessMask       = VK_ACCESS_2_NONE,
                     .dstStageMask        = VK_PIPELINE_STAGE_2_COLOR_ATTACHMENT_OUTPUT_BIT,
                     .dstAccessMask       = VK_ACCESS_2_COLOR_ATTACHMENT_WRITE_BIT,
                     .oldLayout           = VK_IMAGE_LAYOUT_UNDEFINED,
-                    .newLayout           = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL, // <--- MATCH YOUR RENDER PASS
+                    .newLayout           = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL,
                     .srcQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED,
                     .dstQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED,
                     .image               = swapchainImage.image,

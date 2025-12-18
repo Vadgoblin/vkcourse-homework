@@ -305,10 +305,8 @@ void LightningPass::Destroy() const
     m_depthOutputMsaa->Destroy(m_device);
 }
 
-void LightningPass::BeginPass(const VkCommandBuffer cmdBuffer)
+void LightningPass::BeginPass(const VkCommandBuffer cmdBuffer) const
 {
-    TransitionForRender(cmdBuffer);
-
     const bool             msaa       = (m_sampleCountFlagBits != VK_SAMPLE_COUNT_1_BIT);
     constexpr VkClearValue clearColor = {{{0.0f, 0.0f, 0.0f, 1.0f}}};
 
@@ -384,7 +382,6 @@ void LightningPass::BeginPass(const VkCommandBuffer cmdBuffer)
 void LightningPass::EndPass(const VkCommandBuffer cmdBuffer) const
 {
     vkCmdEndRendering(cmdBuffer);
-    TransitionForRead(cmdBuffer);
 }
 
 void LightningPass::TransitionForRender(const VkCommandBuffer cmdBuffer) const

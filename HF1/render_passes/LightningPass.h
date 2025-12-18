@@ -19,8 +19,15 @@ public:
                   VkFormat              depthFormat,
                   VkExtent2D            extent);
 
-    void BeginPass(VkCommandBuffer cmdBuffer);
-    void EndPass(VkCommandBuffer cmdBuffer) const;
+    template <typename DrawFn> void DoPass(VkCommandBuffer cmdBuffer, DrawFn&& drawScene)
+    {
+        TransitionForRender(cmdBuffer);
+        BeginPass(cmdBuffer);
+        drawScene(cmdBuffer);
+        EndPass(cmdBuffer);
+        TransitionForRead(cmdBuffer);
+    }
+
     void Destroy() const;
 
     VkPipelineLayout pipelineLayout() const { return m_pipelineLayout; }
@@ -31,6 +38,8 @@ public:
     Texture& colorOutput() const { return *m_colorOutput; }
 
 private:
+    void BeginPass(VkCommandBuffer cmdBuffer) const;
+    void EndPass(VkCommandBuffer cmdBuffer) const;
     void TransitionForRender(VkCommandBuffer cmdBuffer) const;
     void TransitionForRead(VkCommandBuffer cmdBuffer) const;
 
