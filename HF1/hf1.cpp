@@ -258,8 +258,8 @@ int main(int /*argc*/, char** /*argv*/)
         HandleJoystick(&camera);
 
         objectManager.Tick();
-        // lightManager.Tick(1.4f);
-        lightManager.Tick(0.0f);
+        lightManager.Tick(0.6f);
+        // lightManager.Tick(0.0f);
 
         RenderImGui(imIntegration, camera);
 
