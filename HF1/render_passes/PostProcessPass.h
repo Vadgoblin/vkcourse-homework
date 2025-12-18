@@ -5,6 +5,8 @@
 #include "context.h"
 #include "texture.h"
 
+#include <swapchain.h>
+
 class PostProcessPass {
 public:
     struct PostProcessOptions {
@@ -16,9 +18,15 @@ public:
     bool Create(Context& context);
     void Destroy(Context& context);
 
-    void BeginPass(VkCommandBuffer cmdBuffer, VkImageView colorOutputView);
-    void Draw(VkCommandBuffer cmdBuffer);
-    void EndPass(VkCommandBuffer cmdBuffer);
+    template <typename DrawFn> void DoPass(VkCommandBuffer cmdBuffer,const Swapchain::Image  &img,DrawFn&& postPostprocessDraws)
+    {
+        TransitionForRender(cmdBuffer,img.image);
+        BeginPass(cmdBuffer,img.view);
+        Draw(cmdBuffer);
+        postPostprocessDraws(cmdBuffer);
+        EndPass(cmdBuffer);
+        TransitionForRead(cmdBuffer, img.image);
+    }
 
     void BindInputImage(VkDevice device, const Texture& texture);
 
@@ -26,6 +34,12 @@ public:
     VkPipelineLayout PipelineLayout() const { return m_pipelineLayout; }
 
 private:
+    void BeginPass(VkCommandBuffer cmdBuffer, VkImageView colorOutputView);
+    void Draw(VkCommandBuffer cmdBuffer);
+    void EndPass(VkCommandBuffer cmdBuffer);
+    void TransitionForRender(VkCommandBuffer cmdBuffer, VkImage vk_image) const;
+    void TransitionForRead(VkCommandBuffer cmdBuffer, VkImage vk_image) const;
+
     VkFormat   m_colorFormat = {};
     VkExtent2D m_extent      = {};
 

@@ -261,115 +261,31 @@ int main(int /*argc*/, char** /*argv*/)
 
         // Get command buffer based on swapchain image index
         VkCommandBuffer cmdBuffer = cmdBuffers[swapchainImage.idx];
-        {
-            // Begin command buffer record
-            const VkCommandBufferBeginInfo beginInfo = {
-                .sType            = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO,
-                .pNext            = nullptr,
-                .flags            = 0,
-                .pInheritanceInfo = nullptr,
-            };
-            vkBeginCommandBuffer(cmdBuffer, &beginInfo);
 
-            swapchain.CmdTransitionToRender(cmdBuffer, swapchainImage, queueFamilyIdx);
+        // Begin command buffer record
+        const VkCommandBufferBeginInfo beginInfo = {
+            .sType            = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO,
+            .pNext            = nullptr,
+            .flags            = 0,
+            .pInheritanceInfo = nullptr,
+        };
+        vkBeginCommandBuffer(cmdBuffer, &beginInfo);
 
-            shadowPass.DoPass(cmdBuffer, [&](VkCommandBuffer cmd) { objectManager.Draw(cmd, false); });
+        swapchain.CmdTransitionToRender(cmdBuffer, swapchainImage, queueFamilyIdx);
 
-            lightningPass.DoPass(cmdBuffer, [&](VkCommandBuffer cmd) {
-                lightManager.BindDescriptorSets(cmd, lightningPass.pipelineLayout());
-                shadowPass.BindDescriptorSets(cmd, lightningPass.pipelineLayout());
+        shadowPass.DoPass(cmdBuffer, [&](VkCommandBuffer cmd) { objectManager.Draw(cmd, false); });
 
-                camera.PushConstants(cmdBuffer);
-                objectManager.Draw(cmdBuffer, true);
-            });
+        lightningPass.DoPass(cmdBuffer, [&](VkCommandBuffer cmd) {
+            lightManager.BindDescriptorSets(cmd, lightningPass.pipelineLayout());
+            shadowPass.BindDescriptorSets(cmd, lightningPass.pipelineLayout());
 
+            camera.PushConstants(cmd);
+            objectManager.Draw(cmd, true);
+        });
 
-            {
-                VkImageMemoryBarrier2 swapchainBarrier = {
-                    .sType               = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER_2,
-                    .pNext               = nullptr,
-                    .srcStageMask        = VK_PIPELINE_STAGE_2_TOP_OF_PIPE_BIT,
-                    .srcAccessMask       = VK_ACCESS_2_NONE,
-                    .dstStageMask        = VK_PIPELINE_STAGE_2_COLOR_ATTACHMENT_OUTPUT_BIT,
-                    .dstAccessMask       = VK_ACCESS_2_COLOR_ATTACHMENT_WRITE_BIT,
-                    .oldLayout           = VK_IMAGE_LAYOUT_UNDEFINED,
-                    .newLayout           = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL,
-                    .srcQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED,
-                    .dstQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED,
-                    .image               = swapchainImage.image,
-                    .subresourceRange =
-                        {
-                            .aspectMask     = VK_IMAGE_ASPECT_COLOR_BIT,
-                            .baseMipLevel   = 0,
-                            .levelCount     = 1,
-                            .baseArrayLayer = 0,
-                            .layerCount     = 1,
-                        },
-                };
+        postProcess.DoPass(cmdBuffer, swapchainImage, [&](VkCommandBuffer cmd) { imIntegration.Draw(cmd); });
 
-                VkImageMemoryBarrier2 barriers[] = {swapchainBarrier};
-
-                const VkDependencyInfo dependencyInfo = {
-                    .sType                    = VK_STRUCTURE_TYPE_DEPENDENCY_INFO,
-                    .pNext                    = nullptr,
-                    .dependencyFlags          = 0,
-                    .memoryBarrierCount       = 0,
-                    .pMemoryBarriers          = nullptr,
-                    .bufferMemoryBarrierCount = 0,
-                    .pBufferMemoryBarriers    = nullptr,
-                    .imageMemoryBarrierCount  = 1,
-                    .pImageMemoryBarriers     = barriers,
-
-                };
-
-                vkCmdPipelineBarrier2(cmdBuffer, &dependencyInfo);
-            }
-
-            postProcess.BeginPass(cmdBuffer, swapchainImage.view);
-            postProcess.Draw(cmdBuffer);
-            imIntegration.Draw(cmdBuffer);
-            postProcess.EndPass(cmdBuffer);
-
-            {
-                const VkImageMemoryBarrier2 renderEndBarrier = {
-                    .sType               = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER_2,
-                    .pNext               = nullptr,
-                    .srcStageMask        = VK_PIPELINE_STAGE_2_COLOR_ATTACHMENT_OUTPUT_BIT,
-                    .srcAccessMask       = VK_ACCESS_2_COLOR_ATTACHMENT_WRITE_BIT,
-                    .dstStageMask        = VK_PIPELINE_STAGE_2_BOTTOM_OF_PIPE_BIT,
-                    .dstAccessMask       = VK_ACCESS_2_NONE,
-                    .oldLayout           = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL,
-                    .newLayout           = VK_IMAGE_LAYOUT_PRESENT_SRC_KHR,
-                    .srcQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED,
-                    .dstQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED,
-                    .image               = swapchainImage.image,
-                    .subresourceRange =
-                        {
-                            .aspectMask     = VK_IMAGE_ASPECT_COLOR_BIT,
-                            .baseMipLevel   = 0,
-                            .levelCount     = 1,
-                            .baseArrayLayer = 0,
-                            .layerCount     = 1,
-                        },
-                };
-
-                const VkDependencyInfo endDependency = {
-                    .sType                    = VK_STRUCTURE_TYPE_DEPENDENCY_INFO,
-                    .pNext                    = nullptr,
-                    .dependencyFlags          = 0,
-                    .memoryBarrierCount       = 0,
-                    .pMemoryBarriers          = nullptr,
-                    .bufferMemoryBarrierCount = 0,
-                    .pBufferMemoryBarriers    = nullptr,
-                    .imageMemoryBarrierCount  = 1,
-                    .pImageMemoryBarriers     = &renderEndBarrier,
-                };
-
-                vkCmdPipelineBarrier2(cmdBuffer, &endDependency);
-            }
-
-            vkEndCommandBuffer(cmdBuffer);
-        }
+        vkEndCommandBuffer(cmdBuffer);
 
         // Execute recorded commands
         const VkSubmitInfo submitInfo = {
