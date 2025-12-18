@@ -61,6 +61,17 @@ vec4 doSepia() {
 
 vec3 doMyShit(){
     vec4 pixel = texture(samplerColor, in_uv);
+
+    if(pixel.r + pixel.g + pixel.g < 0.001) {
+        float r = rand(in_uv * 1);
+        pixel += vec4(r,r,r,1.0f)*0.1;
+    }
+
+    return pixel.rgb;
+}
+
+vec3 doMyShit2(){
+    vec4 pixel = texture(samplerColor, in_uv);
     vec3 color = pixel.rgb;
 
     float dist = distance(in_uv, vec2(0.5));
