@@ -141,11 +141,7 @@ void RenderImGui(IMGUIIntegration imIntegration, const Camera& camera)
         ImGui::Text("mouse left click");
         ImGui::End();
 
-        ImGui::SetNextWindowPos(ImVec2(15, 34
-
-
-
-        2), ImGuiCond_FirstUseEver);
+        ImGui::SetNextWindowPos(ImVec2(15, 342), ImGuiCond_FirstUseEver);
         ImGui::SetNextWindowSize(ImVec2(187, 158), ImGuiCond_FirstUseEver);
         ImGui::Begin("Controls (controller):");
         ImGui::Text("Movement control:");
