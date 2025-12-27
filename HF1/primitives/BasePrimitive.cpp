@@ -74,10 +74,8 @@ void BasePrimitive::draw(const VkCommandBuffer cmdBuffer,bool lightningPass, con
         vkCmdPushConstants(cmdBuffer, m_shadowPassPipelineLayout, VK_SHADER_STAGE_ALL, m_shadowPassConstantOffset,
                            sizeof(ModelPushConstant), &modelData);
 
-        // vkCmdBindDescriptorSets(cmdBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, m_shadowPassPipelineLayout, 0, 1, &m_modelSet, 0,
-        //                             nullptr);
-        VkBuffer     vertexBuffers[] = {m_vertexBuffer.buffer, m_texCoordBuffer.buffer, m_normalBuffer.buffer};
-        VkDeviceSize offsets[]       = {0, 0, 0};
+        VkBuffer     vertexBuffers[] = {m_vertexBuffer.buffer};
+        VkDeviceSize offsets[]       = {0};
         vkCmdBindVertexBuffers(cmdBuffer, 0, 1, vertexBuffers, offsets);
 
         vkCmdBindIndexBuffer(cmdBuffer, m_indexBuffer.buffer, 0, VK_INDEX_TYPE_UINT32);

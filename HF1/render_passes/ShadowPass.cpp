@@ -1,12 +1,12 @@
 #include "ShadowPass.h"
-#include "context.h"
 #include "../primitives/BasePrimitive.h"
+#include "context.h"
 #include "wrappers.h"
 
 namespace {
-    #include "shaders/shadow_map.frag_include.h"
-    #include "shaders/shadow_map.vert_include.h"
-}
+#include "shaders/shadow_map.frag_include.h"
+#include "shaders/shadow_map.vert_include.h"
+} // namespace
 
 VkPipeline BuildPipeline(const VkDevice device, const VkPipelineLayout pipelineLayout, const VkFormat depthFormat)
 {
@@ -35,45 +35,30 @@ VkPipeline BuildPipeline(const VkDevice device, const VkPipelineLayout pipelineL
         },
     };
 
-   VkVertexInputBindingDescription bindingDescriptions[3] = {
-        {0, sizeof(glm::vec3), VK_VERTEX_INPUT_RATE_VERTEX}, // Binding 0: Position
-        {1, sizeof(glm::vec2), VK_VERTEX_INPUT_RATE_VERTEX}, // Binding 1: UV
-        {2, sizeof(glm::vec3), VK_VERTEX_INPUT_RATE_VERTEX}  // Binding 2: Normal
+    VkVertexInputBindingDescription bindingDescriptions = {
+        0,
+        sizeof(glm::vec3),
+        VK_VERTEX_INPUT_RATE_VERTEX,
     };
 
-    VkVertexInputAttributeDescription vertexAttributes[3] = {{
-                                                                 // position
-                                                                 .location = 0,
-                                                                 .binding  = 0,
-                                                                 .format   = VK_FORMAT_R32G32B32_SFLOAT,
-                                                                 .offset   = 0,
-                                                             },
-                                                             {
-                                                                 // uv
-                                                                 .location = 1,
-                                                                 .binding  = 1,
-                                                                 .format   = VK_FORMAT_R32G32_SFLOAT,
-                                                                 .offset   = 0,
-                                                             },
-                                                             {
-                                                                 // normal
-                                                                 .location = 2,
-                                                                 .binding  = 2,
-                                                                 .format   = VK_FORMAT_R32G32B32_SFLOAT,
-                                                                 .offset   = 0,
-                                                             }};
-
+    VkVertexInputAttributeDescription vertexAttributes = {
+        .location = 0,
+        .binding  = 0,
+        .format   = VK_FORMAT_R32G32B32_SFLOAT,
+        .offset   = 0,
+    };
+    
     const VkPipelineVertexInputStateCreateInfo vertexInputInfo = {
         .sType                           = VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO,
         .pNext                           = 0,
         .flags                           = 0,
-        .vertexBindingDescriptionCount   = 3u,
-        .pVertexBindingDescriptions      = bindingDescriptions,
-        .vertexAttributeDescriptionCount = 3u,
-        .pVertexAttributeDescriptions    = vertexAttributes,
+        .vertexBindingDescriptionCount   = 1u,
+        .pVertexBindingDescriptions      = &bindingDescriptions,
+        .vertexAttributeDescriptionCount = 1u,
+        .pVertexAttributeDescriptions    = &vertexAttributes,
     };
 
-    VkPipelineInputAssemblyStateCreateInfo inputAssemblyInfo = {
+    const VkPipelineInputAssemblyStateCreateInfo inputAssemblyInfo = {
         .sType                  = VK_STRUCTURE_TYPE_PIPELINE_INPUT_ASSEMBLY_STATE_CREATE_INFO,
         .pNext                  = nullptr,
         .flags                  = 0,
@@ -142,7 +127,7 @@ VkPipeline BuildPipeline(const VkDevice device, const VkPipelineLayout pipelineL
     };
 
     VkPipelineColorBlendAttachmentState blendAttachment = {
-        .blendEnable = VK_FALSE,
+        .blendEnable         = VK_FALSE,
         .srcColorBlendFactor = VK_BLEND_FACTOR_SRC_ALPHA,
         .dstColorBlendFactor = VK_BLEND_FACTOR_ONE_MINUS_SRC_ALPHA,
         .colorBlendOp        = VK_BLEND_OP_ADD,
@@ -154,11 +139,11 @@ VkPipeline BuildPipeline(const VkDevice device, const VkPipelineLayout pipelineL
     };
 
     VkPipelineColorBlendStateCreateInfo colorBlendInfo = {
-        .sType         = VK_STRUCTURE_TYPE_PIPELINE_COLOR_BLEND_STATE_CREATE_INFO,
-        .pNext         = nullptr,
-        .flags         = 0,
-        .logicOpEnable = VK_FALSE,
-        .logicOp       = VK_LOGIC_OP_CLEAR,
+        .sType           = VK_STRUCTURE_TYPE_PIPELINE_COLOR_BLEND_STATE_CREATE_INFO,
+        .pNext           = nullptr,
+        .flags           = 0,
+        .logicOpEnable   = VK_FALSE,
+        .logicOp         = VK_LOGIC_OP_CLEAR,
         .attachmentCount = 1,
         .pAttachments    = &blendAttachment,
         .blendConstants  = {1.0f, 1.0f, 1.0f, 1.0f},
@@ -211,7 +196,7 @@ VkPipeline BuildPipeline(const VkDevice device, const VkPipelineLayout pipelineL
     };
 
     VkPipeline pipeline = VK_NULL_HANDLE;
-    VkResult result = vkCreateGraphicsPipelines(device, VK_NULL_HANDLE, 1, &pipelineCreateInfo, nullptr,&pipeline);
+    VkResult   result   = vkCreateGraphicsPipelines(device, VK_NULL_HANDLE, 1, &pipelineCreateInfo, nullptr, &pipeline);
 
     vkDestroyShaderModule(device, shaderVertex, nullptr);
     vkDestroyShaderModule(device, shaderFragment, nullptr);
@@ -232,17 +217,18 @@ ShadowPass::ShadowPass(Context& context, LightManager& lightManager, VkFormat de
 
     for (int i = 0; i < LightManager::NumberOfLights(); i++) {
         Texture* t = Texture::Create2D(phyDevice, device, m_depthFormat, m_extent,
-                                      VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT | VK_IMAGE_USAGE_SAMPLED_BIT);
+                                       VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT | VK_IMAGE_USAGE_SAMPLED_BIT);
         assert(t->IsValid());
         m_shadowDepths.push_back(t);
     }
 
     uint32_t pushConstantSize = sizeof(LightInfoPushConstant) + sizeof(BasePrimitive::ModelPushConstant);
     m_modelPushConstantOffset = sizeof(LightInfoPushConstant);
-    m_pipelineLayout = CreatePipelineLayout(device, {BasePrimitive::CreateVertexDataDescSetLayout(context)}, pushConstantSize);
-    m_pipeline = BuildPipeline(device,m_pipelineLayout,depthFormat);
+    m_pipelineLayout =
+        CreatePipelineLayout(device, {BasePrimitive::CreateVertexDataDescSetLayout(context)}, pushConstantSize);
+    m_pipeline = BuildPipeline(device, m_pipelineLayout, depthFormat);
 
-    VkDescriptorSetLayoutBinding shadowMapDescSetLayoutBinding {
+    VkDescriptorSetLayoutBinding shadowMapDescSetLayoutBinding{
         .binding            = 0,
         .descriptorType     = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER,
         .descriptorCount    = LightManager::NumberOfLights(),
@@ -250,24 +236,24 @@ ShadowPass::ShadowPass(Context& context, LightManager& lightManager, VkFormat de
         .pImmutableSamplers = nullptr,
     };
     m_shadowMapDescSetLayout = context.descriptorPool().CreateLayout({shadowMapDescSetLayoutBinding});
-    m_shadowMapDescSet = context.descriptorPool().CreateSet(m_shadowMapDescSetLayout);
+    m_shadowMapDescSet       = context.descriptorPool().CreateSet(m_shadowMapDescSetLayout);
 
     std::vector<VkDescriptorImageInfo> shadowImageInfos(LightManager::NumberOfLights());
     for (int i = 0; i < LightManager::NumberOfLights(); i++) {
         shadowImageInfos[i].imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
-        shadowImageInfos[i].imageView = m_shadowDepths[i]->view();
-        shadowImageInfos[i].sampler = m_shadowDepths[i]->sampler();
+        shadowImageInfos[i].imageView   = m_shadowDepths[i]->view();
+        shadowImageInfos[i].sampler     = m_shadowDepths[i]->sampler();
     }
 
     VkWriteDescriptorSet descriptorWrite = {};
-    descriptorWrite.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
-    descriptorWrite.dstSet = {m_shadowMapDescSet};
-    descriptorWrite.dstBinding = 0;
-    descriptorWrite.dstArrayElement = 0;
-    descriptorWrite.descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
+    descriptorWrite.sType                = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+    descriptorWrite.dstSet               = {m_shadowMapDescSet};
+    descriptorWrite.dstBinding           = 0;
+    descriptorWrite.dstArrayElement      = 0;
+    descriptorWrite.descriptorType       = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
 
     descriptorWrite.descriptorCount = static_cast<uint32_t>(shadowImageInfos.size());
-    descriptorWrite.pImageInfo = shadowImageInfos.data();
+    descriptorWrite.pImageInfo      = shadowImageInfos.data();
 
     vkUpdateDescriptorSets(device, 1, &descriptorWrite, 0, nullptr);
 }
@@ -285,34 +271,33 @@ void ShadowPass::Destroy(VkDevice device) const
 
 void ShadowPass::BindDescriptorSets(VkCommandBuffer cmdBuffer, VkPipelineLayout pipelineLayout)
 {
-    vkCmdBindDescriptorSets(cmdBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipelineLayout, 2, 1, &m_shadowMapDescSet, 0,nullptr);
+    vkCmdBindDescriptorSets(cmdBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipelineLayout, 2, 1, &m_shadowMapDescSet, 0,
+                            nullptr);
 }
 
 void ShadowPass::TransitionForRender(const VkCommandBuffer cmdBuffer)
 {
     std::vector<VkImageMemoryBarrier2> imageMemoryBarriers;
     for (auto element : m_shadowDepths) {
-        const VkImageMemoryBarrier2 renderStartBarrier = {
-            .sType               = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER_2,
-            .pNext               = nullptr,
-            .srcStageMask        = VK_PIPELINE_STAGE_2_TOP_OF_PIPE_BIT,
-            .srcAccessMask       = VK_ACCESS_2_NONE,
-            .dstStageMask        = VK_PIPELINE_STAGE_2_ALL_GRAPHICS_BIT,
-            .dstAccessMask       = VK_ACCESS_2_DEPTH_STENCIL_ATTACHMENT_WRITE_BIT,
-            .oldLayout           = VK_IMAGE_LAYOUT_UNDEFINED,
-            .newLayout           = VK_IMAGE_LAYOUT_ATTACHMENT_OPTIMAL,
-            .srcQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED,
-            .dstQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED,
-            .image               = element->image(),
-            .subresourceRange =
-                {
-                .aspectMask     = VK_IMAGE_ASPECT_DEPTH_BIT,
-                .baseMipLevel   = 0,
-                .levelCount     = 1,
-                .baseArrayLayer = 0,
-                .layerCount     = 1,
-            }
-        };
+        const VkImageMemoryBarrier2 renderStartBarrier = {.sType         = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER_2,
+                                                          .pNext         = nullptr,
+                                                          .srcStageMask  = VK_PIPELINE_STAGE_2_TOP_OF_PIPE_BIT,
+                                                          .srcAccessMask = VK_ACCESS_2_NONE,
+                                                          .dstStageMask  = VK_PIPELINE_STAGE_2_ALL_GRAPHICS_BIT,
+                                                          .dstAccessMask =
+                                                              VK_ACCESS_2_DEPTH_STENCIL_ATTACHMENT_WRITE_BIT,
+                                                          .oldLayout           = VK_IMAGE_LAYOUT_UNDEFINED,
+                                                          .newLayout           = VK_IMAGE_LAYOUT_ATTACHMENT_OPTIMAL,
+                                                          .srcQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED,
+                                                          .dstQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED,
+                                                          .image               = element->image(),
+                                                          .subresourceRange    = {
+                                                                 .aspectMask     = VK_IMAGE_ASPECT_DEPTH_BIT,
+                                                                 .baseMipLevel   = 0,
+                                                                 .levelCount     = 1,
+                                                                 .baseArrayLayer = 0,
+                                                                 .layerCount     = 1,
+                                                          }};
         imageMemoryBarriers.push_back(renderStartBarrier);
     }
 
@@ -334,27 +319,24 @@ void ShadowPass::TransitionForRead(const VkCommandBuffer cmdBuffer)
 {
     std::vector<VkImageMemoryBarrier2> imageMemoryBarriers;
     for (auto element : m_shadowDepths) {
-        const VkImageMemoryBarrier2 renderEndBarrier = {
-            .sType               = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER_2,
-            .pNext               = nullptr,
-            .srcStageMask        = VK_PIPELINE_STAGE_2_ALL_GRAPHICS_BIT,
-            .srcAccessMask       = VK_ACCESS_2_DEPTH_STENCIL_ATTACHMENT_WRITE_BIT,
-            .dstStageMask        = VK_PIPELINE_STAGE_2_FRAGMENT_SHADER_BIT,
-            .dstAccessMask       = VK_ACCESS_2_SHADER_READ_BIT,
-            .oldLayout           = VK_IMAGE_LAYOUT_ATTACHMENT_OPTIMAL,
-            .newLayout           = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL,
-            .srcQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED,
-            .dstQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED,
-            .image               = element->image(),
-            .subresourceRange =
-                {
-                .aspectMask     = VK_IMAGE_ASPECT_DEPTH_BIT,
-                .baseMipLevel   = 0,
-                .levelCount     = 1,
-                .baseArrayLayer = 0,
-                .layerCount     = 1,
-            }
-        };
+        const VkImageMemoryBarrier2 renderEndBarrier = {.sType         = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER_2,
+                                                        .pNext         = nullptr,
+                                                        .srcStageMask  = VK_PIPELINE_STAGE_2_ALL_GRAPHICS_BIT,
+                                                        .srcAccessMask = VK_ACCESS_2_DEPTH_STENCIL_ATTACHMENT_WRITE_BIT,
+                                                        .dstStageMask  = VK_PIPELINE_STAGE_2_FRAGMENT_SHADER_BIT,
+                                                        .dstAccessMask = VK_ACCESS_2_SHADER_READ_BIT,
+                                                        .oldLayout     = VK_IMAGE_LAYOUT_ATTACHMENT_OPTIMAL,
+                                                        .newLayout     = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL,
+                                                        .srcQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED,
+                                                        .dstQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED,
+                                                        .image               = element->image(),
+                                                        .subresourceRange    = {
+                                                               .aspectMask     = VK_IMAGE_ASPECT_DEPTH_BIT,
+                                                               .baseMipLevel   = 0,
+                                                               .levelCount     = 1,
+                                                               .baseArrayLayer = 0,
+                                                               .layerCount     = 1,
+                                                        }};
         imageMemoryBarriers.push_back(renderEndBarrier);
     }
 
@@ -393,9 +375,9 @@ void ShadowPass::BeginNthPass(VkCommandBuffer cmdBuffer, const uint8_t n)
         .flags = 0,
         .renderArea =
             {
-            .offset = {0, 0},
-            .extent = m_extent,
-        },
+                .offset = {0, 0},
+                .extent = m_extent,
+            },
         .layerCount           = 1,
         .viewMask             = 0,
         .colorAttachmentCount = 0,
@@ -427,9 +409,8 @@ void ShadowPass::BeginNthPass(VkCommandBuffer cmdBuffer, const uint8_t n)
         m_lightManager.light(n).projection,
         m_lightManager.light(n).view,
     };
-    vkCmdPushConstants(cmdBuffer, m_pipelineLayout, VK_SHADER_STAGE_ALL,0, sizeof(lightInfo), &lightInfo);
+    vkCmdPushConstants(cmdBuffer, m_pipelineLayout, VK_SHADER_STAGE_ALL, 0, sizeof(lightInfo), &lightInfo);
 }
-
 
 void ShadowPass::EndNthPass(VkCommandBuffer cmdBuffer)
 {
