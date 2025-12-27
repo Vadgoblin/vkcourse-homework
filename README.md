@@ -1,4 +1,6 @@
-# VKCourse
+# VKCourse assignment
+
+![gif of the running program](demo.webp)
 
 To build:
 ```sh
@@ -22,8 +24,3 @@ Linux (ubuntu package names):
 
 * (recommended): libglfw3-dev
 * If libglfw3-dev is not installed then additionally: libxkbcommon-dev xorg-dev
-
-Windows:
-* Vulkan SDK (eg.: https://sdk.lunarg.com/sdk/download/1.3.296.0/windows/VulkanSDK-1.3.296.0-Installer.exe )
-* Visual Studio or some kind of compiler
-* cmake
